@@ -19,21 +19,26 @@ export default function PromotionBanner() {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
+    // Get the promotion data from localStorage
     const storedPromotion = localStorage.getItem('activePromotion');
     const storedAnimationSettings = localStorage.getItem('animationSettings');
     
     if (storedPromotion) {
-      const promotion = JSON.parse(storedPromotion);
-      
-      // If we have global animation settings, use those for the speed
-      if (storedAnimationSettings) {
-        const animationSettings = JSON.parse(storedAnimationSettings);
-        if (animationSettings.textAnimationSpeed) {
-          promotion.animationSpeed = animationSettings.textAnimationSpeed;
+      try {
+        const promotion = JSON.parse(storedPromotion);
+        
+        // If we have global animation settings, use those for the speed
+        if (storedAnimationSettings) {
+          const animationSettings = JSON.parse(storedAnimationSettings);
+          if (animationSettings.textAnimationSpeed) {
+            promotion.animationSpeed = animationSettings.textAnimationSpeed;
+          }
         }
+        
+        setActivePromotion(promotion);
+      } catch (error) {
+        console.error("Error parsing promotion data:", error);
       }
-      
-      setActivePromotion(promotion);
     }
   }, []);
 

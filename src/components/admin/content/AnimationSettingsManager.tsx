@@ -1,7 +1,6 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -20,9 +19,13 @@ export default function AnimationSettingsManager() {
   useEffect(() => {
     const storedSettings = localStorage.getItem('animationSettings');
     if (storedSettings) {
-      const parsedSettings = JSON.parse(storedSettings);
-      setSettings(parsedSettings);
-      setDraftSettings(parsedSettings);
+      try {
+        const parsedSettings = JSON.parse(storedSettings);
+        setSettings(parsedSettings);
+        setDraftSettings(parsedSettings);
+      } catch (error) {
+        console.error("Error parsing animation settings:", error);
+      }
     }
   }, []);
 
@@ -38,9 +41,13 @@ export default function AnimationSettingsManager() {
     // Force update on any existing active promotion
     const storedPromotion = localStorage.getItem('activePromotion');
     if (storedPromotion) {
-      const promotion = JSON.parse(storedPromotion);
-      promotion.animationSpeed = draftSettings.textAnimationSpeed;
-      localStorage.setItem('activePromotion', JSON.stringify(promotion));
+      try {
+        const promotion = JSON.parse(storedPromotion);
+        promotion.animationSpeed = draftSettings.textAnimationSpeed;
+        localStorage.setItem('activePromotion', JSON.stringify(promotion));
+      } catch (error) {
+        console.error("Error updating promotion with new animation speed:", error);
+      }
     }
     
     toast({

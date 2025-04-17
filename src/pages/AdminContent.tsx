@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
@@ -96,10 +97,10 @@ export default function AdminContent() {
         const completeContent = {
           ...defaultContent,
           ...parsedContent,
-          hero: { id: "hero-section", ...parsedContent.hero },
-          benefits: { id: "benefits-section", ...parsedContent.benefits },
-          pricing: { id: "pricing-section", ...parsedContent.pricing },
-          faq: { id: "faq-section", ...parsedContent.faq },
+          hero: { ...defaultContent.hero, ...parsedContent.hero },
+          benefits: { ...defaultContent.benefits, ...parsedContent.benefits },
+          pricing: { ...defaultContent.pricing, ...parsedContent.pricing },
+          faq: { ...defaultContent.faq, ...parsedContent.faq },
           customSections: parsedContent.customSections || []
         };
         setContent(completeContent);
@@ -113,6 +114,7 @@ export default function AdminContent() {
   }, []);
 
   useEffect(() => {
+    // Check if content has been changed
     if (JSON.stringify(content) !== JSON.stringify(draftContent)) {
       setHasUnsavedChanges(true);
     } else {
@@ -323,7 +325,7 @@ export default function AdminContent() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    <TabsContent value="hero" className="m-0">
+                    <TabsContent value="hero" className="mt-0">
                       <HeroSectionEditor
                         content={isEditing ? draftContent.hero : content.hero}
                         isEditing={isEditing}
@@ -332,7 +334,7 @@ export default function AdminContent() {
                       />
                     </TabsContent>
 
-                    <TabsContent value="benefits" className="m-0">
+                    <TabsContent value="benefits" className="mt-0">
                       <BenefitsSectionEditor
                         content={isEditing ? draftContent.benefits : content.benefits}
                         isEditing={isEditing}
@@ -341,7 +343,7 @@ export default function AdminContent() {
                       />
                     </TabsContent>
 
-                    <TabsContent value="pricing" className="m-0">
+                    <TabsContent value="pricing" className="mt-0">
                       <PricingSectionEditor
                         content={isEditing ? draftContent.pricing : content.pricing}
                         isEditing={isEditing}
@@ -350,7 +352,7 @@ export default function AdminContent() {
                       />
                     </TabsContent>
 
-                    <TabsContent value="faq" className="m-0">
+                    <TabsContent value="faq" className="mt-0">
                       <FAQSectionEditor
                         content={isEditing ? draftContent.faq : content.faq}
                         isEditing={isEditing}
@@ -363,7 +365,7 @@ export default function AdminContent() {
                       <TabsContent 
                         key={section.id} 
                         value={`custom-${section.id}`}
-                        className="m-0"
+                        className="mt-0"
                       >
                         <CustomSectionEditor
                           section={isEditing ? section : content.customSections[index] || section}
