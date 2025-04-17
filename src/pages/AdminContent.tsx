@@ -1,22 +1,21 @@
-
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ContentData, ContentSection } from "@/types/contentTypes";
+import { AlertTriangle, Save } from "lucide-react";
+import HeroSectionEditor from "@/components/admin/content/sections/HeroSectionEditor";
+import BenefitsSectionEditor from "@/components/admin/content/sections/BenefitsSectionEditor";
+import PricingSectionEditor from "@/components/admin/content/sections/PricingSectionEditor";
+import FAQSectionEditor from "@/components/admin/content/sections/FAQSectionEditor";
 import SectionTemplatePicker from "@/components/admin/content/SectionTemplatePicker";
-import ImageEditor from "@/components/admin/content/ImageEditor";
 import CustomSectionEditor from "@/components/admin/content/CustomSectionEditor";
 import AnimationSettingsManager from "@/components/admin/content/AnimationSettingsManager";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { AlertTriangle, Save } from "lucide-react";
 
 export default function AdminContent() {
   const { toast } = useToast();
@@ -94,11 +93,9 @@ export default function AdminContent() {
     if (savedContent) {
       try {
         const parsedContent = JSON.parse(savedContent);
-        // Make sure we have all the required sections and add any missing ones
         const completeContent = {
           ...defaultContent,
           ...parsedContent,
-          // Ensure each section has an ID
           hero: { id: "hero-section", ...parsedContent.hero },
           benefits: { id: "benefits-section", ...parsedContent.benefits },
           pricing: { id: "pricing-section", ...parsedContent.pricing },
@@ -116,7 +113,6 @@ export default function AdminContent() {
   }, []);
 
   useEffect(() => {
-    // Check if draft content differs from saved content
     if (JSON.stringify(content) !== JSON.stringify(draftContent)) {
       setHasUnsavedChanges(true);
     } else {
@@ -167,12 +163,13 @@ export default function AdminContent() {
 
   const handleItemChange = (section: keyof ContentData, index: number, field: string, value: string) => {
     setDraftContent(prev => {
-      if (prev[section]?.items) {
+      const sectionData = prev[section] as ContentSection;
+      if (sectionData?.items) {
         return {
           ...prev,
           [section]: {
-            ...prev[section],
-            items: prev[section].items?.map((item, i) => 
+            ...sectionData,
+            items: sectionData.items.map((item, i) => 
               i === index ? { ...item, [field]: value } : item
             )
           }
@@ -286,7 +283,6 @@ export default function AdminContent() {
                           <TabsTrigger value="pricing" className="justify-start">Pricing</TabsTrigger>
                           <TabsTrigger value="faq" className="justify-start">FAQ</TabsTrigger>
                           
-                          {/* Custom Sections */}
                           {draftContent.customSections.map((section) => (
                             <TabsTrigger 
                               key={section.id} 
@@ -327,153 +323,42 @@ export default function AdminContent() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    <TabsContent value="hero" className="m-0 space-y-6">
-                      <div>
-                        <label className="text-sm font-medium">Title</label>
-                        <Input
-                          value={isEditing ? draftContent.hero.title : content.hero.title}
-                          onChange={(e) => handleDraftChange('hero', 'title', e.target.value)}
-                          className="mt-1"
-                          disabled={!isEditing}
-                        />
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium">Subtitle</label>
-                        <Input
-                          value={isEditing ? draftContent.hero.subtitle : content.hero.subtitle}
-                          onChange={(e) => handleDraftChange('hero', 'subtitle', e.target.value)}
-                          className="mt-1"
-                          disabled={!isEditing}
-                        />
-                      </div>
-                      
-                      <Separator />
-                      
-                      <ImageEditor 
-                        images={isEditing ? draftContent.hero.images || [] : content.hero.images || []}
-                        onChange={(images) => handleImagesChange('hero', images)}
-                        disabled={!isEditing}
+                    <TabsContent value="hero" className="m-0">
+                      <HeroSectionEditor
+                        content={isEditing ? draftContent.hero : content.hero}
+                        isEditing={isEditing}
+                        onContentChange={(field, value) => handleDraftChange('hero', field, value)}
+                        onImagesChange={(images) => handleImagesChange('hero', images)}
                       />
                     </TabsContent>
 
-                    <TabsContent value="benefits" className="m-0 space-y-6">
-                      <div>
-                        <label className="text-sm font-medium">Section Title</label>
-                        <Input
-                          value={isEditing ? draftContent.benefits.title : content.benefits.title}
-                          onChange={(e) => handleDraftChange('benefits', 'title', e.target.value)}
-                          className="mt-1"
-                          disabled={!isEditing}
-                        />
-                      </div>
-                      
-                      <Separator />
-                      
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-medium">Benefits</h3>
-                        {(isEditing ? draftContent : content).benefits.items?.map((benefit, index) => (
-                          <Card key={benefit.id || index}>
-                            <CardContent className="p-4 space-y-3">
-                              <div>
-                                <label className="text-sm font-medium">Benefit Title</label>
-                                <Input
-                                  value={benefit.title}
-                                  onChange={(e) => handleItemChange('benefits', index, 'title', e.target.value)}
-                                  placeholder="Benefit Title"
-                                  disabled={!isEditing}
-                                  className="mt-1"
-                                />
-                              </div>
-                              <div>
-                                <label className="text-sm font-medium">Description</label>
-                                <Textarea
-                                  value={benefit.description}
-                                  onChange={(e) => handleItemChange('benefits', index, 'description', e.target.value)}
-                                  placeholder="Benefit Description"
-                                  disabled={!isEditing}
-                                  className="mt-1"
-                                />
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    </TabsContent>
-
-                    <TabsContent value="pricing" className="m-0 space-y-6">
-                      <div>
-                        <label className="text-sm font-medium">Section Title</label>
-                        <Input
-                          value={isEditing ? draftContent.pricing.title : content.pricing.title}
-                          onChange={(e) => handleDraftChange('pricing', 'title', e.target.value)}
-                          className="mt-1"
-                          disabled={!isEditing}
-                        />
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium">Description</label>
-                        <Textarea
-                          value={isEditing ? draftContent.pricing.description : content.pricing.description}
-                          onChange={(e) => handleDraftChange('pricing', 'description', e.target.value)}
-                          className="mt-1"
-                          disabled={!isEditing}
-                        />
-                      </div>
-                      
-                      <Separator />
-                      
-                      <ImageEditor 
-                        images={isEditing ? draftContent.pricing.images || [] : content.pricing.images || []}
-                        onChange={(images) => handleImagesChange('pricing', images)}
-                        disabled={!isEditing}
+                    <TabsContent value="benefits" className="m-0">
+                      <BenefitsSectionEditor
+                        content={isEditing ? draftContent.benefits : content.benefits}
+                        isEditing={isEditing}
+                        onContentChange={(field, value) => handleDraftChange('benefits', field, value)}
+                        onItemChange={(index, field, value) => handleItemChange('benefits', index, field, value)}
                       />
                     </TabsContent>
 
-                    <TabsContent value="faq" className="m-0 space-y-6">
-                      <div>
-                        <label className="text-sm font-medium">Section Title</label>
-                        <Input
-                          value={isEditing ? draftContent.faq.title : content.faq.title}
-                          onChange={(e) => handleDraftChange('faq', 'title', e.target.value)}
-                          className="mt-1"
-                          disabled={!isEditing}
-                        />
-                      </div>
-                      
-                      <Separator />
-                      
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-medium">FAQ Items</h3>
-                        {(isEditing ? draftContent : content).faq.items?.map((faq, index) => (
-                          <Card key={faq.id || index}>
-                            <CardContent className="p-4 space-y-3">
-                              <div>
-                                <label className="text-sm font-medium">Question</label>
-                                <Input
-                                  value={faq.title}
-                                  onChange={(e) => handleItemChange('faq', index, 'title', e.target.value)}
-                                  placeholder="Question"
-                                  disabled={!isEditing}
-                                  className="mt-1"
-                                />
-                              </div>
-                              <div>
-                                <label className="text-sm font-medium">Answer</label>
-                                <Textarea
-                                  value={faq.description}
-                                  onChange={(e) => handleItemChange('faq', index, 'description', e.target.value)}
-                                  placeholder="Answer"
-                                  disabled={!isEditing}
-                                  className="mt-1"
-                                />
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
+                    <TabsContent value="pricing" className="m-0">
+                      <PricingSectionEditor
+                        content={isEditing ? draftContent.pricing : content.pricing}
+                        isEditing={isEditing}
+                        onContentChange={(field, value) => handleDraftChange('pricing', field, value)}
+                        onImagesChange={(images) => handleImagesChange('pricing', images)}
+                      />
                     </TabsContent>
 
-                    {/* Custom Section Content */}
+                    <TabsContent value="faq" className="m-0">
+                      <FAQSectionEditor
+                        content={isEditing ? draftContent.faq : content.faq}
+                        isEditing={isEditing}
+                        onContentChange={(field, value) => handleDraftChange('faq', field, value)}
+                        onItemChange={(index, field, value) => handleItemChange('faq', index, field, value)}
+                      />
+                    </TabsContent>
+
                     {draftContent.customSections.map((section, index) => (
                       <TabsContent 
                         key={section.id} 
