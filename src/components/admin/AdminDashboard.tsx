@@ -15,18 +15,18 @@ import AdminSidebar from "./AdminSidebar";
 import AdminOverview from "./AdminOverview";
 
 export default function AdminDashboard() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="flex">
-        <AdminSidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+        <AdminSidebar isCollapsed={isSidebarCollapsed} />
         <main className="flex-1 p-6">
           <div className="mb-6 flex justify-between items-center">
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
               className="lg:hidden"
             >
               <Menu className="h-6 w-6" />
