@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Toggle } from "@/components/ui/toggle";
+import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -22,28 +22,17 @@ interface Promotion {
   isActive: boolean;
   backgroundColor: string;
   textMoving: boolean;
+  animationSpeed: number;
 }
-
-const ribbonColors = [
-  { name: "Deep Blue", value: "#1E3A8A" },
-  { name: "Purple", value: "#7C3AED" },
-  { name: "Green", value: "#059669" },
-  { name: "Red", value: "#DC2626" },
-  { name: "Orange", value: "#EA580C" },
-  { name: "Teal", value: "#0D9488" },
-];
 
 export default function PromotionsManager() {
   const [promotions, setPromotions] = useState<Promotion[]>([]);
   const [newCode, setNewCode] = useState("");
   const [newMessage, setNewMessage] = useState("");
-  const [selectedColor, setSelectedColor] = useState(ribbonColors[0].value);
+  const [selectedColor, setSelectedColor] = useState("#1E3A8A");
   const [textMoving, setTextMoving] = useState(false);
+  const [animationSpeed, setAnimationSpeed] = useState(20);
   const { toast } = useToast();
-
-  const generateUniqueId = () => {
-    return Math.random().toString(36).substring(2) + Date.now().toString(36);
-  };
 
   const handleAddPromotion = () => {
     if (!newCode || !newMessage) {
@@ -56,12 +45,13 @@ export default function PromotionsManager() {
     }
 
     const newPromotion: Promotion = {
-      id: generateUniqueId(),
+      id: Math.random().toString(36).substring(2),
       code: newCode,
       message: newMessage,
       isActive: false,
       backgroundColor: selectedColor,
       textMoving: textMoving,
+      animationSpeed: animationSpeed
     };
 
     setPromotions([...promotions, newPromotion]);
@@ -96,18 +86,13 @@ export default function PromotionsManager() {
     }
   };
 
-  const deletePromotion = (id: string) => {
-    setPromotions(promotions.filter(promo => promo.id !== id));
-    toast({
-      title: "Success",
-      description: "Promotion deleted successfully",
-    });
-  };
-
-  const updatePromotionStyle = (id: string, backgroundColor: string, textMoving: boolean) => {
+  const updatePromotionStyle = (
+    id: string, 
+    updates: Partial<Pick<Promotion, 'backgroundColor' | 'textMoving' | 'animationSpeed'>>
+  ) => {
     setPromotions(promotions.map(promo => {
       if (promo.id === id) {
-        return { ...promo, backgroundColor, textMoving };
+        return { ...promo, ...updates };
       }
       return promo;
     }));
@@ -117,8 +102,7 @@ export default function PromotionsManager() {
       if (updatedPromo) {
         localStorage.setItem('activePromotion', JSON.stringify({
           ...updatedPromo,
-          backgroundColor,
-          textMoving
+          ...updates
         }));
       }
     }
@@ -168,25 +152,14 @@ export default function PromotionsManager() {
               <label className="block text-sm font-medium mb-2">
                 Ribbon Color
               </label>
-              <div className="flex flex-wrap gap-2">
-                {ribbonColors.map((color) => (
-                  <button
-                    key={color.value}
-                    onClick={() => setSelectedColor(color.value)}
-                    className={cn(
-                      "w-8 h-8 rounded-full border-2",
-                      selectedColor === color.value ? "border-black" : "border-transparent"
-                    )}
-                    style={{ backgroundColor: color.value }}
-                    title={color.name}
-                  />
-                ))}
-              </div>
+              <Input
+                type="color"
+                value={selectedColor}
+                onChange={(e) => setSelectedColor(e.target.value)}
+                className="w-20 h-10"
+              />
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Text Movement
-              </label>
+            <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Switch
                   checked={textMoving}
@@ -194,6 +167,24 @@ export default function PromotionsManager() {
                 />
                 <span className="text-sm">Enable text movement</span>
               </div>
+              {textMoving && (
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium">
+                    Animation Speed (seconds)
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <Slider
+                      value={[animationSpeed]}
+                      onValueChange={(value) => setAnimationSpeed(value[0])}
+                      min={5}
+                      max={40}
+                      step={1}
+                      className="w-[200px]"
+                    />
+                    <span className="text-sm">{animationSpeed}s</span>
+                  </div>
+                </div>
+              )}
             </div>
             <Button onClick={handleAddPromotion}>
               <Plus className="h-4 w-4 mr-2" />
@@ -216,30 +207,38 @@ export default function PromotionsManager() {
                   <div className="flex items-center gap-4 mt-2">
                     <div className="flex items-center gap-2">
                       <label className="text-sm">Color:</label>
-                      <div className="flex gap-1">
-                        {ribbonColors.map((color) => (
-                          <button
-                            key={color.value}
-                            onClick={() => updatePromotionStyle(promotion.id, color.value, promotion.textMoving)}
-                            className={cn(
-                              "w-6 h-6 rounded-full border-2",
-                              promotion.backgroundColor === color.value ? "border-black" : "border-transparent"
-                            )}
-                            style={{ backgroundColor: color.value }}
-                            title={color.name}
-                          />
-                        ))}
-                      </div>
+                      <Input
+                        type="color"
+                        value={promotion.backgroundColor}
+                        onChange={(e) => updatePromotionStyle(promotion.id, { backgroundColor: e.target.value })}
+                        className="w-10 h-10"
+                      />
                     </div>
                     <div className="flex items-center gap-2">
                       <MoveHorizontal className="h-4 w-4" />
                       <Switch
                         checked={promotion.textMoving}
                         onCheckedChange={(checked) => 
-                          updatePromotionStyle(promotion.id, promotion.backgroundColor, checked)
+                          updatePromotionStyle(promotion.id, { textMoving: checked })
                         }
                       />
                     </div>
+                    {promotion.textMoving && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">Speed:</span>
+                        <Slider
+                          value={[promotion.animationSpeed]}
+                          onValueChange={(value) => 
+                            updatePromotionStyle(promotion.id, { animationSpeed: value[0] })
+                          }
+                          min={5}
+                          max={40}
+                          step={1}
+                          className="w-[100px]"
+                        />
+                        <span className="text-sm">{promotion.animationSpeed}s</span>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -255,7 +254,12 @@ export default function PromotionsManager() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => deletePromotion(promotion.id)}
+                    onClick={() => {
+                      setPromotions(promotions.filter(p => p.id !== promotion.id));
+                      if (promotion.isActive) {
+                        localStorage.removeItem('activePromotion');
+                      }
+                    }}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>

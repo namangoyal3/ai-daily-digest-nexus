@@ -11,6 +11,7 @@ interface Promotion {
   isActive: boolean;
   backgroundColor: string;
   textMoving: boolean;
+  animationSpeed: number;
 }
 
 export default function PromotionBanner() {
@@ -39,11 +40,11 @@ export default function PromotionBanner() {
       <p 
         className={cn(
           "text-white text-center text-sm md:text-base",
-          activePromotion.textMoving && "whitespace-nowrap animate-[slide_20s_linear_infinite]"
+          activePromotion.textMoving && "whitespace-nowrap"
         )}
         style={{
           animation: activePromotion.textMoving 
-            ? "slide 20s linear infinite" 
+            ? `slide ${activePromotion.animationSpeed}s linear infinite` 
             : "none"
         }}
       >
