@@ -6,11 +6,19 @@ import { Button } from "@/components/ui/button";
 import { 
   GraduationCap, Book, Code, Brain, ArrowRight, Users, CheckCircle, 
   Award, BarChart, LineChart, Briefcase, Building, Lightbulb, Zap, 
-  Clock, LucideIcon, ChevronDown, ChevronUp, Star, BadgeCheck
+  Clock, LucideIcon, ChevronDown, ChevronUp, Star, BadgeCheck,
+  Search, Filter, SlidersHorizontal, Tags, BookOpen
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 // FAQ Item component
 interface FAQItemProps {
@@ -80,7 +88,150 @@ const LearningPath = ({ title, icon: Icon, description, timeCommitment, skills, 
   );
 };
 
+// Course Card Component
+interface CourseProps {
+  title: string;
+  instructor: string;
+  rating: number;
+  students: number;
+  skillLevel: string;
+  duration: string;
+  price: string;
+  originalPrice?: string;
+  image: string;
+  bestseller?: boolean;
+  isNew?: boolean;
+}
+
+const CourseCard = ({ 
+  title, 
+  instructor, 
+  rating, 
+  students, 
+  skillLevel, 
+  duration, 
+  price, 
+  originalPrice, 
+  image,
+  bestseller,
+  isNew
+}: CourseProps) => {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  return (
+    <div 
+      className="bg-white rounded-lg shadow-md overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-xl"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="relative">
+        <img src={image} alt={title} className="w-full h-48 object-cover" />
+        {bestseller && (
+          <div className="absolute top-2 left-2 bg-yellow-400 text-xs font-bold px-2 py-1 rounded">
+            BESTSELLER
+          </div>
+        )}
+        {isNew && (
+          <div className="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
+            NEW
+          </div>
+        )}
+        
+        {isHovered && (
+          <div className="absolute inset-0 bg-black/75 p-4 flex flex-col justify-center text-white transition-opacity duration-300">
+            <h4 className="font-medium mb-2">What you'll learn:</h4>
+            <ul className="text-sm space-y-1 list-disc pl-4">
+              <li>Core principles and techniques</li>
+              <li>Practical implementation skills</li>
+              <li>Real-world project experience</li>
+            </ul>
+            <Button variant="secondary" size="sm" className="mt-4">
+              Quick View
+            </Button>
+          </div>
+        )}
+      </div>
+      
+      <div className="p-4 flex-grow">
+        <h3 className="font-bold text-lg mb-1 line-clamp-2">{title}</h3>
+        <p className="text-sm text-gray-600 mb-2">{instructor}</p>
+        
+        <div className="flex items-center mb-1">
+          <span className="text-yellow-500 font-bold mr-1">{rating}</span>
+          <div className="flex text-yellow-500">
+            {Array(5).fill(0).map((_, i) => (
+              <Star 
+                key={i} 
+                className={`h-4 w-4 ${i < Math.floor(rating) ? 'fill-yellow-400' : 'text-gray-300'}`}
+              />
+            ))}
+          </div>
+          <span className="text-xs text-gray-500 ml-1">({students.toLocaleString()})</span>
+        </div>
+        
+        <div className="flex items-center text-xs text-gray-600 space-x-2 mb-3">
+          <span>{skillLevel}</span>
+          <span>•</span>
+          <span>{duration}</span>
+        </div>
+        
+        <div className="flex items-center">
+          <span className="font-bold text-lg">{price}</span>
+          {originalPrice && (
+            <span className="text-gray-500 line-through text-sm ml-2">{originalPrice}</span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Filter Category Component
+interface FilterCategoryProps {
+  title: string;
+  options: string[];
+  expanded?: boolean;
+}
+
+const FilterCategory = ({ title, options, expanded = false }: FilterCategoryProps) => {
+  const [isExpanded, setIsExpanded] = useState(expanded);
+  
+  return (
+    <div className="border-b border-gray-200 py-4">
+      <button 
+        className="flex justify-between items-center w-full text-left font-medium"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <span>{title}</span>
+        {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+      </button>
+      
+      {isExpanded && (
+        <div className="mt-3 space-y-2">
+          {options.map((option, index) => (
+            <div key={index} className="flex items-center">
+              <input 
+                type="checkbox" 
+                id={`${title.toLowerCase()}-${index}`}
+                className="h-4 w-4 rounded border-gray-300 text-aiblue focus:ring-aiblue"
+              />
+              <label htmlFor={`${title.toLowerCase()}-${index}`} className="ml-2 text-sm text-gray-600">
+                {option}
+              </label>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default function AICourses() {
+  // State for filter sidebar
+  const [filterOpen, setFilterOpen] = useState(false);
+  // State for active filter
+  const [activeSort, setActiveSort] = useState("Most Popular");
+
   // Stats for Why Learn AI section
   const aiStats = [
     { label: "AI market growth", value: "5x", subtext: "projected over next 5 years" },
@@ -169,6 +320,222 @@ export default function AICourses() {
     }
   ];
 
+  // Course filter categories
+  const filterCategories = [
+    { 
+      title: "Skill Level", 
+      options: ["Beginner", "Intermediate", "Advanced", "All Levels"] 
+    },
+    { 
+      title: "Duration", 
+      options: ["0-2 hours", "2-6 hours", "6-12 hours", "12+ hours"] 
+    },
+    { 
+      title: "Rating", 
+      options: ["4.5 & up", "4.0 & up", "3.5 & up", "3.0 & up"] 
+    },
+    { 
+      title: "Price", 
+      options: ["Free", "Paid", "$10-$50", "$50-$100", "$100+"] 
+    },
+    { 
+      title: "Features", 
+      options: ["With Certificate", "With Hands-on Projects", "With Downloadable Resources"] 
+    },
+  ];
+
+  // Sample course data
+  const courses = [
+    {
+      title: "Machine Learning A-Z: Hands-On Python & R In Data Science",
+      instructor: "Dr. Angela Smith",
+      rating: 4.7,
+      students: 452380,
+      skillLevel: "Intermediate",
+      duration: "42 hours",
+      price: "$29.99",
+      originalPrice: "$149.99",
+      image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80",
+      bestseller: true
+    },
+    {
+      title: "Python for Data Science and Machine Learning Bootcamp",
+      instructor: "Jose Portilla",
+      rating: 4.6,
+      students: 356209,
+      skillLevel: "All Levels",
+      duration: "38 hours",
+      price: "$19.99",
+      originalPrice: "$129.99",
+      image: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+      title: "Deep Learning A-Z: Hands-On Artificial Neural Networks",
+      instructor: "Kirill Eremenko",
+      rating: 4.5,
+      students: 184532,
+      skillLevel: "Advanced",
+      duration: "35 hours",
+      price: "$34.99",
+      originalPrice: "$149.99",
+      image: "https://images.unsplash.com/photo-1558402529-d2638a7023e9?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+      title: "Natural Language Processing with PyTorch",
+      instructor: "David Williams",
+      rating: 4.8,
+      students: 87920,
+      skillLevel: "Intermediate",
+      duration: "28 hours",
+      price: "$24.99",
+      originalPrice: "$139.99",
+      image: "https://images.unsplash.com/photo-1504639725590-34d0984388bd?auto=format&fit=crop&w=600&q=80",
+      isNew: true
+    },
+    {
+      title: "Computer Vision & OpenCV for Beginners",
+      instructor: "Sarah Johnson",
+      rating: 4.4,
+      students: 65480,
+      skillLevel: "Beginner",
+      duration: "18 hours",
+      price: "$19.99",
+      originalPrice: "$99.99",
+      image: "https://images.unsplash.com/photo-1563170423-ea33dcfb57f7?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+      title: "AI Ethics and Governance",
+      instructor: "Michael Thompson",
+      rating: 4.9,
+      students: 32145,
+      skillLevel: "All Levels",
+      duration: "15 hours",
+      price: "$22.99",
+      originalPrice: "$119.99",
+      image: "https://images.unsplash.com/photo-1507668339897-8a035aa9527d?auto=format&fit=crop&w=600&q=80",
+      bestseller: true
+    },
+    {
+      title: "Reinforcement Learning: Hands-On Python",
+      instructor: "Li Wei",
+      rating: 4.6,
+      students: 41830,
+      skillLevel: "Advanced",
+      duration: "32 hours",
+      price: "$29.99",
+      originalPrice: "$149.99",
+      image: "https://images.unsplash.com/photo-1516397281156-ca07cf9746fc?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+      title: "Introduction to AI for Business Leaders",
+      instructor: "Jessica Brown",
+      rating: 4.7,
+      students: 54260,
+      skillLevel: "Beginner",
+      duration: "12 hours",
+      price: "$17.99",
+      originalPrice: "$89.99",
+      image: "https://images.unsplash.com/photo-1616469829941-c7200edec809?auto=format&fit=crop&w=600&q=80",
+      isNew: true
+    }
+  ];
+
+  // Featured new courses
+  const newCourses = [
+    {
+      title: "Large Language Models: From Theory to Application",
+      instructor: "Dr. Alan Johnson",
+      rating: 4.9,
+      students: 12450,
+      skillLevel: "Intermediate",
+      duration: "24 hours",
+      price: "$34.99",
+      originalPrice: "$159.99",
+      image: "https://images.unsplash.com/photo-1625014618611-fb102327bbc4?auto=format&fit=crop&w=600&q=80",
+      isNew: true
+    },
+    {
+      title: "Generative AI: Creating Art with DALL-E and Stable Diffusion",
+      instructor: "Maria Garcia",
+      rating: 4.8,
+      students: 8760,
+      skillLevel: "All Levels",
+      duration: "18 hours",
+      price: "$24.99",
+      originalPrice: "$129.99",
+      image: "https://images.unsplash.com/photo-1692607431259-7b6c595c27e7?auto=format&fit=crop&w=600&q=80",
+      isNew: true
+    },
+    {
+      title: "AI Agents and Autonomous Systems",
+      instructor: "Robert Chen",
+      rating: 4.7,
+      students: 6520,
+      skillLevel: "Advanced",
+      duration: "28 hours",
+      price: "$29.99",
+      originalPrice: "$149.99",
+      image: "https://images.unsplash.com/photo-1580927752452-89d86da3fa0a?auto=format&fit=crop&w=600&q=80",
+      isNew: true
+    },
+    {
+      title: "Practical Machine Learning Engineering",
+      instructor: "Emily Watson",
+      rating: 4.9,
+      students: 9840,
+      skillLevel: "Intermediate",
+      duration: "32 hours",
+      price: "$27.99",
+      originalPrice: "$139.99",
+      image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=600&q=80",
+      isNew: true
+    }
+  ];
+
+  // Free courses
+  const freeCourses = [
+    {
+      title: "Introduction to AI: Fundamentals and Applications",
+      instructor: "David Miller",
+      rating: 4.5,
+      students: 125680,
+      skillLevel: "Beginner",
+      duration: "6 hours",
+      price: "Free",
+      image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+      title: "Python Basics for AI and Machine Learning",
+      instructor: "Jennifer Lee",
+      rating: 4.6,
+      students: 98740,
+      skillLevel: "Beginner",
+      duration: "8 hours",
+      price: "Free",
+      image: "https://images.unsplash.com/photo-1649180556628-9ba704115795?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+      title: "Introduction to Data Science with Pandas",
+      instructor: "Carlos Rodriguez",
+      rating: 4.4,
+      students: 76590,
+      skillLevel: "Beginner",
+      duration: "5 hours",
+      price: "Free",
+      image: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=600&q=80"
+    },
+    {
+      title: "AI Ethics: Understanding Responsible AI",
+      instructor: "Sarah Thompson",
+      rating: 4.7,
+      students: 42380,
+      skillLevel: "All Levels",
+      duration: "4 hours",
+      price: "Free",
+      image: "https://images.unsplash.com/photo-1591696331111-ef9586a5b17a?auto=format&fit=crop&w=600&q=80"
+    }
+  ];
+
   // FAQ data
   const faqItems = [
     {
@@ -192,6 +559,9 @@ export default function AICourses() {
       answer: "Yes, all our courses include industry-recognized certifications upon successful completion. Our certifications are valued by employers and can be directly shared to your LinkedIn profile. Many students report a 27% salary increase within one year of certification."
     }
   ];
+
+  // Sort options
+  const sortOptions = ["Most Popular", "Highest Rated", "Newest", "Price: Low to High", "Price: High to Low"];
 
   return (
     <>
@@ -289,6 +659,165 @@ export default function AICourses() {
             </div>
           </section>
 
+          {/* Course Explorer Section */}
+          <section className="py-16 px-4">
+            <div className="container mx-auto max-w-6xl">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">Explore AI Courses</h2>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  Find the perfect AI course to advance your skills and career, from beginner tutorials to advanced specializations.
+                </p>
+              </div>
+
+              {/* Search and Filter Bar */}
+              <div className="bg-white rounded-xl shadow-md mb-8">
+                <div className="p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="relative flex-grow">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                      <Search className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input 
+                      type="text" 
+                      placeholder="Search for AI courses, topics, or skills..." 
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-aiblue focus:border-aiblue"
+                    />
+                  </div>
+                  
+                  <div className="flex items-center gap-2 w-full md:w-auto">
+                    <Button 
+                      variant="outline" 
+                      className="flex items-center gap-2"
+                      onClick={() => setFilterOpen(!filterOpen)}
+                    >
+                      <Filter className="h-4 w-4" />
+                      <span className="hidden sm:inline">Filters</span>
+                    </Button>
+                    
+                    <div className="relative w-full md:w-auto">
+                      <select 
+                        className="appearance-none bg-white border border-gray-300 rounded-lg py-2 pl-4 pr-10 focus:ring-aiblue focus:border-aiblue w-full"
+                        value={activeSort}
+                        onChange={(e) => setActiveSort(e.target.value)}
+                      >
+                        {sortOptions.map((option) => (
+                          <option key={option} value={option}>{option}</option>
+                        ))}
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                        <ChevronDown className="h-4 w-4 text-gray-500" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Content Grid with Sidebar */}
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                {/* Filter Sidebar - Only visible on larger screens or when toggled */}
+                <div className={`lg:block ${filterOpen ? 'block' : 'hidden'} bg-white p-6 rounded-xl shadow-md h-fit`}>
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="font-bold text-lg flex items-center">
+                      <SlidersHorizontal className="h-5 w-5 mr-2" />
+                      Filters
+                    </h3>
+                    <Button variant="ghost" size="sm" className="text-gray-500">
+                      Clear All
+                    </Button>
+                  </div>
+                  
+                  {filterCategories.map((category, index) => (
+                    <FilterCategory 
+                      key={index}
+                      title={category.title}
+                      options={category.options}
+                      expanded={index === 0} // Expand first category by default
+                    />
+                  ))}
+
+                  <div className="mt-6">
+                    <Button className="w-full bg-aiblue hover:bg-aiblue-dark">
+                      Apply Filters
+                    </Button>
+                  </div>
+                </div>
+                
+                {/* Courses Grid */}
+                <div className="lg:col-span-3">
+                  {/* Featured Course Carousel */}
+                  <div className="mb-12">
+                    <h3 className="text-2xl font-bold mb-6">Featured Courses</h3>
+                    <Carousel className="w-full">
+                      <CarouselContent>
+                        {[...courses.slice(0, 4)].map((course, index) => (
+                          <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                            <CourseCard {...course} />
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <div className="hidden md:block">
+                        <CarouselPrevious />
+                        <CarouselNext />
+                      </div>
+                    </Carousel>
+                  </div>
+                  
+                  {/* New & Noteworthy Courses */}
+                  <div className="mb-12">
+                    <div className="flex justify-between items-center mb-6">
+                      <h3 className="text-2xl font-bold flex items-center">
+                        <Tags className="h-5 w-5 mr-2 text-green-500" />
+                        New & Noteworthy
+                      </h3>
+                      <Button variant="link" className="text-aiblue">
+                        View All <ArrowRight className="h-4 w-4 ml-1" />
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {newCourses.slice(0, 3).map((course, index) => (
+                        <CourseCard key={index} {...course} />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Free Getting Started Courses */}
+                  <div className="mb-12">
+                    <div className="flex justify-between items-center mb-6">
+                      <h3 className="text-2xl font-bold flex items-center">
+                        <BookOpen className="h-5 w-5 mr-2 text-orange-500" />
+                        Free Courses to Get Started
+                      </h3>
+                      <Button variant="link" className="text-aiblue">
+                        View All <ArrowRight className="h-4 w-4 ml-1" />
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {freeCourses.slice(0, 3).map((course, index) => (
+                        <CourseCard key={index} {...course} />
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* All Courses */}
+                  <div>
+                    <div className="flex justify-between items-center mb-6">
+                      <h3 className="text-2xl font-bold">All Courses</h3>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {courses.map((course, index) => (
+                        <CourseCard key={index} {...course} />
+                      ))}
+                    </div>
+                    <div className="mt-8 text-center">
+                      <Button variant="outline" size="lg">
+                        Load More Courses
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* AI Curriculum Overview Section */}
           <section className="py-16 bg-gradient-to-br from-aiblue/5 to-aipurple/5">
             <div className="container mx-auto max-w-6xl px-4">
@@ -336,6 +865,31 @@ export default function AICourses() {
                 </div>
                 <Button size="lg" className="bg-gradient-to-r from-aiblue to-aipurple text-white">
                   View Full Curriculum
+                </Button>
+              </div>
+            </div>
+          </section>
+
+          {/* AI Learning Paths Section */}
+          <section className="py-16 bg-gradient-to-br from-aiblue/5 to-aipurple/5">
+            <div className="container mx-auto max-w-6xl px-4">
+              <div className="text-center mb-16">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">AI Learning Paths</h2>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  Structured educational journeys designed for specific career goals and starting points.
+                  Follow a clear progression from fundamentals to mastery.
+                </p>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-8">
+                {learningPaths.map((path, index) => (
+                  <LearningPath key={index} {...path} />
+                ))}
+              </div>
+              
+              <div className="mt-12 text-center">
+                <Button variant="outline" size="lg" className="border-aiblue text-aiblue">
+                  Take Skills Assessment <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </div>
             </div>
@@ -430,92 +984,6 @@ export default function AICourses() {
                     <Button className="w-full">Access Collection</Button>
                   </div>
                 </div>
-              </div>
-              
-              <div className="bg-white rounded-xl p-8 shadow-lg">
-                <h3 className="text-xl font-bold mb-6">Popular Resources</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-start bg-gray-50 p-4 rounded-lg">
-                    <div className="bg-blue-100 p-2 rounded mr-4">
-                      <Book className="h-5 w-5 text-blue-700" />
-                    </div>
-                    <div>
-                      <h4 className="font-medium">The Complete AI Ethics Handbook</h4>
-                      <p className="text-sm text-gray-600 mt-1">Comprehensive guide to ethical AI development and implementation</p>
-                      <div className="flex items-center mt-2">
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">23k+ downloads</span>
-                        <Button variant="link" size="sm" className="text-aiblue p-0 h-auto ml-2">Download</Button>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start bg-gray-50 p-4 rounded-lg">
-                    <div className="bg-purple-100 p-2 rounded mr-4">
-                      <Code className="h-5 w-5 text-purple-700" />
-                    </div>
-                    <div>
-                      <h4 className="font-medium">Python for Machine Learning Cheat Sheet</h4>
-                      <p className="text-sm text-gray-600 mt-1">Essential Python functions and libraries for ML development</p>
-                      <div className="flex items-center mt-2">
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">18k+ downloads</span>
-                        <Button variant="link" size="sm" className="text-aiblue p-0 h-auto ml-2">Download</Button>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start bg-gray-50 p-4 rounded-lg">
-                    <div className="bg-green-100 p-2 rounded mr-4">
-                      <BarChart className="h-5 w-5 text-green-700" />
-                    </div>
-                    <div>
-                      <h4 className="font-medium">AI Implementation Roadmap Template</h4>
-                      <p className="text-sm text-gray-600 mt-1">Strategic planning document for AI project implementation</p>
-                      <div className="flex items-center mt-2">
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">15k+ downloads</span>
-                        <Button variant="link" size="sm" className="text-aiblue p-0 h-auto ml-2">Download</Button>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start bg-gray-50 p-4 rounded-lg">
-                    <div className="bg-orange-100 p-2 rounded mr-4">
-                      <Briefcase className="h-5 w-5 text-orange-700" />
-                    </div>
-                    <div>
-                      <h4 className="font-medium">AI Career Paths Guide</h4>
-                      <p className="text-sm text-gray-600 mt-1">Comprehensive overview of AI career options and requirements</p>
-                      <div className="flex items-center mt-2">
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">12k+ downloads</span>
-                        <Button variant="link" size="sm" className="text-aiblue p-0 h-auto ml-2">Download</Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* AI Learning Paths Section */}
-          <section className="py-16 bg-gradient-to-br from-aiblue/5 to-aipurple/5">
-            <div className="container mx-auto max-w-6xl px-4">
-              <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">AI Learning Paths</h2>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                  Structured educational journeys designed for specific career goals and starting points.
-                  Follow a clear progression from fundamentals to mastery.
-                </p>
-              </div>
-              
-              <div className="grid md:grid-cols-2 gap-8">
-                {learningPaths.map((path, index) => (
-                  <LearningPath key={index} {...path} />
-                ))}
-              </div>
-              
-              <div className="mt-12 text-center">
-                <Button variant="outline" size="lg" className="border-aiblue text-aiblue">
-                  Take Skills Assessment <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
               </div>
             </div>
           </section>
@@ -656,141 +1124,6 @@ export default function AICourses() {
                     <Button variant="outline" className="text-white border-white hover:bg-white/10" size="lg">
                       Take Free Assessment
                     </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Social Proof Section */}
-          <section className="py-16 px-4">
-            <div className="container mx-auto max-w-6xl">
-              <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">Success Stories</h2>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                  Hear from professionals who have transformed their careers through our AI education programs.
-                </p>
-              </div>
-              
-              <div className="grid md:grid-cols-3 gap-8 mb-12">
-                <div className="bg-white p-6 rounded-xl shadow-md">
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
-                      <img 
-                        src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=100&h=100" 
-                        alt="Testimonial author" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold">Michael Chen</h4>
-                      <p className="text-sm text-gray-600">Data Scientist, TechFuture Inc.</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 italic mb-4">
-                    "The AI for Data Scientists path completely transformed my career. Within 6 months of completion,
-                    I was leading AI initiatives at my company and secured a 35% salary increase."
-                  </p>
-                  <div className="flex text-yellow-400">
-                    <Star className="w-5 h-5 fill-yellow-400" />
-                    <Star className="w-5 h-5 fill-yellow-400" />
-                    <Star className="w-5 h-5 fill-yellow-400" />
-                    <Star className="w-5 h-5 fill-yellow-400" />
-                    <Star className="w-5 h-5 fill-yellow-400" />
-                  </div>
-                </div>
-                
-                <div className="bg-white p-6 rounded-xl shadow-md">
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
-                      <img 
-                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100" 
-                        alt="Testimonial author" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold">Sarah Johnson</h4>
-                      <p className="text-sm text-gray-600">Product Manager, GrowFast</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 italic mb-4">
-                    "As a non-technical professional, I was hesitant about learning AI. The Business Professionals
-                    track was perfect—practical, accessible, and immediately applicable to my work."
-                  </p>
-                  <div className="flex text-yellow-400">
-                    <Star className="w-5 h-5 fill-yellow-400" />
-                    <Star className="w-5 h-5 fill-yellow-400" />
-                    <Star className="w-5 h-5 fill-yellow-400" />
-                    <Star className="w-5 h-5 fill-yellow-400" />
-                    <Star className="w-5 h-5" />
-                  </div>
-                </div>
-                
-                <div className="bg-white p-6 rounded-xl shadow-md">
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
-                      <img 
-                        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&h=100" 
-                        alt="Testimonial author" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold">David Patel</h4>
-                      <p className="text-sm text-gray-600">Software Engineer, CodeX Solutions</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 italic mb-4">
-                    "The practical projects and code repositories were invaluable. I built a portfolio of AI
-                    applications that impressed interviewers and landed my dream job in AI development."
-                  </p>
-                  <div className="flex text-yellow-400">
-                    <Star className="w-5 h-5 fill-yellow-400" />
-                    <Star className="w-5 h-5 fill-yellow-400" />
-                    <Star className="w-5 h-5 fill-yellow-400" />
-                    <Star className="w-5 h-5 fill-yellow-400" />
-                    <Star className="w-5 h-5 fill-yellow-400" />
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-white rounded-xl p-8 shadow-lg">
-                <h3 className="text-xl font-bold mb-6 text-center">Trusted by Organizations Worldwide</h3>
-                <div className="flex flex-wrap justify-center gap-8 items-center opacity-60">
-                  <div className="w-24 h-12 bg-gray-200 rounded flex items-center justify-center">
-                    <Building className="w-8 h-8 text-gray-500" />
-                  </div>
-                  <div className="w-24 h-12 bg-gray-200 rounded flex items-center justify-center">
-                    <Code className="w-8 h-8 text-gray-500" />
-                  </div>
-                  <div className="w-24 h-12 bg-gray-200 rounded flex items-center justify-center">
-                    <Brain className="w-8 h-8 text-gray-500" />
-                  </div>
-                  <div className="w-24 h-12 bg-gray-200 rounded flex items-center justify-center">
-                    <Briefcase className="w-8 h-8 text-gray-500" />
-                  </div>
-                  <div className="w-24 h-12 bg-gray-200 rounded flex items-center justify-center">
-                    <Award className="w-8 h-8 text-gray-500" />
-                  </div>
-                </div>
-                
-                <div className="flex flex-wrap justify-center mt-8 gap-x-12 gap-y-4 text-center text-gray-600">
-                  <div>
-                    <div className="text-2xl font-bold text-aiblue">50,000+</div>
-                    <div className="text-sm">Students Trained</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-aipurple">85%</div>
-                    <div className="text-sm">Course Completion Rate</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-aiteal">92%</div>
-                    <div className="text-sm">Student Satisfaction</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-orange-500">27%</div>
-                    <div className="text-sm">Avg. Salary Increase</div>
                   </div>
                 </div>
               </div>

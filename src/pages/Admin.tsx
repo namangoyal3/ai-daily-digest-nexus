@@ -2,7 +2,7 @@
 import { Helmet } from "react-helmet";
 import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
 import AdminLayout from "@/components/admin/AdminLayout";
-import AdminDashboard from "@/components/admin/AdminDashboard";
+import AdminOverview from "@/components/admin/AdminOverview";
 
 export default function Admin() {
   return (
@@ -20,7 +20,7 @@ export default function Admin() {
                 Welcome to the admin dashboard. Manage your website content, users, and settings.
               </p>
             </div>
-            <AdminDashboard />
+            <AdminOverview />
           </div>
         </AdminLayout>
       </AdminAuthGuard>
