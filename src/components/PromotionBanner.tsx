@@ -2,12 +2,15 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface Promotion {
   id: string;
   code: string;
   message: string;
   isActive: boolean;
+  backgroundColor: string;
+  textMoving: boolean;
 }
 
 export default function PromotionBanner() {
@@ -26,8 +29,26 @@ export default function PromotionBanner() {
   }
 
   return (
-    <div className="bg-aiblue text-white py-2 px-4 flex items-center justify-center relative animate-fade-in">
-      <p className="text-center text-sm md:text-base">{activePromotion.message}</p>
+    <div 
+      className={cn(
+        "py-2 px-4 flex items-center justify-center relative",
+        activePromotion.textMoving && "overflow-hidden"
+      )}
+      style={{ backgroundColor: activePromotion.backgroundColor }}
+    >
+      <p 
+        className={cn(
+          "text-white text-center text-sm md:text-base",
+          activePromotion.textMoving && "whitespace-nowrap animate-[slide_20s_linear_infinite]"
+        )}
+        style={{
+          animation: activePromotion.textMoving 
+            ? "slide 20s linear infinite" 
+            : "none"
+        }}
+      >
+        {activePromotion.message}
+      </p>
       <Button
         variant="ghost"
         size="icon"
@@ -36,6 +57,17 @@ export default function PromotionBanner() {
       >
         <X className="h-4 w-4" />
       </Button>
+
+      <style jsx global>{`
+        @keyframes slide {
+          from {
+            transform: translateX(100%);
+          }
+          to {
+            transform: translateX(-100%);
+          }
+        }
+      `}</style>
     </div>
   );
 }
