@@ -435,20 +435,30 @@ export default function AdminContent() {
     }));
   };
 
-  const handleDuplicateSection = (index: number) => {
-    const sectionToDuplicate = draftContent.sections[index];
-    const newSection = {
-      ...JSON.parse(JSON.stringify(sectionToDuplicate)),
-      id: `${sectionToDuplicate.id}-copy-${Date.now()}`
-    };
-    
-    const newSections = [...draftContent.sections];
-    newSections.splice(index + 1, 0, newSection);
-    
-    setDraftContent(prev => ({
-      ...prev,
-      sections: newSections
-    }));
+  const handleDuplicateSection = (sectionId: string) => {
+    setDraftContent(prev => {
+      const sectionIndex = prev.sections.findIndex(s => s.id === sectionId);
+      if (sectionIndex === -1) return prev;
+
+      const sectionToDuplicate = prev.sections[sectionIndex];
+      const newSection = {
+        ...JSON.parse(JSON.stringify(sectionToDuplicate)),
+        id: `${sectionToDuplicate.id}-copy-${Date.now()}`
+      };
+
+      const newSections = [...prev.sections];
+      newSections.splice(sectionIndex + 1, 0, newSection);
+
+      return {
+        ...prev,
+        sections: newSections
+      };
+    });
+
+    toast({
+      title: "Section Duplicated",
+      description: "The section has been duplicated successfully."
+    });
   };
 
   return (
