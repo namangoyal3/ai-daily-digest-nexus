@@ -71,7 +71,7 @@ export default function PromotionBanner() {
         <X className="h-4 w-4" />
       </Button>
 
-      <style jsx="true">{`
+      <style>{`
         @keyframes slide {
           from {
             transform: translateX(100%);
