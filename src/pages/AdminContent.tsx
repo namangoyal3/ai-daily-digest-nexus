@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useSearchParams } from "react-router-dom";
@@ -39,6 +40,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
+// Define interfaces at the top of the file
 interface ContentItem {
   title: string;
   description: string;

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,10 +19,9 @@ import {
 } from "@/components/ui/dialog";
 import {
   Grid2X2,
-  Image,
+  Image as LucideImage,
   Upload,
   Search,
-  Icons,
   Star,
   Clock,
   FolderOpen,
@@ -140,11 +138,11 @@ const VisualAssetManager: React.FC<VisualAssetManagerProps> = ({
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="images" className="flex items-center">
-              <Image className="mr-2 h-4 w-4" />
+              <LucideImage className="mr-2 h-4 w-4" />
               Images
             </TabsTrigger>
             <TabsTrigger value="icons" className="flex items-center">
-              <Icons className="mr-2 h-4 w-4" />
+              <LucideImage className="mr-2 h-4 w-4" />
               Icons
             </TabsTrigger>
           </TabsList>
