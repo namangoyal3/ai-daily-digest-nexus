@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { AnimationSettings } from '@/types/contentTypes';
 import { Zap } from 'lucide-react';
@@ -53,6 +54,16 @@ export default function AnimationSettingsManager() {
     setIsEditing(false);
   };
 
+  const handleSpeedChange = (value: string) => {
+    const speed = parseFloat(value);
+    if (!isNaN(speed) && speed > 0) {
+      setDraftSettings(prev => ({
+        ...prev,
+        textAnimationSpeed: speed,
+      }));
+    }
+  };
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -83,21 +94,21 @@ export default function AnimationSettingsManager() {
               {isEditing ? draftSettings.textAnimationSpeed : settings.textAnimationSpeed}s
             </span>
           </div>
-          <Slider
-            id="text-animation-speed"
-            min={1}
-            max={20}
-            step={0.5}
-            value={[isEditing ? draftSettings.textAnimationSpeed : settings.textAnimationSpeed]}
-            onValueChange={(value) => {
-              setDraftSettings(prev => ({
-                ...prev,
-                textAnimationSpeed: value[0],
-              }));
-            }}
-            disabled={!isEditing}
-            className="py-2"
-          />
+          
+          <div className="flex items-center gap-4">
+            <Input
+              id="text-animation-speed-input"
+              type="number"
+              min="0.1"
+              step="0.1"
+              value={isEditing ? draftSettings.textAnimationSpeed : settings.textAnimationSpeed}
+              onChange={(e) => handleSpeedChange(e.target.value)}
+              disabled={!isEditing}
+              className="w-24"
+            />
+            <span className="text-sm">seconds</span>
+          </div>
+
           <p className="text-xs text-muted-foreground">
             Controls the speed of text animations across the site. Lower values = faster animation.
           </p>
