@@ -22,6 +22,22 @@ export default function Index() {
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <link rel="canonical" href="https://aidailydigest.com" />
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "AI Daily Digest",
+              "url": "https://aidailydigest.com",
+              "logo": "https://aidailydigest.com/logo.png",
+              "sameAs": [
+                "https://twitter.com/AIDailyDigest",
+                "https://linkedin.com/company/ai-daily-digest"
+              ],
+              "description": "Curated AI news, breakthroughs, and analysis in a 5-minute daily read."
+            }
+          `}
+        </script>
       </Helmet>
       <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
         <Header />

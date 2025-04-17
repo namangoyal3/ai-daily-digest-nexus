@@ -32,7 +32,7 @@ export default function ContentPreview() {
           </div>
           
           {/* Newsletter Content */}
-          <div className="p-6 md:p-8">
+          <div className="p-6 md:p-8" itemScope itemType="https://schema.org/Article">
             <article className="border-b border-gray-100 pb-6 mb-6">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-red-600">
@@ -41,15 +41,16 @@ export default function ContentPreview() {
                 <h4 className="ml-3 font-heading font-bold text-xl">Breaking AI News</h4>
               </div>
               
-              <h5 className="font-heading font-bold text-lg mb-3">
+              <h5 className="font-heading font-bold text-lg mb-3" itemProp="headline">
                 OpenAI Unveils Revolutionary Text-to-Video Model
               </h5>
-              <p className="text-gray-600">
+              <p className="text-gray-600" itemProp="description">
                 OpenAI's new model generates high-quality videos from text prompts, demonstrating remarkable temporal consistency and natural motion. The technology represents a significant leap forward in generative AI capabilities.
               </p>
+              <meta itemProp="datePublished" content="2025-04-17" />
             </article>
             
-            <article className="border-b border-gray-100 pb-6 mb-6">
+            <article className="border-b border-gray-100 pb-6 mb-6" itemScope itemType="https://schema.org/Article">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
                   <TrendingUp className="w-5 h-5" />
@@ -57,15 +58,16 @@ export default function ContentPreview() {
                 <h4 className="ml-3 font-heading font-bold text-xl">Market Insights</h4>
               </div>
               
-              <h5 className="font-heading font-bold text-lg mb-3">
+              <h5 className="font-heading font-bold text-lg mb-3" itemProp="headline">
                 AI Hardware Market Expected to Reach ₹10,000 Crore by 2026
               </h5>
-              <p className="text-gray-600">
+              <p className="text-gray-600" itemProp="description">
                 A new report projects the AI hardware market to grow at 23% CAGR over the next two years. Key drivers include increased demand for specialized AI training chips and edge computing devices.
               </p>
+              <meta itemProp="datePublished" content="2025-04-17" />
             </article>
             
-            <article>
+            <article itemScope itemType="https://schema.org/Article">
               <div className="flex items-center mb-4">
                 <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
                   <MessageSquare className="w-5 h-5" />
@@ -73,12 +75,14 @@ export default function ContentPreview() {
                 <h4 className="ml-3 font-heading font-bold text-xl">Expert Analysis</h4>
               </div>
               
-              <h5 className="font-heading font-bold text-lg mb-3">
+              <h5 className="font-heading font-bold text-lg mb-3" itemProp="headline">
                 The Future of Responsible AI Development
               </h5>
-              <p className="text-gray-600">
+              <p className="text-gray-600" itemProp="description">
                 Dr. Emily Chen, AI Ethics Researcher at MIT, shares her perspective on balancing innovation and responsible development in the rapidly evolving generative AI space.
               </p>
+              <meta itemProp="datePublished" content="2025-04-17" />
+              <meta itemProp="author" content="Dr. Emily Chen" />
             </article>
           </div>
         </div>

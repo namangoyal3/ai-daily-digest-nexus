@@ -23,11 +23,12 @@ export default function Hero() {
               </h1>
               <p className="text-xl text-gray-600 mb-8 max-w-lg">
                 Curated AI news, breakthroughs, and analysis in a 5-minute daily read. 
+                Perfect for busy professionals who need to stay informed.
               </p>
               
               {/* AI Infographic */}
               <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-8 border border-aiblue/10">
-                <h3 className="font-heading font-medium text-lg text-aiblue mb-3">What You'll Get</h3>
+                <h2 className="font-heading font-medium text-lg text-aiblue mb-3">What You'll Get</h2>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center bg-gradient-to-r from-aiblue/5 to-aipurple/5 p-3 rounded-lg">
                     <Brain className="h-8 w-8 text-aiblue mr-3 flex-shrink-0" />
@@ -52,6 +53,7 @@ export default function Hero() {
                 id="hero-subscribe"
                 className="rounded-full bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark text-white font-medium px-8 py-6 text-lg"
                 onClick={scrollToSubscribe}
+                aria-label="Subscribe to AI Daily Digest"
               >
                 Subscribe Now
                 <ArrowDown className="ml-2 h-5 w-5" />
@@ -60,22 +62,22 @@ export default function Hero() {
                 <div className="flex -space-x-2">
                   <img
                     src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=32&h=32&fit=crop&crop=faces"
-                    alt="User avatar"
+                    alt="AI enthusiast avatar"
                     className="w-8 h-8 rounded-full border-2 border-white object-cover"
                   />
                   <img
                     src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop&crop=faces"
-                    alt="User avatar"
+                    alt="Tech professional avatar"
                     className="w-8 h-8 rounded-full border-2 border-white object-cover"
                   />
                   <img
                     src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=32&h=32&fit=crop&crop=faces"
-                    alt="User avatar"
+                    alt="Data scientist avatar"
                     className="w-8 h-8 rounded-full border-2 border-white object-cover"
                   />
                   <img
                     src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=32&h=32&fit=crop&crop=faces"
-                    alt="User avatar"
+                    alt="AI researcher avatar"
                     className="w-8 h-8 rounded-full border-2 border-white object-cover"
                   />
                 </div>
