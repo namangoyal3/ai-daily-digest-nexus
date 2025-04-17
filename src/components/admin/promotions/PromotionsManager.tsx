@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
@@ -107,13 +108,6 @@ export default function PromotionsManager() {
     }
   };
 
-  const handleAnimationSpeedChange = (id: string, value: string) => {
-    const speedValue = parseFloat(value);
-    if (!isNaN(speedValue) && speedValue > 0) {
-      updatePromotionStyle(id, { animationSpeed: speedValue });
-    }
-  };
-
   return (
     <div className="space-y-6">
       <div>
@@ -179,15 +173,15 @@ export default function PromotionsManager() {
                     Animation Speed (seconds)
                   </label>
                   <div className="flex items-center gap-4">
-                    <Input 
-                      type="number" 
-                      min="0.1"
-                      step="0.1"
-                      value={animationSpeed}
-                      onChange={(e) => setAnimationSpeed(parseFloat(e.target.value) || 20)}
-                      className="w-[100px]"
+                    <Slider
+                      value={[animationSpeed]}
+                      onValueChange={(value) => setAnimationSpeed(value[0])}
+                      min={5}
+                      max={40}
+                      step={1}
+                      className="w-[200px]"
                     />
-                    <span className="text-sm">seconds</span>
+                    <span className="text-sm">{animationSpeed}s</span>
                   </div>
                 </div>
               )}
@@ -232,15 +226,17 @@ export default function PromotionsManager() {
                     {promotion.textMoving && (
                       <div className="flex items-center gap-2">
                         <span className="text-sm">Speed:</span>
-                        <Input
-                          type="number"
-                          min="0.1"
-                          step="0.1"
-                          value={promotion.animationSpeed}
-                          onChange={(e) => handleAnimationSpeedChange(promotion.id, e.target.value)}
-                          className="w-[80px]"
+                        <Slider
+                          value={[promotion.animationSpeed]}
+                          onValueChange={(value) => 
+                            updatePromotionStyle(promotion.id, { animationSpeed: value[0] })
+                          }
+                          min={5}
+                          max={40}
+                          step={1}
+                          className="w-[100px]"
                         />
-                        <span className="text-sm">s</span>
+                        <span className="text-sm">{promotion.animationSpeed}s</span>
                       </div>
                     )}
                   </div>
