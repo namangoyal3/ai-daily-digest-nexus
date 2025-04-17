@@ -12,6 +12,7 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminAnalytics from "./pages/AdminAnalytics";
 import AdminSEO from "./pages/AdminSEO";
 import AdminPromotions from "./pages/AdminPromotions";
+import AgentDetails from "./pages/AgentDetails";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/ai-agents" element={<AIAgents />} />
+          <Route path="/agent/:agentSlug" element={<AgentDetails />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/content" element={<AdminContent />} />
           <Route path="/admin/users" element={<AdminUsers />} />

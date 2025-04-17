@@ -1,13 +1,14 @@
-
-import { Bot, Zap, Code, Image, Video, Music, Brain, ShoppingCart, MessageSquare, Building, Briefcase, Scale, Stethoscope, GraduationCap, FileText, PenTool, Languages, Mic, BarChart2, Search } from "lucide-react";
+import { Bot, Code, Image, Video, Brain, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const categories = [
   {
     icon: Bot,
     title: "AI Chatbots",
     count: "50+ Agents",
-    description: "Conversational AI agents for customer service, sales, and support."
+    description: "Conversational AI agents for customer service, sales, and support.",
+    slug: "gpt-4o"
   },
   {
     icon: Image,
@@ -64,8 +65,15 @@ export default function AgentContentPreview() {
                 <h3 className="font-heading text-xl font-semibold mb-2">{category.title}</h3>
                 <p className="text-sm text-aipurple font-medium mb-3">{category.count}</p>
                 <p className="text-gray-600 mb-4">{category.description}</p>
-                <Button variant="outline" size="sm" className="border-aiblue text-aiblue hover:bg-aiblue hover:text-white">
-                  View Agents
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="border-aiblue text-aiblue hover:bg-aiblue hover:text-white"
+                  asChild
+                >
+                  <Link to={`/agent/${category.slug}`}>
+                    View Details
+                  </Link>
                 </Button>
               </div>
             ))}
