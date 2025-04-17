@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useSearchParams } from "react-router-dom";
@@ -10,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import ContentEditor from "@/components/admin/ContentEditor";
 import { 
   ArrowLeft, 
   Save, 
@@ -20,7 +20,8 @@ import {
   GripVertical,
   Plus,
   FileEdit,
-  ArrowDownUp
+  ArrowDownUp,
+  Image
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -41,6 +42,8 @@ import {
 interface ContentItem {
   title: string;
   description: string;
+  image?: string;
+  icon?: string;
 }
 
 interface ContentSection {
@@ -49,6 +52,8 @@ interface ContentSection {
   title?: string;
   subtitle?: string;
   description?: string;
+  content?: string;
+  backgroundImage?: string;
   items?: Array<ContentItem>;
 }
 
@@ -60,6 +65,7 @@ interface PageContent {
     title: string;
     description: string;
     keywords: string;
+    ogImage?: string;
   };
   sections: ContentSection[];
 }
@@ -81,13 +87,15 @@ export default function AdminContent() {
         title: "AI Hub: Newsletter, Marketplace & Courses for AI Professionals",
         description: "Your gateway to AI knowledge, tools, and skills development.",
         keywords: "AI, artificial intelligence, newsletter, marketplace, courses",
+        ogImage: "https://source.unsplash.com/random/1200×630?ai",
       },
       sections: [
         {
           id: "hero",
           type: "hero",
           title: "AI Daily Digest - Stay Ahead with AI Insights",
-          subtitle: "Get curated AI news, breakthroughs, and analysis in a 5-minute daily read."
+          subtitle: "Get curated AI news, breakthroughs, and analysis in a 5-minute daily read.",
+          backgroundImage: "https://source.unsplash.com/random/1200×600?technology"
         },
         {
           id: "benefits",
@@ -96,15 +104,18 @@ export default function AdminContent() {
           items: [
             {
               title: "Save Time",
-              description: "Digest key AI developments in just 5 minutes daily."
+              description: "Digest key AI developments in just 5 minutes daily.",
+              icon: "Clock"
             },
             {
               title: "Access to Latest AI News",
-              description: "Stay informed about the latest AI advancements."
+              description: "Stay informed about the latest AI advancements.",
+              icon: "Newspaper"
             },
             {
               title: "Personalized Recommendations",
-              description: "Get tailored AI insights based on your interests."
+              description: "Get tailored AI insights based on your interests.",
+              icon: "UserCheck"
             }
           ]
         },
@@ -143,13 +154,15 @@ export default function AdminContent() {
         title: "AI Daily Digest - Stay Ahead with AI Insights",
         description: "Get curated AI news, breakthroughs, and analysis in a 5-minute daily read.",
         keywords: "AI news, newsletter, daily AI updates, AI digest",
+        ogImage: "https://source.unsplash.com/random/1200×630?newsletter",
       },
       sections: [
         {
           id: "hero",
           type: "hero",
           title: "AI Daily Digest - Daily AI Insights",
-          subtitle: "Stay informed with curated AI news delivered to your inbox"
+          subtitle: "Stay informed with curated AI news delivered to your inbox",
+          backgroundImage: "https://source.unsplash.com/random/1200×600?news"
         },
         {
           id: "benefits",
@@ -158,15 +171,18 @@ export default function AdminContent() {
           items: [
             {
               title: "Curated Content",
-              description: "Hand-picked AI news and analysis"
+              description: "Hand-picked AI news and analysis",
+              icon: "Check"
             },
             {
               title: "Time-Saving",
-              description: "Get all important updates in one place"
+              description: "Get all important updates in one place",
+              icon: "Clock"
             },
             {
               title: "Expert Commentary",
-              description: "Insights from AI professionals and researchers"
+              description: "Insights from AI professionals and researchers",
+              icon: "MessageSquare"
             }
           ]
         }
@@ -180,13 +196,15 @@ export default function AdminContent() {
         title: "AI Agents Directory - Discover and Compare AI Agents",
         description: "Explore our comprehensive directory of AI agents.",
         keywords: "AI agents, AI tools, chatbots, automation",
+        ogImage: "https://source.unsplash.com/random/1200×630?robot",
       },
       sections: [
         {
           id: "hero",
           type: "hero",
           title: "AI Agents Directory",
-          subtitle: "Discover powerful AI agents to enhance your productivity"
+          subtitle: "Discover powerful AI agents to enhance your productivity",
+          backgroundImage: "https://source.unsplash.com/random/1200×600?ai"
         },
         {
           id: "featured",
@@ -204,13 +222,15 @@ export default function AdminContent() {
         title: "AI Education Hub: Courses, Guides & Resources for AI Learning",
         description: "Comprehensive AI education resources including courses, guides, and handbooks.",
         keywords: "AI courses, AI education, learn AI, AI training",
+        ogImage: "https://source.unsplash.com/random/1200×630?education",
       },
       sections: [
         {
           id: "hero",
           type: "hero",
           title: "AI Education Hub",
-          subtitle: "Master artificial intelligence with our comprehensive courses"
+          subtitle: "Master artificial intelligence with our comprehensive courses",
+          backgroundImage: "https://source.unsplash.com/random/1200×600?education"
         },
         {
           id: "curriculum",
@@ -226,7 +246,19 @@ export default function AdminContent() {
   const [draftContent, setDraftContent] = useState<PageContent>(content);
   
   useEffect(() => {
-    const newContent = pageTypes[pageId] || pageTypes["1"];
+    const savedContent = localStorage.getItem(`pageContent-${pageId}`);
+    let newContent;
+    
+    if (savedContent) {
+      try {
+        newContent = JSON.parse(savedContent);
+      } catch (e) {
+        newContent = pageTypes[pageId] || pageTypes["1"];
+      }
+    } else {
+      newContent = pageTypes[pageId] || pageTypes["1"];
+    }
+    
     setContent(newContent);
     setDraftContent(newContent);
     setActiveSectionId(newContent.sections[0]?.id || "");
@@ -239,7 +271,6 @@ export default function AdminContent() {
 
   const handleSave = () => {
     setContent(draftContent);
-    // In a real implementation, we would save to a database here
     localStorage.setItem(`pageContent-${pageId}`, JSON.stringify(draftContent));
     setIsEditing(false);
     toast({
@@ -268,6 +299,35 @@ export default function AdminContent() {
   };
 
   const handleSectionChange = (sectionId: string, field: string, value: string) => {
+    if (field.includes('[') && field.includes(']')) {
+      const matches = field.match(/(\w+)\[(\d+)\]\.(\w+)/);
+      
+      if (matches && matches.length === 4) {
+        const [_, arrayField, indexStr, subField] = matches;
+        const index = parseInt(indexStr);
+        
+        setDraftContent(prev => ({
+          ...prev,
+          sections: prev.sections.map(section => {
+            if (section.id === sectionId) {
+              const updatedItems = [...(section[arrayField as keyof ContentSection] as any[] || [])];
+              updatedItems[index] = {
+                ...updatedItems[index],
+                [subField]: value
+              };
+              
+              return {
+                ...section,
+                [arrayField]: updatedItems
+              };
+            }
+            return section;
+          })
+        }));
+        return;
+      }
+    }
+    
     setDraftContent(prev => ({
       ...prev,
       sections: prev.sections.map(section => 
@@ -444,7 +504,6 @@ export default function AdminContent() {
 
               <TabsContent value="content" className="space-y-4">
                 <div className="grid grid-cols-12 gap-6">
-                  {/* Section Navigator */}
                   <div className="col-span-12 md:col-span-3">
                     <Card>
                       <CardHeader>
@@ -512,158 +571,17 @@ export default function AdminContent() {
                     </Card>
                   </div>
                   
-                  {/* Section Editor */}
                   <div className="col-span-12 md:col-span-9">
                     {activeSectionId && draftContent.sections.find(s => s.id === activeSectionId) && (
-                      <Card>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                          <div>
-                            <CardTitle>
-                              {draftContent.sections.find(s => s.id === activeSectionId)?.title || 'Section Editor'}
-                            </CardTitle>
-                            <CardDescription>
-                              Edit the content for this section
-                            </CardDescription>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <Button variant="outline" size="sm">
-                              <Eye className="mr-2 h-4 w-4" />
-                              Preview
-                            </Button>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="outline" size="sm">
-                                  <ArrowDownUp className="mr-2 h-4 w-4" />
-                                  Template
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Change Template</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>Hero Section</DropdownMenuItem>
-                                <DropdownMenuItem>Content Block</DropdownMenuItem>
-                                <DropdownMenuItem>Feature List</DropdownMenuItem>
-                                <DropdownMenuItem>Testimonials</DropdownMenuItem>
-                                <DropdownMenuItem>FAQ Section</DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          {draftContent.sections.map(section => {
-                            if (section.id !== activeSectionId) return null;
-                            
-                            return (
-                              <div key={section.id} className="space-y-4">
-                                {/* Basic Section Fields */}
-                                {(section.title !== undefined) && (
-                                  <div>
-                                    <label className="text-sm font-medium mb-1 block">Title</label>
-                                    <Input
-                                      value={section.title}
-                                      onChange={(e) => handleSectionChange(section.id, 'title', e.target.value)}
-                                      className="mt-1"
-                                      disabled={!isEditing}
-                                    />
-                                  </div>
-                                )}
-                                
-                                {(section.subtitle !== undefined) && (
-                                  <div>
-                                    <label className="text-sm font-medium mb-1 block">Subtitle</label>
-                                    <Input
-                                      value={section.subtitle}
-                                      onChange={(e) => handleSectionChange(section.id, 'subtitle', e.target.value)}
-                                      className="mt-1"
-                                      disabled={!isEditing}
-                                    />
-                                  </div>
-                                )}
-                                
-                                {(section.description !== undefined) && (
-                                  <div>
-                                    <label className="text-sm font-medium mb-1 block">Description</label>
-                                    <Textarea
-                                      value={section.description}
-                                      onChange={(e) => handleSectionChange(section.id, 'description', e.target.value)}
-                                      className="mt-1"
-                                      disabled={!isEditing}
-                                      rows={3}
-                                    />
-                                  </div>
-                                )}
-                                
-                                {/* Items List */}
-                                {section.items && (
-                                  <div className="space-y-4">
-                                    <div className="flex justify-between items-center">
-                                      <h3 className="text-md font-medium">Items</h3>
-                                      {isEditing && (
-                                        <Button 
-                                          variant="outline" 
-                                          size="sm"
-                                          onClick={() => handleAddItem(section.id)}
-                                        >
-                                          <Plus className="mr-2 h-4 w-4" />
-                                          Add Item
-                                        </Button>
-                                      )}
-                                    </div>
-                                    
-                                    <Accordion type="single" collapsible className="w-full">
-                                      {section.items.map((item, index) => (
-                                        <AccordionItem key={index} value={`item-${index}`}>
-                                          <AccordionTrigger className="py-2">
-                                            <div className="flex justify-between items-center w-full pr-4">
-                                              <span>{item.title || `Item ${index + 1}`}</span>
-                                              {isEditing && (
-                                                <Button
-                                                  variant="ghost"
-                                                  size="sm"
-                                                  onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleDeleteItem(section.id, index);
-                                                  }}
-                                                  className="h-8 w-8 p-0 opacity-70 hover:opacity-100"
-                                                >
-                                                  <Trash2 className="h-4 w-4" />
-                                                </Button>
-                                              )}
-                                            </div>
-                                          </AccordionTrigger>
-                                          <AccordionContent>
-                                            <div className="space-y-4 pt-2 pb-4">
-                                              <div>
-                                                <label className="text-sm font-medium mb-1 block">Title</label>
-                                                <Input
-                                                  value={item.title}
-                                                  onChange={(e) => handleItemChange(section.id, index, 'title', e.target.value)}
-                                                  className="mt-1"
-                                                  disabled={!isEditing}
-                                                />
-                                              </div>
-                                              <div>
-                                                <label className="text-sm font-medium mb-1 block">Description</label>
-                                                <Textarea
-                                                  value={item.description}
-                                                  onChange={(e) => handleItemChange(section.id, index, 'description', e.target.value)}
-                                                  className="mt-1"
-                                                  disabled={!isEditing}
-                                                  rows={3}
-                                                />
-                                              </div>
-                                            </div>
-                                          </AccordionContent>
-                                        </AccordionItem>
-                                      ))}
-                                    </Accordion>
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </CardContent>
-                      </Card>
+                      <ContentEditor
+                        sectionId={activeSectionId}
+                        {...draftContent.sections.find(s => s.id === activeSectionId)!}
+                        isEditing={isEditing}
+                        onSectionChange={handleSectionChange}
+                        onItemChange={handleItemChange}
+                        onAddItem={handleAddItem}
+                        onDeleteItem={handleDeleteItem}
+                      />
                     )}
                   </div>
                 </div>
@@ -716,6 +634,30 @@ export default function AdminContent() {
                       />
                       <p className="text-xs text-gray-500 mt-1">
                         Separate keywords with commas (5-10 keywords recommended)
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium mb-1 block">OG Image</label>
+                      <div className="mt-1 flex items-center space-x-3">
+                        {draftContent.meta.ogImage && (
+                          <div className="relative h-20 w-40 rounded overflow-hidden border">
+                            <img 
+                              src={draftContent.meta.ogImage} 
+                              alt="OG Preview"
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                        )}
+                        {isEditing && (
+                          <Button variant="outline" size="sm">
+                            <Image className="mr-2 h-4 w-4" />
+                            {draftContent.meta.ogImage ? 'Change Image' : 'Add OG Image'}
+                          </Button>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Recommended size: 1200×630 pixels
                       </p>
                     </div>
                     
