@@ -1,6 +1,7 @@
 
 import { Star, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const featuredAgents = [
   {
@@ -67,8 +68,11 @@ export default function FeaturedAgents() {
               <Button 
                 variant="outline"
                 className="border-aiblue text-aiblue hover:bg-aiblue hover:text-white"
+                asChild
               >
-                View All Agents
+                <Link to="/ai-agents">
+                  View All Agents
+                </Link>
               </Button>
             </div>
           </div>
@@ -116,13 +120,17 @@ export default function FeaturedAgents() {
                   <Button 
                     variant="ghost" 
                     className="flex-1 rounded-none py-3 text-aiblue hover:bg-gray-50"
+                    asChild
                   >
-                    View Details
+                    <Link to={`/agent/${agent.id}`}>
+                      View Details
+                    </Link>
                   </Button>
                   <div className="w-px bg-gray-100"></div>
                   <Button 
                     variant="ghost"
                     className="flex-1 rounded-none py-3 text-aiblue hover:bg-gray-50"
+                    onClick={() => window.open("https://example.com", "_blank")}
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />
                     Visit Website
