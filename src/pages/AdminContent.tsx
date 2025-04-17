@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { useSearchParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { ArrowLeft, Save, FileEdit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -59,6 +58,63 @@ const pageTypes: Record<string, PageContent> = {
         type: "content",
         title: "Our Story",
         content: "We started in 2022 with a mission to make AI accessible to all businesses."
+      }
+    ]
+  },
+  "3": {
+    pageId: "3",
+    title: "AI Agents",
+    path: "/ai-agents",
+    meta: {
+      title: "AI Agents - AI Platform",
+      description: "Explore our intelligent AI agents",
+      keywords: "ai agents, intelligent agents, virtual assistants"
+    },
+    sections: [
+      {
+        id: "section-1",
+        type: "hero",
+        title: "AI Agents",
+        subtitle: "Your virtual assistants",
+        description: "Intelligent agents that help automate your business processes"
+      },
+      {
+        id: "section-2",
+        type: "features",
+        title: "Agent Capabilities",
+        items: [
+          { title: "Natural Language", description: "Understand and process natural language" },
+          { title: "Task Automation", description: "Automate repetitive tasks" },
+          { title: "Integration", description: "Integrate with your existing tools" }
+        ]
+      }
+    ]
+  },
+  "4": {
+    pageId: "4",
+    title: "AI Courses",
+    path: "/ai-courses",
+    meta: {
+      title: "AI Courses - AI Platform",
+      description: "Learn AI through our comprehensive courses",
+      keywords: "ai courses, learning, education, machine learning"
+    },
+    sections: [
+      {
+        id: "section-1",
+        type: "content",
+        title: "AI Education",
+        content: "Learn AI from basics to advanced concepts through our structured curriculum."
+      },
+      {
+        id: "section-2",
+        type: "features",
+        title: "Course Features",
+        items: [
+          { title: "Self-paced", description: "Learn at your own pace" },
+          { title: "Expert Instructors", description: "Learn from industry experts" },
+          { title: "Hands-on Projects", description: "Apply knowledge through practical projects" }
+        ]
       }
     ]
   }

@@ -87,10 +87,16 @@ export default function AdminPages() {
   };
 
   const handleDelete = (pageId: string) => {
-    // In a real implementation, this would delete the page
     toast({
       title: "Not Implemented",
       description: "Page deletion functionality would be implemented here in production.",
+    });
+  };
+
+  const handleCreateNewPage = () => {
+    toast({
+      title: "Create New Page",
+      description: "New page creation would be implemented here in production.",
     });
   };
 
@@ -110,7 +116,7 @@ export default function AdminPages() {
                   Manage all website pages and their content
                 </p>
               </div>
-              <Button>
+              <Button onClick={handleCreateNewPage}>
                 <Plus className="mr-2 h-4 w-4" /> Create New Page
               </Button>
             </div>
@@ -169,6 +175,7 @@ export default function AdminPages() {
                               variant="outline" 
                               size="icon"
                               onClick={() => handleEdit(page.id)}
+                              title="Edit page"
                             >
                               <Edit className="h-4 w-4" />
                             </Button>
@@ -176,6 +183,7 @@ export default function AdminPages() {
                               variant="outline" 
                               size="icon"
                               onClick={() => handlePreview(page.path)}
+                              title="Preview page"
                             >
                               <Eye className="h-4 w-4" />
                             </Button>
