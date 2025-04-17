@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useSearchParams } from "react-router-dom";
@@ -13,9 +12,8 @@ import ContentEditor from "@/components/admin/ContentEditor";
 import SectionsList from "@/components/admin/content/SectionsList";
 import MetadataEditor from "@/components/admin/content/MetadataEditor";
 import VersionHistory from "@/components/admin/content/VersionHistory";
-import { PageContent } from "@/types/content";
+import { PageContent, ContentSection } from "@/types/content";
 
-// Sample page content for demo/development purposes
 const pageTypes: Record<string, PageContent> = {
   "1": {
     pageId: "1",
