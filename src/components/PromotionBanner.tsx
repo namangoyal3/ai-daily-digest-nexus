@@ -20,8 +20,20 @@ export default function PromotionBanner() {
 
   useEffect(() => {
     const storedPromotion = localStorage.getItem('activePromotion');
+    const storedAnimationSettings = localStorage.getItem('animationSettings');
+    
     if (storedPromotion) {
-      setActivePromotion(JSON.parse(storedPromotion));
+      const promotion = JSON.parse(storedPromotion);
+      
+      // If we have global animation settings, use those for the speed
+      if (storedAnimationSettings) {
+        const animationSettings = JSON.parse(storedAnimationSettings);
+        if (animationSettings.textAnimationSpeed) {
+          promotion.animationSpeed = animationSettings.textAnimationSpeed;
+        }
+      }
+      
+      setActivePromotion(promotion);
     }
   }, []);
 
@@ -59,18 +71,16 @@ export default function PromotionBanner() {
         <X className="h-4 w-4" />
       </Button>
 
-      <style>
-        {`
-          @keyframes slide {
-            from {
-              transform: translateX(100%);
-            }
-            to {
-              transform: translateX(-100%);
-            }
+      <style jsx="true">{`
+        @keyframes slide {
+          from {
+            transform: translateX(100%);
           }
-        `}
-      </style>
+          to {
+            transform: translateX(-100%);
+          }
+        }
+      `}</style>
     </div>
   );
 }
