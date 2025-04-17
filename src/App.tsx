@@ -16,6 +16,7 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminAnalytics from "./pages/AdminAnalytics";
 import AdminSEO from "./pages/AdminSEO";
 import AdminPromotions from "./pages/AdminPromotions";
+import { Helmet } from "react-helmet";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,16 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <Helmet>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <meta name="robots" content="index, follow" />
+        <meta name="description" content="NeuralNextGen - Your comprehensive AI technology partner offering AI Agents, Daily AI Newsletter, and AI Courses." />
+        <meta property="og:title" content="NeuralNextGen - AI Technology Partner" />
+        <meta property="og:description" content="Bridging AI gaps with comprehensive solutions: AI Agents Marketplace, Daily AI Newsletter, and AI Courses." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<ParentLanding />} />
