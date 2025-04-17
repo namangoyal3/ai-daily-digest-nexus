@@ -552,7 +552,7 @@ export default function AdminContent() {
                                       Move Down
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={() => handleDuplicateSection(index)}>
+                                    <DropdownMenuItem onClick={() => handleDuplicateSection(section.id)}>
                                       <Copy className="mr-2 h-4 w-4" />
                                       Duplicate
                                     </DropdownMenuItem>
