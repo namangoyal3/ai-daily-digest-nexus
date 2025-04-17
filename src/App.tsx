@@ -8,6 +8,9 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AdminContent from "./pages/AdminContent";
+import AdminUsers from "./pages/AdminUsers";
+import AdminAnalytics from "./pages/AdminAnalytics";
+import AdminSEO from "./pages/AdminSEO";
 
 const queryClient = new QueryClient();
 
@@ -21,9 +24,9 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/content" element={<AdminContent />} />
-          <Route path="/admin/users" element={<NotFound />} />
-          <Route path="/admin/analytics" element={<NotFound />} />
-          <Route path="/admin/seo" element={<NotFound />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/analytics" element={<AdminAnalytics />} />
+          <Route path="/admin/seo" element={<AdminSEO />} />
           <Route path="/admin/comments" element={<NotFound />} />
           <Route path="/admin/media" element={<NotFound />} />
           <Route path="/admin/campaigns" element={<NotFound />} />
