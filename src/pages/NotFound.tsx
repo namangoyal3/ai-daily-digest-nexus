@@ -1,11 +1,12 @@
 
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Home } from "lucide-react";
 
 const NotFound = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.error(
@@ -15,6 +16,12 @@ const NotFound = () => {
   }, [location.pathname]);
 
   const isAdminRoute = location.pathname.startsWith("/admin");
+  
+  // Handle back button click for admin routes
+  const handleAdminBackClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate("/admin");
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -29,12 +36,13 @@ const NotFound = () => {
 
         <div className="flex flex-col gap-3">
           {isAdminRoute && (
-            <Link to="/admin">
-              <Button className="w-full flex items-center justify-center">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Admin Dashboard
-              </Button>
-            </Link>
+            <Button 
+              onClick={handleAdminBackClick} 
+              className="w-full flex items-center justify-center"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back to Admin Dashboard
+            </Button>
           )}
           <Link to="/">
             <Button variant="outline" className="w-full flex items-center justify-center">
