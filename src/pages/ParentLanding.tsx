@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 import { 
   Newspaper, Bot, GraduationCap, ArrowRight, Brain, Zap, 
   Users, Code, BarChart, LineChart, CheckCircle, Award,
-  Briefcase, Building, Lightbulb, Sparkles, Share2
+  Briefcase, Building, Lightbulb, Sparkles, Share2, Star
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
