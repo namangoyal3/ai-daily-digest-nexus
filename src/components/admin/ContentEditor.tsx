@@ -25,8 +25,7 @@ import {
   Underline,
   List,
   ListOrdered,
-  Link2,
-  Copy
+  Link2
 } from "lucide-react";
 import {
   Dialog,
@@ -37,14 +36,6 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import VisualAssetManager from "./VisualAssetManager";
 import InlineImageEditor from "./InlineImageEditor";
@@ -135,63 +126,40 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
   };
 
   return (
-    <Card className="w-full rounded-lg border bg-card shadow-sm transition-all hover:shadow-md">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 border-b">
-        <div className="space-y-1">
-          <CardTitle className="text-lg font-semibold text-primary">{title || 'Content Editor'}</CardTitle>
-          <CardDescription className="text-sm text-muted-foreground">Edit the content for this section</CardDescription>
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+          <CardTitle>{title || 'Content Editor'}</CardTitle>
+          <CardDescription>Edit the content for this section</CardDescription>
         </div>
-        {isEditing && (
-          <div className="flex items-center space-x-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Edit className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem className="flex items-center">
-                  <Copy className="mr-2 h-4 w-4" />
-                  Duplicate Section
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="flex items-center text-destructive">
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete Section
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        )}
       </CardHeader>
-      
-      <CardContent className="p-6 space-y-6">
+      <CardContent className="space-y-4">
         {title !== undefined && (
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Title</label>
+          <div>
+            <label className="text-sm font-medium mb-1 block">Title</label>
             {renderTextEditor('title', title)}
           </div>
         )}
 
         {subtitle !== undefined && (
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Subtitle</label>
+          <div>
+            <label className="text-sm font-medium mb-1 block">Subtitle</label>
             {renderTextEditor('subtitle', subtitle)}
           </div>
         )}
 
         {description !== undefined && (
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Description</label>
+          <div>
+            <label className="text-sm font-medium mb-1 block">Description</label>
             {renderTextEditor('description', description, true)}
           </div>
         )}
 
         {content !== undefined && (
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Content</label>
-            <div className="border rounded-md overflow-hidden bg-background">
-              <div className="border-b bg-muted p-2 flex items-center space-x-1">
+          <div>
+            <label className="text-sm font-medium mb-1 block">Content</label>
+            <div className="border rounded-md">
+              <div className="border-b bg-muted px-3 py-1.5 flex items-center space-x-1">
                 <Button variant="ghost" size="icon" className="h-8 w-8">
                   <Bold className="h-4 w-4" />
                 </Button>
@@ -237,23 +205,23 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
                 value={content || ""}
                 onChange={(e) => onSectionChange(sectionId, 'content', e.target.value)}
                 disabled={!isEditing}
-                className="min-h-[200px] border-0 focus-visible:ring-0 rounded-none bg-background"
-                placeholder="Enter your content here..."
+                className="border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                rows={8}
               />
             </div>
           </div>
         )}
 
+        {/* Items List */}
         {items && (
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-base font-semibold text-foreground">Items</h3>
+              <h3 className="text-md font-medium">Items</h3>
               {isEditing && onAddItem && (
                 <Button 
                   variant="outline" 
                   size="sm"
                   onClick={() => onAddItem(sectionId)}
-                  className="hover:bg-primary hover:text-white transition-colors"
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   Add Item
@@ -262,7 +230,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
             </div>
             
             {items.map((item, index) => (
-              <Card key={index} className="overflow-hidden border rounded-lg transition-all hover:shadow-sm">
+              <Card key={index} className="overflow-hidden">
                 <CardHeader className="bg-muted py-2 px-4">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-sm font-medium">
@@ -296,6 +264,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
         )}
       </CardContent>
 
+      {/* Asset Manager Dialog */}
       <Dialog open={isAssetManagerOpen} onOpenChange={setIsAssetManagerOpen}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
@@ -311,6 +280,7 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
         </DialogContent>
       </Dialog>
 
+      {/* Image Editor Dialog */}
       <Dialog open={isImageEditorOpen} onOpenChange={setIsImageEditorOpen}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
