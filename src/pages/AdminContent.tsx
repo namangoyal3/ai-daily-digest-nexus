@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useSearchParams } from "react-router-dom";
@@ -14,36 +15,56 @@ import MetadataEditor from "@/components/admin/content/MetadataEditor";
 import VersionHistory from "@/components/admin/content/VersionHistory";
 import { PageContent } from "@/types/content";
 
-interface ContentItem {
-  title: string;
-  description: string;
-  image?: string;
-  icon?: string;
-}
-
-interface ContentSection {
-  id: string;
-  type: string;
-  title?: string;
-  subtitle?: string;
-  description?: string;
-  content?: string;
-  backgroundImage?: string;
-  items?: Array<ContentItem>;
-}
-
-interface PageContent {
-  pageId: string;
-  title: string;
-  path: string;
-  meta: {
-    title: string;
-    description: string;
-    keywords: string;
-    ogImage?: string;
-  };
-  sections: ContentSection[];
-}
+// Sample page content for demo/development purposes
+const pageTypes: Record<string, PageContent> = {
+  "1": {
+    pageId: "1",
+    title: "Home Page",
+    path: "/",
+    meta: {
+      title: "AI Platform - Home",
+      description: "The leading AI platform for businesses",
+      keywords: "ai, artificial intelligence, machine learning, business"
+    },
+    sections: [
+      {
+        id: "section-1",
+        type: "hero",
+        title: "Welcome to the AI Platform",
+        subtitle: "Empowering businesses with AI",
+        description: "Our platform helps businesses leverage AI to grow faster and more efficiently"
+      },
+      {
+        id: "section-2",
+        type: "features",
+        title: "Key Features",
+        items: [
+          { title: "AI Automation", description: "Automate repetitive tasks" },
+          { title: "Data Analysis", description: "Get insights from your data" },
+          { title: "Custom Models", description: "Build custom AI models" }
+        ]
+      }
+    ]
+  },
+  "2": {
+    pageId: "2",
+    title: "About Page",
+    path: "/about",
+    meta: {
+      title: "About Us - AI Platform",
+      description: "Learn about our AI platform and team",
+      keywords: "about, team, ai platform, history"
+    },
+    sections: [
+      {
+        id: "section-1",
+        type: "content",
+        title: "Our Story",
+        content: "We started in 2022 with a mission to make AI accessible to all businesses."
+      }
+    ]
+  }
+};
 
 export default function AdminContent() {
   const { toast } = useToast();
@@ -240,6 +261,26 @@ export default function AdminContent() {
       handleMoveSectionUp(index);
     } else {
       handleMoveSectionDown(index);
+    }
+  };
+
+  const handleDuplicateSection = (sectionId: string) => {
+    const sectionToDuplicate = draftContent.sections.find(section => section.id === sectionId);
+    
+    if (sectionToDuplicate) {
+      const newSectionId = `section-${Date.now()}`;
+      const duplicatedSection = {
+        ...sectionToDuplicate,
+        id: newSectionId,
+        title: `${sectionToDuplicate.title || 'Section'} (Copy)`
+      };
+      
+      setDraftContent(prev => ({
+        ...prev,
+        sections: [...prev.sections, duplicatedSection]
+      }));
+      
+      setActiveSectionId(newSectionId);
     }
   };
 
