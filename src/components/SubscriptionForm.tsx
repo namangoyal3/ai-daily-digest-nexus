@@ -51,13 +51,16 @@ export default function SubscriptionForm() {
       setTimeout(() => {
         setIsSubmitting(false);
         setSubmitted(true);
-        
-        // Reset form
-        setEmail("");
-        setPhone("");
-        setAcceptsOffers(false);
       }, 1500);
     }
+  };
+
+  const resetForm = () => {
+    setEmail("");
+    setPhone("");
+    setAcceptsOffers(false);
+    setSubmitted(false);
+    setErrors({ email: "", phone: "" });
   };
 
   return (
@@ -166,7 +169,7 @@ export default function SubscriptionForm() {
                     <Button 
                       variant="outline"
                       className="border-aiblue text-aiblue hover:bg-aiblue hover:text-white"
-                      onClick={() => setSubmitted(false)}
+                      onClick={resetForm}
                     >
                       Subscribe with another email
                     </Button>

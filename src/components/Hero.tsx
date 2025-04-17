@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, Brain, Zap, LineChart, BarChart3 } from "lucide-react";
 
 export default function Hero() {
   const scrollToSubscribe = () => {
@@ -23,8 +23,31 @@ export default function Hero() {
               </h1>
               <p className="text-xl text-gray-600 mb-8 max-w-lg">
                 Curated AI news, breakthroughs, and analysis in a 5-minute daily read. 
-                Never miss important developments in artificial intelligence.
               </p>
+              
+              {/* AI Infographic */}
+              <div className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg mb-8 border border-aiblue/10">
+                <h3 className="font-heading font-medium text-lg text-aiblue mb-3">What You'll Get</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex items-center bg-gradient-to-r from-aiblue/5 to-aipurple/5 p-3 rounded-lg">
+                    <Brain className="h-8 w-8 text-aiblue mr-3 flex-shrink-0" />
+                    <span className="text-sm font-medium">AI Breakthroughs</span>
+                  </div>
+                  <div className="flex items-center bg-gradient-to-r from-aipurple/5 to-aiteal/5 p-3 rounded-lg">
+                    <Zap className="h-8 w-8 text-aipurple mr-3 flex-shrink-0" />
+                    <span className="text-sm font-medium">Industry Insights</span>
+                  </div>
+                  <div className="flex items-center bg-gradient-to-r from-aiteal/5 to-aiblue/5 p-3 rounded-lg">
+                    <LineChart className="h-8 w-8 text-aiteal mr-3 flex-shrink-0" />
+                    <span className="text-sm font-medium">Market Trends</span>
+                  </div>
+                  <div className="flex items-center bg-gradient-to-r from-aiblue/5 to-aipurple/5 p-3 rounded-lg">
+                    <BarChart3 className="h-8 w-8 text-aiblue mr-3 flex-shrink-0" />
+                    <span className="text-sm font-medium">Growth Stats</span>
+                  </div>
+                </div>
+              </div>
+              
               <Button 
                 id="hero-subscribe"
                 className="rounded-full bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark text-white font-medium px-8 py-6 text-lg"

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,11 @@ export default function Pricing() {
       setCouponApplied(true);
       setIsApplyingCoupon(false);
     }, 1000);
+  };
+  
+  const handleClearCoupon = () => {
+    setCouponCode("");
+    setCouponApplied(false);
   };
   
   const pricingPlans = [
@@ -173,31 +179,31 @@ export default function Pricing() {
               value={couponCode}
               onChange={(e) => setCouponCode(e.target.value)}
               placeholder="Enter your code"
-              disabled={couponApplied}
               className={couponApplied ? 'bg-green-50 border-green-500' : ''}
             />
-            <Button 
-              variant="outline"
-              className={
-                couponApplied 
-                  ? "border-green-500 text-green-600" 
-                  : "border-aipurple text-aipurple hover:bg-aipurple hover:text-white"
-              }
-              onClick={handleApplyCoupon}
-              disabled={!couponCode || couponApplied || isApplyingCoupon}
-            >
-              {isApplyingCoupon ? (
-                <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-aipurple mr-1"></div>
-                  <span>Applying...</span>
-                </div>
-              ) : couponApplied ? (
-                <div className="flex items-center">
-                  <CircleCheck className="h-4 w-4 mr-1" />
-                  <span>Applied</span>
-                </div>
-              ) : "Apply"}
-            </Button>
+            {!couponApplied ? (
+              <Button 
+                variant="outline"
+                className="border-aipurple text-aipurple hover:bg-aipurple hover:text-white"
+                onClick={handleApplyCoupon}
+                disabled={!couponCode || isApplyingCoupon}
+              >
+                {isApplyingCoupon ? (
+                  <div className="flex items-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-aipurple mr-1"></div>
+                    <span>Applying...</span>
+                  </div>
+                ) : "Apply"}
+              </Button>
+            ) : (
+              <Button 
+                variant="outline"
+                className="border-red-500 text-red-500 hover:bg-red-50"
+                onClick={handleClearCoupon}
+              >
+                Clear
+              </Button>
+            )}
           </div>
           
           {couponApplied && (
