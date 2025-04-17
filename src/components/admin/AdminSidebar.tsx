@@ -17,6 +17,7 @@ import {
   Search,
   CircleDollarSign,
   Bell,
+  Files,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -28,7 +29,8 @@ interface AdminSidebarProps {
 
 const mainMenuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/admin" },
-  { icon: FileText, label: "Content Management", href: "/admin/content" },
+  { icon: Files, label: "Pages", href: "/admin/pages" },
+  { icon: FileText, label: "Content Manager", href: "/admin/content" },
   { icon: Users, label: "User Management", href: "/admin/users" },
   { icon: BarChart, label: "Analytics", href: "/admin/analytics" },
   { icon: Tag, label: "SEO", href: "/admin/seo" },
