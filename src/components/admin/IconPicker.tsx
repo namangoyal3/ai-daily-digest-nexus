@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,7 +7,7 @@ import {
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, X } from "lucide-react";
+import { Search, X, icons, Image } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 
 interface IconPickerProps {
@@ -67,7 +66,7 @@ const IconPicker: React.FC<IconPickerProps> = ({
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="flex items-center gap-2">
-          {currentIcon ? renderIcon(currentIcon) : <LucideIcons.Icons className="h-4 w-4" />}
+          {currentIcon ? renderIcon(currentIcon) : <Image className="h-4 w-4" />}
           {currentIcon || "Select Icon"}
         </Button>
       </PopoverTrigger>
