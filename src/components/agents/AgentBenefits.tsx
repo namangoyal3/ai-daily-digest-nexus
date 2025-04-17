@@ -1,22 +1,26 @@
 
-import { Check } from "lucide-react";
+import { Check, Search, BarChart, Shield, Link } from "lucide-react";
 
 const benefits = [
   {
+    icon: <Search className="h-5 w-5 text-white" />,
     title: "Comprehensive Directory",
-    description: "Access our extensive collection of AI agents across various categories and use cases."
+    description: "Access our extensive collection of AI agents across 25+ categories and various use cases."
   },
   {
+    icon: <BarChart className="h-5 w-5 text-white" />,
     title: "Detailed Comparisons",
-    description: "Compare features, pricing, and integration options to find the perfect fit."
+    description: "Compare features, pricing, and integration options to find the perfect fit for your needs."
   },
   {
-    title: "User Reviews",
+    icon: <Shield className="h-5 w-5 text-white" />,
+    title: "User Reviews & Ratings",
     description: "Read authentic user experiences and ratings to make informed decisions."
   },
   {
+    icon: <Link className="h-5 w-5 text-white" />,
     title: "Integration Guides",
-    description: "Get step-by-step guidance on integrating AI agents into your workflow."
+    description: "Get step-by-step guidance on integrating AI agents into your workflow or applications."
   }
 ];
 
@@ -32,7 +36,7 @@ export default function AgentBenefits() {
             {benefits.map((benefit, index) => (
               <div key={index} className="flex items-start space-x-4">
                 <div className="mt-1 bg-gradient-to-br from-aiblue to-aipurple rounded-full p-1">
-                  <Check className="h-5 w-5 text-white" />
+                  {benefit.icon}
                 </div>
                 <div>
                   <h3 className="font-heading text-xl font-semibold mb-2">{benefit.title}</h3>
