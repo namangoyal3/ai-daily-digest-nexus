@@ -23,7 +23,7 @@ import {
   Image,
   Upload,
   Search,
-  Icons,
+  FileIcon, 
   Star,
   Clock,
   FolderOpen,
@@ -144,7 +144,7 @@ const VisualAssetManager: React.FC<VisualAssetManagerProps> = ({
               Images
             </TabsTrigger>
             <TabsTrigger value="icons" className="flex items-center">
-              <Icons className="mr-2 h-4 w-4" />
+              <FileIcon className="mr-2 h-4 w-4" />
               Icons
             </TabsTrigger>
           </TabsList>

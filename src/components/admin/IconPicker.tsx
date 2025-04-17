@@ -67,7 +67,7 @@ const IconPicker: React.FC<IconPickerProps> = ({
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="flex items-center gap-2">
-          {currentIcon ? renderIcon(currentIcon) : <LucideIcons.Icons className="h-4 w-4" />}
+          {currentIcon ? renderIcon(currentIcon) : <LucideIcons.FileIcon className="h-4 w-4" />}
           {currentIcon || "Select Icon"}
         </Button>
       </PopoverTrigger>

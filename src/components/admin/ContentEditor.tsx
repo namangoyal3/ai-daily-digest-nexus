@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { 
   Card, 
@@ -14,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { 
   Image, 
-  Icons, 
+  icons, 
   Plus, 
   Trash2,
   Edit,
@@ -87,15 +86,12 @@ const ContentEditor: React.FC<ContentEditorProps> = ({
   };
 
   const handleSaveEditedImage = (editedImage: any) => {
-    // Here you would typically upload/save the edited image
-    // For demo, we'll just update the content with a placeholder
     const imageHtml = `<img src="${editedImage.src}" alt="${editedImage.alt}" style="width:${editedImage.width};height:${editedImage.height};margin:0 auto;" class="align-${editedImage.alignment}" />`;
     onSectionChange(sectionId, currentEditingField, imageHtml);
     setIsImageEditorOpen(false);
   };
 
   const handleIconSelect = (iconName: string) => {
-    // Insert icon reference into the current field
     const iconTag = `[ICON:${iconName}]`;
     onSectionChange(sectionId, currentEditingField, iconTag);
   };
