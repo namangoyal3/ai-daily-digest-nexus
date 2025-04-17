@@ -2,18 +2,22 @@
 import { Helmet } from "react-helmet";
 import AdminAuthGuard from "@/components/admin/AdminAuthGuard";
 import AdminLayout from "@/components/admin/AdminLayout";
-import AdminOverview from "@/components/admin/AdminOverview";
 
-export default function Admin() {
+export default function AdminContent() {
   return (
     <>
       <Helmet>
-        <title>Admin Dashboard - AI Daily Digest</title>
+        <title>Content Management - AI Daily Digest</title>
         <meta name="robots" content="noindex,nofollow" />
       </Helmet>
       <AdminAuthGuard>
         <AdminLayout>
-          <AdminOverview />
+          <div>
+            <h1 className="text-3xl font-bold mb-6">Content Management</h1>
+            <p className="text-muted-foreground">
+              Manage your articles and content here.
+            </p>
+          </div>
         </AdminLayout>
       </AdminAuthGuard>
     </>
