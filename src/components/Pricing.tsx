@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,7 +37,7 @@ export default function Pricing() {
     },
     {
       name: "Premium",
-      price: { monthly: 9.99, annual: 7.99 },
+      price: { monthly: 799, annual: 649 },
       description: "Full access to all AI Daily Digest content",
       features: [
         "Complete daily digests",
@@ -53,7 +52,7 @@ export default function Pricing() {
     },
     {
       name: "Enterprise",
-      price: { monthly: 29.99, annual: 24.99 },
+      price: { monthly: 2499, annual: 1999 },
       description: "Team access with additional features",
       features: [
         "Everything in Premium",
@@ -127,13 +126,13 @@ export default function Pricing() {
                 <div className="mb-6">
                   <div className="flex items-baseline">
                     <span className="text-3xl font-bold">
-                      ${isAnnual ? plan.price.annual : plan.price.monthly}
+                      ₹{isAnnual ? plan.price.annual : plan.price.monthly}
                     </span>
                     <span className="text-gray-500 ml-2">/ month</span>
                   </div>
                   {isAnnual && (
                     <div className="text-sm text-green-600 mt-1">
-                      Billed annually (${(isAnnual ? plan.price.annual : plan.price.monthly) * 12})
+                      Billed annually (₹{(isAnnual ? plan.price.annual : plan.price.monthly) * 12})
                     </div>
                   )}
                 </div>

@@ -8,47 +8,52 @@ export default function Hero() {
   };
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-white via-blue-50 to-purple-50 py-16 md:py-24">
+    <div className="relative overflow-hidden bg-gradient-to-br from-aiblue/5 via-aipurple/5 to-aiteal/5 py-16 md:py-24">
       <div className="absolute top-0 left-0 w-full h-full">
-        <div className="absolute top-20 right-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"></div>
-        <div className="absolute bottom-20 left-10 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"></div>
+        <div className="absolute top-20 right-10 w-72 h-72 bg-aipurple/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"></div>
+        <div className="absolute bottom-20 left-10 w-72 h-72 bg-aiblue/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"></div>
       </div>
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 md:pr-12 mb-10 md:mb-0">
             <div className="animate-fade-in">
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-aiblue leading-tight mb-6">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-aiblue leading-tight mb-6">
                 Stay Ahead with AI Insights Delivered Daily
-              </h2>
+              </h1>
               <p className="text-xl text-gray-600 mb-8 max-w-lg">
                 Curated AI news, breakthroughs, and analysis in a 5-minute daily read. 
                 Never miss important developments in artificial intelligence.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button 
-                  className="bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark text-white font-medium px-6 py-6 text-lg"
-                  onClick={scrollToSubscribe}
-                >
-                  Subscribe Now
-                  <ArrowDown className="ml-2 h-5 w-5" />
-                </Button>
-                <Button variant="outline" className="border-aiblue text-aiblue hover:bg-aiblue hover:text-white px-6 py-6 text-lg">
-                  View Sample
-                </Button>
-              </div>
+              <Button 
+                className="rounded-full bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark text-white font-medium px-8 py-6 text-lg"
+                onClick={scrollToSubscribe}
+              >
+                Subscribe Now
+                <ArrowDown className="ml-2 h-5 w-5" />
+              </Button>
               <div className="mt-6 flex items-center">
                 <div className="flex -space-x-2">
-                  {[...Array(4)].map((_, i) => (
-                    <div 
-                      key={i} 
-                      className="w-8 h-8 rounded-full border-2 border-white bg-gray-200"
-                      style={{
-                        backgroundImage: `url('/placeholder.svg')`,
-                        backgroundSize: 'cover'
-                      }}
-                    ></div>
-                  ))}
+                  <img
+                    src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=32&h=32&fit=crop&crop=faces"
+                    alt="User avatar"
+                    className="w-8 h-8 rounded-full border-2 border-white object-cover"
+                  />
+                  <img
+                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop&crop=faces"
+                    alt="User avatar"
+                    className="w-8 h-8 rounded-full border-2 border-white object-cover"
+                  />
+                  <img
+                    src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=32&h=32&fit=crop&crop=faces"
+                    alt="User avatar"
+                    className="w-8 h-8 rounded-full border-2 border-white object-cover"
+                  />
+                  <img
+                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=32&h=32&fit=crop&crop=faces"
+                    alt="User avatar"
+                    className="w-8 h-8 rounded-full border-2 border-white object-cover"
+                  />
                 </div>
                 <p className="ml-4 text-sm text-gray-500">
                   Joined by <span className="font-semibold text-aiblue">2,000+</span> AI enthusiasts
