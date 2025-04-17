@@ -1,4 +1,3 @@
-
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
@@ -8,6 +7,7 @@ import Pricing from "@/components/Pricing";
 import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import FloatingSubscribeButton from "@/components/FloatingSubscribeButton";
+import PromotionBanner from "@/components/PromotionBanner";
 import { Helmet } from "react-helmet";
 
 export default function Index() {
@@ -40,6 +40,7 @@ export default function Index() {
         </script>
       </Helmet>
       <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
+        <PromotionBanner />
         <Header />
         <main>
           <Hero />
