@@ -26,6 +26,7 @@ export default function Hero() {
                 Never miss important developments in artificial intelligence.
               </p>
               <Button 
+                id="hero-subscribe"
                 className="rounded-full bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark text-white font-medium px-8 py-6 text-lg"
                 onClick={scrollToSubscribe}
               >
