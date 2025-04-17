@@ -58,16 +58,18 @@ export default function PromotionBanner() {
         <X className="h-4 w-4" />
       </Button>
 
-      <style jsx global>{`
-        @keyframes slide {
-          from {
-            transform: translateX(100%);
+      <style>
+        {`
+          @keyframes slide {
+            from {
+              transform: translateX(100%);
+            }
+            to {
+              transform: translateX(-100%);
+            }
           }
-          to {
-            transform: translateX(-100%);
-          }
-        }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 }
