@@ -12,6 +12,7 @@ import AgentDetails from "./pages/AgentDetails";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AdminContent from "./pages/AdminContent";
+import AdminHomePage from "./pages/AdminHomePage";
 import AdminPages from "./pages/AdminPages";
 import AdminUsers from "./pages/AdminUsers";
 import AdminAnalytics from "./pages/AdminAnalytics";
@@ -45,6 +46,7 @@ const App = () => (
           <Route path="/agent/:agentSlug" element={<AgentDetails />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/content" element={<AdminContent />} />
+          <Route path="/admin/homepage" element={<AdminHomePage />} />
           <Route path="/admin/pages" element={<AdminPages />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
