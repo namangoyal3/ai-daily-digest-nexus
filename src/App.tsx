@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import ParentLanding from "./pages/ParentLanding";
 import AIDigest from "./pages/AIDigest";
 import AIAgents from "./pages/AIAgents";
@@ -20,6 +20,18 @@ import AdminAnalytics from "./pages/AdminAnalytics";
 import AdminSEO from "./pages/AdminSEO";
 import AdminPromotions from "./pages/AdminPromotions";
 import { Helmet } from "react-helmet";
+import { useEffect } from "react";
+
+// ScrollToTop component to reset scroll position on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  
+  return null;
+}
 
 const queryClient = new QueryClient();
 
@@ -39,6 +51,7 @@ const App = () => (
         <meta property="og:type" content="website" />
       </Helmet>
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<ParentLanding />} />
           <Route path="/ai-digest" element={<AIDigest />} />

@@ -13,12 +13,16 @@ export default function FloatingSubscribeButton() {
       if (!subscribeSection) return;
       
       const subscribeRect = subscribeSection.getBoundingClientRect();
+      // Only show button when subscribe section is out of view (either above or below viewport)
       const isSubscribeSectionOutOfView = subscribeRect.top > window.innerHeight || subscribeRect.bottom < 0;
       
       setIsVisible(isSubscribeSectionOutOfView);
     };
     
     window.addEventListener('scroll', handleScroll);
+    // Initial check
+    handleScroll();
+    
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
