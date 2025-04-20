@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
@@ -9,7 +10,6 @@ import Pricing from "@/components/Pricing";
 import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import FloatingSubscribeButton from "@/components/FloatingSubscribeButton";
-import PromotionBanner from "@/components/PromotionBanner";
 import RecentBlogs from "@/components/RecentBlogs";
 import { motion } from "framer-motion";
 
@@ -80,7 +80,7 @@ export default function AIDigest() {
       </Helmet>
       
       <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
-        <div className={`sticky top-[40px] z-30 transition-all duration-300 ${
+        <div className={`sticky top-0 z-30 transition-all duration-300 ${
           scrolled ? "shadow-md bg-white/95 backdrop-blur-sm" : ""
         }`}>
           <Header />

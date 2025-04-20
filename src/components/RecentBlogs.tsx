@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -65,7 +66,7 @@ export default function RecentBlogs() {
             ))
           ) : (
             recentBlogs.map((blog) => (
-              <Link to={`/ai-blogs/${blog.id}`} key={blog.id}>
+              <Link to={`/ai-blogs/${blog.id}`} key={blog.id} className="focus:outline-none focus:ring-2 focus:ring-aiblue">
                 <Card className="h-full hover:shadow-lg transition-shadow duration-300 group">
                   <div className="aspect-video w-full overflow-hidden rounded-t-lg">
                     <img 
@@ -98,9 +99,12 @@ export default function RecentBlogs() {
         <div className="text-center">
           <Button 
             asChild
-            className="w-full md:w-auto bg-gradient-to-r from-aiblue to-aipurple text-white hover:from-aiblue-dark hover:to-aipurple-dark font-medium px-6 py-2 hover:shadow-lg transition-all"
+            className="w-full md:w-auto bg-gradient-to-r from-aiblue to-aipurple text-white hover:from-aipurple hover:to-aiblue font-medium px-8 py-2 shadow-md hover:shadow-lg transition-all relative overflow-hidden group"
           >
-            <Link to="/ai-blogs">View All Articles</Link>
+            <Link to="/ai-blogs" className="flex items-center justify-center">
+              <span className="relative z-10">View All Articles</span>
+              <span className="absolute inset-0 bg-gradient-to-r from-aiblue-dark to-aipurple-dark opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            </Link>
           </Button>
         </div>
       </div>

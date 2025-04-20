@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -88,8 +89,8 @@ export default function AIBlogs() {
                 onClick={() => setSelectedCategory(category)}
                 className={`text-sm md:text-base rounded-full transition-all hover:shadow-md ${
                   selectedCategory === category 
-                    ? "bg-gradient-to-r from-aiblue to-aipurple text-white hover:from-aiblue-dark hover:to-aipurple-dark"
-                    : "hover:bg-gray-100 text-aiblue"
+                    ? "bg-gradient-to-r from-aiblue to-aipurple text-white hover:from-aipurple hover:to-aiblue"
+                    : "hover:bg-gray-100 text-aiblue hover:text-aipurple border-aiblue"
                 }`}
               >
                 {category}
@@ -104,7 +105,7 @@ export default function AIBlogs() {
               ))
             ) : (
               filteredBlogs.map((blog) => (
-                <Link to={`/ai-blogs/${blog.id}`} key={blog.id}>
+                <Link to={`/ai-blogs/${blog.id}`} key={blog.id} className="focus:outline-none focus:ring-2 focus:ring-aiblue">
                   <Card className="h-full hover:shadow-lg transition-all duration-300 group">
                     <div className="aspect-video w-full overflow-hidden rounded-t-lg">
                       <img 
