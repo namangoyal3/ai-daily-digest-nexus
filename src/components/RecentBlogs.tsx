@@ -1,7 +1,6 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArticleIcon } from "lucide-react";
+import { FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const recentBlogs = [
@@ -50,23 +49,23 @@ export default function RecentBlogs() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {recentBlogs.map((blog) => (
             <Link to={`/ai-blogs/${blog.id}`} key={blog.id}>
-              <Card className="h-full hover:shadow-lg transition-shadow duration-300">
+              <Card className="h-full hover:shadow-lg transition-shadow duration-300 group">
                 <div className="aspect-video w-full overflow-hidden rounded-t-lg">
                   <img 
                     src={blog.image} 
                     alt={blog.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     loading="lazy"
                   />
                 </div>
                 <CardHeader>
                   <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
-                    <ArticleIcon className="h-4 w-4" />
+                    <FileText className="h-4 w-4" />
                     <span>{blog.category}</span>
                     <span>•</span>
                     <span>{blog.readTime}</span>
                   </div>
-                  <CardTitle className="text-xl mb-2 line-clamp-2">{blog.title}</CardTitle>
+                  <CardTitle className="text-xl mb-2 line-clamp-2 group-hover:text-aiblue transition-colors">{blog.title}</CardTitle>
                   <CardDescription className="line-clamp-3">{blog.excerpt}</CardDescription>
                 </CardHeader>
               </Card>
@@ -77,7 +76,7 @@ export default function RecentBlogs() {
         <div className="text-center">
           <Button 
             asChild
-            className="bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark text-white font-medium px-6 py-2"
+            className="bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark text-white font-medium px-6 py-2 hover:shadow-lg transition-all"
           >
             <Link to="/ai-blogs">View All Articles</Link>
           </Button>

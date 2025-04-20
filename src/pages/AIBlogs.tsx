@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArticleIcon } from "lucide-react";
+import { FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -72,41 +72,43 @@ export default function AIBlogs() {
             </p>
           </div>
 
-          {/* Category Filter */}
           <div className="flex flex-wrap gap-3 justify-center mb-12">
             {categories.map((category) => (
               <Button
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"}
                 onClick={() => setSelectedCategory(category)}
-                className="rounded-full"
+                className={`rounded-full transition-all hover:shadow-md ${
+                  selectedCategory === category 
+                    ? "bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark text-white"
+                    : "hover:bg-gray-100"
+                }`}
               >
                 {category}
               </Button>
             ))}
           </div>
 
-          {/* Blog Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             {filteredBlogs.map((blog) => (
               <Link to={`/ai-blogs/${blog.id}`} key={blog.id}>
-                <Card className="h-full hover:shadow-lg transition-shadow duration-300">
+                <Card className="h-full hover:shadow-lg transition-all duration-300 group">
                   <div className="aspect-video w-full overflow-hidden rounded-t-lg">
                     <img 
                       src={blog.image} 
                       alt={blog.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                       loading="lazy"
                     />
                   </div>
                   <CardHeader>
                     <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
-                      <ArticleIcon className="h-4 w-4" />
+                      <FileText className="h-4 w-4" />
                       <span>{blog.category}</span>
                       <span>•</span>
                       <span>{blog.readTime}</span>
                     </div>
-                    <CardTitle className="text-xl mb-2 line-clamp-2">{blog.title}</CardTitle>
+                    <CardTitle className="text-xl mb-2 line-clamp-2 group-hover:text-aiblue transition-colors">{blog.title}</CardTitle>
                     <CardDescription className="line-clamp-3">{blog.excerpt}</CardDescription>
                   </CardHeader>
                 </Card>
