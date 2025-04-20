@@ -18,6 +18,7 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminAnalytics from "./pages/AdminAnalytics";
 import AdminSEO from "./pages/AdminSEO";
 import AdminPromotions from "./pages/AdminPromotions";
+import AdminSectionTemplates from "./pages/AdminSectionTemplates";
 import { Helmet } from "react-helmet";
 
 const queryClient = new QueryClient();
@@ -48,6 +49,7 @@ const App = () => (
           <Route path="/admin/content" element={<AdminContent />} />
           <Route path="/admin/homepage" element={<AdminHomePage />} />
           <Route path="/admin/pages" element={<AdminPages />} />
+          <Route path="/admin/section-templates" element={<AdminSectionTemplates />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
           <Route path="/admin/seo" element={<AdminSEO />} />
