@@ -7,15 +7,15 @@ export default function FloatingSubscribeButton() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const heroButton = document.getElementById('hero-subscribe');
+    const subscribeSection = document.getElementById('subscribe-section');
     
     const handleScroll = () => {
-      if (!heroButton) return;
+      if (!subscribeSection) return;
       
-      const heroButtonRect = heroButton.getBoundingClientRect();
-      const isHeroButtonOutOfView = heroButtonRect.bottom < 0;
+      const subscribeRect = subscribeSection.getBoundingClientRect();
+      const isSubscribeSectionOutOfView = subscribeRect.top > window.innerHeight || subscribeRect.bottom < 0;
       
-      setIsVisible(isHeroButtonOutOfView);
+      setIsVisible(isSubscribeSectionOutOfView);
     };
     
     window.addEventListener('scroll', handleScroll);
@@ -23,7 +23,10 @@ export default function FloatingSubscribeButton() {
   }, []);
 
   const scrollToSubscribe = () => {
-    document.getElementById('subscribe')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('subscribe-section')?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'center'
+    });
   };
 
   return (
