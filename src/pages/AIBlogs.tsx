@@ -70,23 +70,23 @@ export default function AIBlogs() {
       <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
         <Header />
         
-        <main className="container mx-auto px-4 py-16">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <h1 className="font-heading text-4xl md:text-5xl font-bold mb-4 text-aiblue">
+        <main className="container mx-auto px-4 py-8 md:py-16">
+          <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
+            <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-aiblue">
               AI Insights & Analysis
             </h1>
-            <p className="text-gray-600 text-lg md:text-xl">
+            <p className="text-gray-600 text-base md:text-lg lg:text-xl px-4">
               Discover in-depth articles about artificial intelligence, machine learning, and their impact on various industries
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3 justify-center mb-12">
+          <div className="flex flex-wrap gap-2 md:gap-3 justify-center mb-8 md:mb-12 px-2">
             {categories.map((category) => (
               <Button
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"}
                 onClick={() => setSelectedCategory(category)}
-                className={`rounded-full transition-all hover:shadow-md ${
+                className={`text-sm md:text-base rounded-full transition-all hover:shadow-md ${
                   selectedCategory === category 
                     ? "bg-gradient-to-r from-aiblue to-aipurple text-white hover:from-aiblue-dark hover:to-aipurple-dark"
                     : "hover:bg-gray-100 text-aiblue"
@@ -97,7 +97,7 @@ export default function AIBlogs() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
             {isLoading ? (
               Array(6).fill(0).map((_, index) => (
                 <BlogCardSkeleton key={index} />
@@ -114,17 +114,17 @@ export default function AIBlogs() {
                         loading="lazy"
                       />
                     </div>
-                    <CardHeader>
-                      <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
-                        <FileText className="h-4 w-4" />
+                    <CardHeader className="p-4 md:p-6">
+                      <div className="flex flex-wrap items-center gap-2 text-xs md:text-sm text-gray-500 mb-2">
+                        <FileText className="h-4 w-4 flex-shrink-0" />
                         <span>{blog.category}</span>
                         <span>•</span>
                         <span>{blog.readTime}</span>
                       </div>
-                      <CardTitle className="text-xl mb-2 line-clamp-2 group-hover:text-aiblue transition-colors">
+                      <CardTitle className="text-lg md:text-xl mb-2 line-clamp-2 group-hover:text-aiblue transition-colors">
                         {blog.title}
                       </CardTitle>
-                      <CardDescription className="line-clamp-3">
+                      <CardDescription className="text-sm md:text-base line-clamp-3">
                         {blog.excerpt}
                       </CardDescription>
                     </CardHeader>

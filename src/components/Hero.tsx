@@ -1,4 +1,4 @@
-
+import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowDown, Brain, Zap, LineChart, BarChart3 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -31,7 +31,7 @@ export default function Hero() {
   };
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-aiblue/5 via-aipurple/5 to-aiteal/5 py-20 md:py-28">
+    <div className="relative overflow-hidden bg-gradient-to-br from-aiblue/5 via-aipurple/5 to-aiteal/5 py-12 md:py-20">
       <div className="absolute top-0 left-0 w-full h-full">
         <div className="absolute top-20 right-10 w-72 h-72 bg-aipurple/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"></div>
         <div className="absolute bottom-20 left-10 w-72 h-72 bg-aiblue/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"></div>
@@ -40,22 +40,19 @@ export default function Hero() {
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col md:flex-row items-center">
           <motion.div 
-            className="md:w-1/2 md:pr-12 mb-10 md:mb-0"
+            className="w-full md:w-1/2 md:pr-12 mb-8 md:mb-0"
             initial="hidden"
             animate="visible"
             variants={{
               hidden: { opacity: 0 },
               visible: {
                 opacity: 1,
-                transition: { 
-                  staggerChildren: 0.2,
-                  delayChildren: 0.3
-                }
+                transition: { staggerChildren: 0.2, delayChildren: 0.3 }
               }
             }}
           >
             <motion.h1 
-              className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-aiblue leading-tight mb-6"
+              className="text-3xl md:text-5xl lg:text-6xl font-heading font-bold text-aiblue leading-tight mb-4 md:mb-6"
               variants={fadeIn}
               custom={0}
             >
@@ -71,7 +68,6 @@ export default function Hero() {
               Perfect for busy professionals who need to stay informed.
             </motion.p>
             
-            {/* AI Infographic - Enhanced with animations */}
             <motion.div 
               className="bg-white/90 backdrop-blur-sm rounded-xl p-5 shadow-lg mb-8 border border-aiblue/10"
               variants={fadeIn}
@@ -166,9 +162,9 @@ export default function Hero() {
               </div>
             </motion.div>
           </motion.div>
-          
+
           <motion.div 
-            className="md:w-1/2 relative"
+            className="w-full md:w-1/2 px-4 md:px-0"
             initial="hidden"
             animate="visible"
             variants={{
