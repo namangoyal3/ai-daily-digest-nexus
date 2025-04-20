@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
@@ -11,12 +10,12 @@ import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import FloatingSubscribeButton from "@/components/FloatingSubscribeButton";
 import PromotionBanner from "@/components/PromotionBanner";
+import RecentBlogs from "@/components/RecentBlogs";
 import { motion } from "framer-motion";
 
 export default function AIDigest() {
   const [scrolled, setScrolled] = useState(false);
 
-  // Add scroll event listener
   useEffect(() => {
     const handleScroll = () => {
       const isScrolled = window.scrollY > 10;
@@ -81,12 +80,6 @@ export default function AIDigest() {
       </Helmet>
       
       <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
-        {/* Sticky PromotionBanner */}
-        <div className="sticky top-0 z-40">
-          <PromotionBanner />
-        </div>
-
-        {/* Sticky Header with enhanced styling */}
         <div className={`sticky top-[40px] z-30 transition-all duration-300 ${
           scrolled ? "shadow-md bg-white/95 backdrop-blur-sm" : ""
         }`}>
@@ -127,6 +120,15 @@ export default function AIDigest() {
               initial="hidden"
               whileInView="visible"
             >
+              <RecentBlogs />
+            </motion.section>
+            
+            <motion.section 
+              variants={fadeIn}
+              viewport={{ once: true, amount: 0.2 }}
+              initial="hidden"
+              whileInView="visible"
+            >
               <Pricing />
             </motion.section>
             
@@ -153,7 +155,6 @@ export default function AIDigest() {
         
         <Footer />
         
-        {/* Enhanced FloatingSubscribeButton with scroll threshold */}
         {scrolled && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}

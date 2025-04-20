@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,6 +20,7 @@ import AdminSEO from "./pages/AdminSEO";
 import AdminPromotions from "./pages/AdminPromotions";
 import { Helmet } from "react-helmet";
 import { useEffect } from "react";
+import AIBlogs from "./pages/AIBlogs";
 
 // ScrollToTop component to reset scroll position on route change
 function ScrollToTop() {
@@ -81,6 +81,8 @@ const App = () => (
           <Route path="/admin/notifications" element={<NotFound />} />
           <Route path="/admin/search" element={<NotFound />} />
           <Route path="/admin/backups" element={<NotFound />} />
+          <Route path="/ai-blogs" element={<AIBlogs />} />
+          <Route path="/ai-blogs/:blogId" element={<NotFound />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
