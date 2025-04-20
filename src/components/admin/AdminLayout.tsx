@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminSidebar from "./AdminSidebar";
 import { cn } from "@/lib/utils";
-import { ChevronsRight, Search, Bell, HelpCircle, Settings, User, LogOut } from "lucide-react";
+import { ChevronsRight, Search, Bell, HelpCircle, Settings, User, LogOut, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -70,6 +70,15 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </div>
           
           <div className="flex items-center space-x-2">
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2"
+              onClick={() => navigate('/admin-edit')}
+            >
+              <Edit className="h-4 w-4" />
+              <span>Visual Editor</span>
+            </Button>
+            
             <Button variant="ghost" size="icon">
               <Bell className="h-5 w-5" />
             </Button>
