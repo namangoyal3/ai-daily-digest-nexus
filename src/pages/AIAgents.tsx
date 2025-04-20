@@ -1,3 +1,4 @@
+
 import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Hero from "@/components/agents/AgentHero";
@@ -6,17 +7,22 @@ import Footer from "@/components/Footer";
 import FloatingSubscribeButton from "@/components/FloatingSubscribeButton";
 import PromotionBanner from "@/components/PromotionBanner";
 import { motion } from "framer-motion";
+import FeaturedAgents from "@/components/agents/FeaturedAgents";
+import AgentCategories from "@/components/agents/AgentCategories";
+import RelatedContent from "@/components/agents/RelatedContent";
+import { Link } from "react-router-dom";
 
 export default function AIAgents() {
   return (
     <>
       <Helmet>
-        <title>AI Agents Directory - Discover and Compare AI Agents</title>
-        <meta name="description" content="Explore our comprehensive directory of AI agents. Find, compare and integrate the perfect AI solution for your needs." />
-        <meta name="keywords" content="AI agents, artificial intelligence directory, AI tools, AI comparison, AI chatbots, AI image generators, AI coding tools" />
-        <meta property="og:title" content="AI Agents Directory - Your AI Agent Discovery Platform" />
-        <meta property="og:description" content="Browse and compare the latest AI agents from around the world. Find the perfect AI solution for your specific needs." />
+        <title>AI Agents Directory 2025 | Find and Compare 500+ AI Tools</title>
+        <meta name="description" content="Explore our comprehensive directory of 500+ AI agents and tools. Compare features, pricing, and reviews to find the perfect AI solution for your specific needs." />
+        <meta name="keywords" content="AI agents, artificial intelligence directory, AI tools comparison, AI chatbots, AI image generators, AI coding tools, AI video creation, AI writing assistants" />
+        <meta property="og:title" content="AI Agents Directory 2025 | Find and Compare 500+ AI Tools" />
+        <meta property="og:description" content="Browse and compare the latest AI agents from around the world. Find detailed reviews, pricing, and alternatives for popular tools like ChatGPT, Midjourney, DALL-E, Claude and more." />
         <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://aidailydigest.com/images/ai-agents-directory.jpg" />
         <link rel="canonical" href="https://aidailydigest.com/ai-agents" />
         <script type="application/ld+json">
           {`
@@ -25,11 +31,34 @@ export default function AIAgents() {
               "@type": "WebSite",
               "name": "AI Agents Directory",
               "url": "https://aidailydigest.com/ai-agents",
-              "description": "Comprehensive directory of AI agents from around the world",
+              "description": "Comprehensive directory of AI agents and tools from around the world",
               "potentialAction": {
                 "@type": "SearchAction",
                 "target": "https://aidailydigest.com/ai-agents/search?q={search_term_string}",
                 "query-input": "required name=search_term_string"
+              },
+              "mainEntity": {
+                "@type": "ItemList",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "ChatGPT",
+                    "url": "https://aidailydigest.com/agent/gpt-4o"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Claude",
+                    "url": "https://aidailydigest.com/agent/claude-3-opus"
+                  },
+                  {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": "Midjourney",
+                    "url": "https://aidailydigest.com/agent/midjourney"
+                  }
+                ]
               }
             }
           `}
@@ -44,7 +73,23 @@ export default function AIAgents() {
         <Header />
         <main>
           <Hero />
+          <FeaturedAgents />
+          <AgentCategories />
           <AgentGrid />
+          <RelatedContent />
+
+          {/* Breadcrumb Navigation for SEO */}
+          <div className="container mx-auto px-4 py-6">
+            <nav className="text-sm text-gray-500">
+              <ol className="flex flex-wrap items-center">
+                <li>
+                  <Link to="/" className="hover:text-aiblue">Home</Link>
+                </li>
+                <span className="mx-2">/</span>
+                <li className="font-medium text-gray-700">AI Agents Directory</li>
+              </ol>
+            </nav>
+          </div>
         </main>
         <Footer />
         <FloatingSubscribeButton />

@@ -9,6 +9,7 @@ import AIDigest from "./pages/AIDigest";
 import AIAgents from "./pages/AIAgents";
 import AICourses from "./pages/AICourses";
 import AgentDetails from "./pages/AgentDetails";
+import MidjourneyDetails from "./pages/MidjourneyDetails";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AdminContent from "./pages/AdminContent";
@@ -44,6 +45,10 @@ const App = () => (
           <Route path="/ai-agents" element={<AIAgents />} />
           <Route path="/ai-courses" element={<AICourses />} />
           <Route path="/agent/:agentSlug" element={<AgentDetails />} />
+          <Route path="/agent/midjourney" element={<MidjourneyDetails />} />
+          <Route path="/category/:categorySlug" element={<AIAgents />} />
+          <Route path="/article/:articleSlug" element={<NotFound />} />
+          <Route path="/guide/:guideSlug" element={<NotFound />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/content" element={<AdminContent />} />
           <Route path="/admin/homepage" element={<AdminHomePage />} />
