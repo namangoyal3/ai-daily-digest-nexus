@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,8 +6,8 @@ import { FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BlogCardSkeleton from "@/components/skeletons/BlogCardSkeleton";
 
-// This would typically come from an API
 const blogs = [
   {
     id: 1,
@@ -37,14 +36,23 @@ const blogs = [
     category: "AI Ethics",
     image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81"
   },
-  // More blog posts...
 ];
 
 const categories = ["All", "AI Trends", "Deep Learning", "AI Ethics", "Machine Learning", "AI Applications"];
 
 export default function AIBlogs() {
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [isLoading, setIsLoading] = useState(true);
   
+  useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [selectedCategory]);
+
   const filteredBlogs = selectedCategory === "All" 
     ? blogs 
     : blogs.filter(blog => blog.category === selectedCategory);
@@ -80,8 +88,8 @@ export default function AIBlogs() {
                 onClick={() => setSelectedCategory(category)}
                 className={`rounded-full transition-all hover:shadow-md ${
                   selectedCategory === category 
-                    ? "bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark text-white"
-                    : "hover:bg-gray-100"
+                    ? "bg-gradient-to-r from-aiblue to-aipurple text-white hover:from-aiblue-dark hover:to-aipurple-dark"
+                    : "hover:bg-gray-100 text-aiblue"
                 }`}
               >
                 {category}
@@ -90,30 +98,40 @@ export default function AIBlogs() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {filteredBlogs.map((blog) => (
-              <Link to={`/ai-blogs/${blog.id}`} key={blog.id}>
-                <Card className="h-full hover:shadow-lg transition-all duration-300 group">
-                  <div className="aspect-video w-full overflow-hidden rounded-t-lg">
-                    <img 
-                      src={blog.image} 
-                      alt={blog.title}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                  </div>
-                  <CardHeader>
-                    <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
-                      <FileText className="h-4 w-4" />
-                      <span>{blog.category}</span>
-                      <span>•</span>
-                      <span>{blog.readTime}</span>
+            {isLoading ? (
+              Array(6).fill(0).map((_, index) => (
+                <BlogCardSkeleton key={index} />
+              ))
+            ) : (
+              filteredBlogs.map((blog) => (
+                <Link to={`/ai-blogs/${blog.id}`} key={blog.id}>
+                  <Card className="h-full hover:shadow-lg transition-all duration-300 group">
+                    <div className="aspect-video w-full overflow-hidden rounded-t-lg">
+                      <img 
+                        src={blog.image} 
+                        alt={blog.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                      />
                     </div>
-                    <CardTitle className="text-xl mb-2 line-clamp-2 group-hover:text-aiblue transition-colors">{blog.title}</CardTitle>
-                    <CardDescription className="line-clamp-3">{blog.excerpt}</CardDescription>
-                  </CardHeader>
-                </Card>
-              </Link>
-            ))}
+                    <CardHeader>
+                      <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
+                        <FileText className="h-4 w-4" />
+                        <span>{blog.category}</span>
+                        <span>•</span>
+                        <span>{blog.readTime}</span>
+                      </div>
+                      <CardTitle className="text-xl mb-2 line-clamp-2 group-hover:text-aiblue transition-colors">
+                        {blog.title}
+                      </CardTitle>
+                      <CardDescription className="line-clamp-3">
+                        {blog.excerpt}
+                      </CardDescription>
+                    </CardHeader>
+                  </Card>
+                </Link>
+              ))
+            )}
           </div>
         </main>
 

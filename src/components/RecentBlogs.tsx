@@ -1,7 +1,10 @@
+
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react";
 import { Link } from "react-router-dom";
+import BlogCardSkeleton from "./skeletons/BlogCardSkeleton";
 
 const recentBlogs = [
   {
@@ -34,6 +37,17 @@ const recentBlogs = [
 ];
 
 export default function RecentBlogs() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading time
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <section className="py-16 md:py-24 bg-gradient-to-br from-white via-purple-50/10 to-blue-50/10">
       <div className="container mx-auto px-4">
@@ -47,36 +61,48 @@ export default function RecentBlogs() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {recentBlogs.map((blog) => (
-            <Link to={`/ai-blogs/${blog.id}`} key={blog.id}>
-              <Card className="h-full hover:shadow-lg transition-shadow duration-300 group">
-                <div className="aspect-video w-full overflow-hidden rounded-t-lg">
-                  <img 
-                    src={blog.image} 
-                    alt={blog.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    loading="lazy"
-                  />
-                </div>
-                <CardHeader>
-                  <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
-                    <FileText className="h-4 w-4" />
-                    <span>{blog.category}</span>
-                    <span>•</span>
-                    <span>{blog.readTime}</span>
+          {isLoading ? (
+            // Show skeletons while loading
+            Array(3).fill(0).map((_, index) => (
+              <BlogCardSkeleton key={index} />
+            ))
+          ) : (
+            // Show actual blog cards when loaded
+            recentBlogs.map((blog) => (
+              <Link to={`/ai-blogs/${blog.id}`} key={blog.id}>
+                <Card className="h-full hover:shadow-lg transition-shadow duration-300 group">
+                  <div className="aspect-video w-full overflow-hidden rounded-t-lg">
+                    <img 
+                      src={blog.image} 
+                      alt={blog.title}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      loading="lazy"
+                    />
                   </div>
-                  <CardTitle className="text-xl mb-2 line-clamp-2 group-hover:text-aiblue transition-colors">{blog.title}</CardTitle>
-                  <CardDescription className="line-clamp-3">{blog.excerpt}</CardDescription>
-                </CardHeader>
-              </Card>
-            </Link>
-          ))}
+                  <CardHeader>
+                    <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
+                      <FileText className="h-4 w-4" />
+                      <span>{blog.category}</span>
+                      <span>•</span>
+                      <span>{blog.readTime}</span>
+                    </div>
+                    <CardTitle className="text-xl mb-2 line-clamp-2 group-hover:text-aiblue transition-colors">
+                      {blog.title}
+                    </CardTitle>
+                    <CardDescription className="line-clamp-3">
+                      {blog.excerpt}
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
+            ))
+          )}
         </div>
 
         <div className="text-center">
           <Button 
             asChild
-            className="bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark text-white font-medium px-6 py-2 hover:shadow-lg transition-all"
+            className="bg-gradient-to-r from-aiblue to-aipurple text-white hover:from-aiblue-dark hover:to-aipurple-dark font-medium px-6 py-2 hover:shadow-lg transition-all"
           >
             <Link to="/ai-blogs">View All Articles</Link>
           </Button>
