@@ -18,15 +18,7 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminAnalytics from "./pages/AdminAnalytics";
 import AdminSEO from "./pages/AdminSEO";
 import AdminPromotions from "./pages/AdminPromotions";
-import AdminSectionTemplates from "./pages/AdminSectionTemplates";
-import AdminEditManager from "./pages/AdminEditManager";
 import { Helmet } from "react-helmet";
-
-// Import Admin Edit pages
-import AdminEditParentLanding from "./pages/admin-edit/AdminEditParentLanding";
-import AdminEditAIDigest from "./pages/admin-edit/AdminEditAIDigest";
-import AdminEditAIAgents from "./pages/admin-edit/AdminEditAIAgents";
-import AdminEditAICourses from "./pages/admin-edit/AdminEditAICourses";
 
 const queryClient = new QueryClient();
 
@@ -47,25 +39,15 @@ const App = () => (
       </Helmet>
       <BrowserRouter>
         <Routes>
-          {/* Regular Routes */}
           <Route path="/" element={<ParentLanding />} />
           <Route path="/ai-digest" element={<AIDigest />} />
           <Route path="/ai-agents" element={<AIAgents />} />
           <Route path="/ai-courses" element={<AICourses />} />
           <Route path="/agent/:agentSlug" element={<AgentDetails />} />
-          
-          {/* Admin Edit Routes */}
-          <Route path="/admin-edit" element={<AdminEditParentLanding />} />
-          <Route path="/admin-edit/ai-digest" element={<AdminEditAIDigest />} />
-          <Route path="/admin-edit/ai-agents" element={<AdminEditAIAgents />} />
-          <Route path="/admin-edit/ai-courses" element={<AdminEditAICourses />} />
-          
-          {/* Admin Dashboard Routes */}
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/content" element={<AdminContent />} />
           <Route path="/admin/homepage" element={<AdminHomePage />} />
           <Route path="/admin/pages" element={<AdminPages />} />
-          <Route path="/admin/section-templates" element={<AdminSectionTemplates />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
           <Route path="/admin/seo" element={<AdminSEO />} />
@@ -81,7 +63,6 @@ const App = () => (
           <Route path="/admin/notifications" element={<NotFound />} />
           <Route path="/admin/search" element={<NotFound />} />
           <Route path="/admin/backups" element={<NotFound />} />
-          <Route path="/admin/edit-manager" element={<AdminEditManager />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -5,7 +5,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import AdminOverview from "@/components/admin/AdminOverview";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileEdit, Layers, FileText, Settings, Edit } from "lucide-react";
+import { FileEdit, Layers, FileText, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Admin() {
@@ -26,31 +26,6 @@ export default function Admin() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Card className="border-2 border-aiblue border-opacity-20">
-                <CardHeader className="bg-gradient-to-r from-aiblue/10 to-transparent">
-                  <CardTitle className="flex items-center space-x-2">
-                    <Edit className="h-5 w-5" />
-                    <span>Visual Editor</span>
-                  </CardTitle>
-                  <CardDescription>
-                    Edit your website visually
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2 pt-4">
-                  <p className="text-sm">
-                    Make visual edits directly on your pages with our powerful WYSIWYG editor. 
-                    Preview changes in real-time before publishing.
-                  </p>
-                </CardContent>
-                <CardFooter>
-                  <Button asChild className="w-full bg-aiblue hover:bg-aiblue-dark">
-                    <Link to="/admin-edit">
-                      Open Visual Editor
-                    </Link>
-                  </Button>
-                </CardFooter>
-              </Card>
-            
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
