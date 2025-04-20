@@ -1,12 +1,16 @@
+
+import { lazy, Suspense } from "react";
 import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Hero from "@/components/agents/AgentHero";
-import AgentGrid from "@/components/agents/AgentGrid";
-import Footer from "@/components/Footer";
-import PromotionBanner from "@/components/PromotionBanner";
 import { motion } from "framer-motion";
-import FeaturedAgents from "@/components/agents/FeaturedAgents";
-import AgentCategories from "@/components/agents/AgentCategories";
+
+// Lazy load components for better performance
+const AgentGrid = lazy(() => import("@/components/agents/AgentGrid"));
+const Footer = lazy(() => import("@/components/Footer"));
+const PromotionBanner = lazy(() => import("@/components/PromotionBanner"));
+const FeaturedAgents = lazy(() => import("@/components/agents/FeaturedAgents"));
+const AgentCategories = lazy(() => import("@/components/agents/AgentCategories"));
 
 export default function AIAgents() {
   return (
@@ -23,6 +27,8 @@ export default function AIAgents() {
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://aidailydigest.com/images/ai-agents-directory.jpg" />
         <link rel="canonical" href="https://aidailydigest.com/ai-agents" />
+        {/* Preload critical resources */}
+        <link rel="preload" href="/fonts/poppins-v15-latin-regular.woff2" as="font" type="font/woff2" crossOrigin="" />
         <script type="application/ld+json">
           {`
             {
@@ -69,13 +75,24 @@ export default function AIAgents() {
         animate={{ opacity: 1 }}
         className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30"
       >
-        <PromotionBanner />
+        <Suspense fallback={null}>
+          <PromotionBanner />
+        </Suspense>
         <Header />
         <main>
           <Hero />
-          <FeaturedAgents />
-          <AgentCategories />
-          <AgentGrid />
+
+          <Suspense fallback={<div className="h-60 flex items-center justify-center">Loading...</div>}>
+            <FeaturedAgents />
+          </Suspense>
+
+          <Suspense fallback={<div className="h-60 flex items-center justify-center">Loading...</div>}>
+            <AgentCategories />
+          </Suspense>
+
+          <Suspense fallback={<div className="h-60 flex items-center justify-center">Loading...</div>}>
+            <AgentGrid />
+          </Suspense>
           
           <div className="container mx-auto px-4 py-6">
             <nav className="text-sm text-gray-500" aria-label="Breadcrumb">
@@ -89,7 +106,10 @@ export default function AIAgents() {
             </nav>
           </div>
         </main>
-        <Footer />
+
+        <Suspense fallback={<div className="h-20 flex items-center justify-center">Loading...</div>}>
+          <Footer />
+        </Suspense>
       </motion.div>
     </>
   );

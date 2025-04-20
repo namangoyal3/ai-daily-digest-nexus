@@ -1,6 +1,11 @@
-import React from 'react';
+
+import React, { lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
-import CoursesHero from '@/components/courses/CoursesHero';
+
+// Lazy load components
+const CoursesHero = lazy(() => import('@/components/courses/CoursesHero'));
+const Header = lazy(() => import('@/components/Header'));
+const Footer = lazy(() => import('@/components/Footer'));
 
 export default function AICourses() {
   return (
@@ -15,12 +20,26 @@ export default function AICourses() {
           name="keywords" 
           content="AI courses, artificial intelligence training, machine learning courses, deep learning tutorials, AI certification"
         />
+        {/* Preload critical resources */}
+        <link rel="preload" href="/fonts/poppins-v15-latin-regular.woff2" as="font" type="font/woff2" crossOrigin="" />
+        <link rel="preload" href="/fonts/inter-v3-latin-regular.woff2" as="font" type="font/woff2" crossOrigin="" />
       </Helmet>
 
-      <main className="min-h-screen">
-        <CoursesHero />
+      <div className="min-h-screen">
+        <Suspense fallback={<div className="h-16 bg-white"></div>}>
+          <Header />
+        </Suspense>
         
-      </main>
+        <main>
+          <Suspense fallback={<div className="h-[90vh] flex items-center justify-center">Loading courses...</div>}>
+            <CoursesHero />
+          </Suspense>
+        </main>
+
+        <Suspense fallback={<div className="h-20 bg-gray-100"></div>}>
+          <Footer />
+        </Suspense>
+      </div>
     </>
   );
 }

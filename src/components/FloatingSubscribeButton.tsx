@@ -1,25 +1,34 @@
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowUp } from 'lucide-react';
 
-export default function FloatingSubscribeButton() {
+const FloatingSubscribeButton = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    // Use requestAnimationFrame for smoother scroll detection
+    let ticking = false;
     const subscribeSection = document.getElementById('subscribe-section');
     
     const handleScroll = () => {
-      if (!subscribeSection) return;
-      
-      const subscribeRect = subscribeSection.getBoundingClientRect();
-      // Only show button when subscribe section is out of view (either above or below viewport)
-      const isSubscribeSectionOutOfView = subscribeRect.top > window.innerHeight || subscribeRect.bottom < 0;
-      
-      setIsVisible(isSubscribeSectionOutOfView);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (!subscribeSection) return;
+          
+          const subscribeRect = subscribeSection.getBoundingClientRect();
+          // Only show button when subscribe section is out of view (either above or below viewport)
+          const isSubscribeSectionOutOfView = subscribeRect.top > window.innerHeight || subscribeRect.bottom < 0;
+          
+          setIsVisible(isSubscribeSectionOutOfView);
+          ticking = false;
+        });
+        
+        ticking = true;
+      }
     };
     
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     // Initial check
     handleScroll();
     
@@ -27,7 +36,8 @@ export default function FloatingSubscribeButton() {
   }, []);
 
   const scrollToSubscribe = () => {
-    document.getElementById('subscribe-section')?.scrollIntoView({ 
+    const subscribeSection = document.getElementById('subscribe-section');
+    subscribeSection?.scrollIntoView({ 
       behavior: 'smooth',
       block: 'center'
     });
@@ -36,7 +46,7 @@ export default function FloatingSubscribeButton() {
   return (
     <div 
       className={`fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${
-        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
+        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'
       }`}
       aria-hidden={!isVisible}
     >
@@ -50,4 +60,7 @@ export default function FloatingSubscribeButton() {
       </Button>
     </div>
   );
-}
+};
+
+// Memoize the component to prevent unnecessary re-renders
+export default memo(FloatingSubscribeButton);

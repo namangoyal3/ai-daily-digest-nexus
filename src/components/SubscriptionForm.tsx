@@ -51,7 +51,7 @@ export default function SubscriptionForm() {
       setTimeout(() => {
         setIsSubmitting(false);
         setSubmitted(true);
-      }, 1500);
+      }, 800); // Reduced from 1500ms to 800ms for better UX
     }
   };
 

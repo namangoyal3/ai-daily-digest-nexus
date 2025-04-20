@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -14,14 +14,19 @@ interface Promotion {
   animationSpeed: number;
 }
 
-export default function PromotionBanner() {
+const PromotionBanner = () => {
   const [activePromotion, setActivePromotion] = useState<Promotion | null>(null);
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    const storedPromotion = localStorage.getItem('activePromotion');
-    if (storedPromotion) {
-      setActivePromotion(JSON.parse(storedPromotion));
+    // Only try to get the promotion from localStorage once on mount
+    try {
+      const storedPromotion = localStorage.getItem('activePromotion');
+      if (storedPromotion) {
+        setActivePromotion(JSON.parse(storedPromotion));
+      }
+    } catch (error) {
+      console.error('Error parsing promotion data:', error);
     }
   }, []);
 
@@ -73,4 +78,7 @@ export default function PromotionBanner() {
       </style>
     </div>
   );
-}
+};
+
+// Memoize the component to prevent unnecessary re-renders
+export default memo(PromotionBanner);
