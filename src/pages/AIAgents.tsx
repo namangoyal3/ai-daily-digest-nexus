@@ -1,15 +1,11 @@
-
 import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Hero from "@/components/agents/AgentHero";
-import Benefits from "@/components/agents/AgentBenefits";
-import ContentPreview from "@/components/agents/AgentContentPreview";
-import FeaturedAgents from "@/components/agents/FeaturedAgents";
-import SubscriptionForm from "@/components/SubscriptionForm";
-import FAQ from "@/components/FAQ";
+import AgentGrid from "@/components/agents/AgentGrid";
 import Footer from "@/components/Footer";
 import FloatingSubscribeButton from "@/components/FloatingSubscribeButton";
 import PromotionBanner from "@/components/PromotionBanner";
+import { motion } from "framer-motion";
 
 export default function AIAgents() {
   return (
@@ -39,20 +35,20 @@ export default function AIAgents() {
           `}
         </script>
       </Helmet>
-      <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30"
+      >
         <PromotionBanner />
         <Header />
         <main>
           <Hero />
-          <Benefits />
-          <FeaturedAgents />
-          <ContentPreview />
-          <SubscriptionForm />
-          <FAQ />
+          <AgentGrid />
         </main>
         <Footer />
         <FloatingSubscribeButton />
-      </div>
+      </motion.div>
     </>
   );
 }
