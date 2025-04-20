@@ -1,3 +1,6 @@
+
+import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
@@ -8,9 +11,43 @@ import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import FloatingSubscribeButton from "@/components/FloatingSubscribeButton";
 import PromotionBanner from "@/components/PromotionBanner";
-import { Helmet } from "react-helmet";
+import { motion } from "framer-motion";
 
-export default function Index() {
+export default function AIDigest() {
+  const [scrolled, setScrolled] = useState(false);
+
+  // Add scroll event listener
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [scrolled]);
+
+  const fadeIn = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" }
+    }
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -38,20 +75,94 @@ export default function Index() {
             }
           `}
         </script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
       </Helmet>
+      
       <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
-        <PromotionBanner />
-        <Header />
+        {/* Sticky PromotionBanner */}
+        <div className="sticky top-0 z-40">
+          <PromotionBanner />
+        </div>
+
+        {/* Sticky Header with enhanced styling */}
+        <div className={`sticky top-[40px] z-30 transition-all duration-300 ${
+          scrolled ? "shadow-md bg-white/95 backdrop-blur-sm" : ""
+        }`}>
+          <Header />
+        </div>
+        
         <main>
-          <Hero />
-          <Benefits />
-          <ContentPreview />
-          <Pricing />
-          <SubscriptionForm />
-          <FAQ />
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+          >
+            <motion.section variants={fadeIn}>
+              <Hero />
+            </motion.section>
+            
+            <motion.section 
+              variants={fadeIn}
+              viewport={{ once: true, amount: 0.2 }}
+              initial="hidden"
+              whileInView="visible"
+            >
+              <Benefits />
+            </motion.section>
+            
+            <motion.section 
+              variants={fadeIn}
+              viewport={{ once: true, amount: 0.2 }}
+              initial="hidden"
+              whileInView="visible"
+            >
+              <ContentPreview />
+            </motion.section>
+            
+            <motion.section 
+              variants={fadeIn}
+              viewport={{ once: true, amount: 0.2 }}
+              initial="hidden"
+              whileInView="visible"
+            >
+              <Pricing />
+            </motion.section>
+            
+            <motion.section 
+              variants={fadeIn}
+              viewport={{ once: true, amount: 0.2 }}
+              initial="hidden"
+              whileInView="visible"
+              id="subscribe-section"
+            >
+              <SubscriptionForm />
+            </motion.section>
+            
+            <motion.section 
+              variants={fadeIn}
+              viewport={{ once: true, amount: 0.2 }}
+              initial="hidden"
+              whileInView="visible"
+            >
+              <FAQ />
+            </motion.section>
+          </motion.div>
         </main>
+        
         <Footer />
-        <FloatingSubscribeButton />
+        
+        {/* Enhanced FloatingSubscribeButton with scroll threshold */}
+        {scrolled && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <FloatingSubscribeButton />
+          </motion.div>
+        )}
       </div>
     </>
   );
