@@ -1,23 +1,22 @@
-
 import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Hero from "@/components/agents/AgentHero";
 import AgentGrid from "@/components/agents/AgentGrid";
 import Footer from "@/components/Footer";
-import FloatingSubscribeButton from "@/components/FloatingSubscribeButton";
 import PromotionBanner from "@/components/PromotionBanner";
 import { motion } from "framer-motion";
 import FeaturedAgents from "@/components/agents/FeaturedAgents";
 import AgentCategories from "@/components/agents/AgentCategories";
-import RelatedContent from "@/components/agents/RelatedContent";
-import { Link } from "react-router-dom";
 
 export default function AIAgents() {
   return (
     <>
       <Helmet>
         <title>AI Agents Directory 2025 | Find and Compare 500+ AI Tools</title>
-        <meta name="description" content="Explore our comprehensive directory of 500+ AI agents and tools. Compare features, pricing, and reviews to find the perfect AI solution for your specific needs." />
+        <meta 
+          name="description" 
+          content="Explore our comprehensive directory of 500+ AI agents and tools. Compare features, pricing, and reviews to find the perfect AI solution for your specific needs." 
+        />
         <meta name="keywords" content="AI agents, artificial intelligence directory, AI tools comparison, AI chatbots, AI image generators, AI coding tools, AI video creation, AI writing assistants" />
         <meta property="og:title" content="AI Agents Directory 2025 | Find and Compare 500+ AI Tools" />
         <meta property="og:description" content="Browse and compare the latest AI agents from around the world. Find detailed reviews, pricing, and alternatives for popular tools like ChatGPT, Midjourney, DALL-E, Claude and more." />
@@ -64,6 +63,7 @@ export default function AIAgents() {
           `}
         </script>
       </Helmet>
+      
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -76,14 +76,12 @@ export default function AIAgents() {
           <FeaturedAgents />
           <AgentCategories />
           <AgentGrid />
-          <RelatedContent />
-
-          {/* Breadcrumb Navigation for SEO */}
+          
           <div className="container mx-auto px-4 py-6">
-            <nav className="text-sm text-gray-500">
+            <nav className="text-sm text-gray-500" aria-label="Breadcrumb">
               <ol className="flex flex-wrap items-center">
                 <li>
-                  <Link to="/" className="hover:text-aiblue">Home</Link>
+                  <a href="/" className="hover:text-aiblue">Home</a>
                 </li>
                 <span className="mx-2">/</span>
                 <li className="font-medium text-gray-700">AI Agents Directory</li>
@@ -92,7 +90,6 @@ export default function AIAgents() {
           </div>
         </main>
         <Footer />
-        <FloatingSubscribeButton />
       </motion.div>
     </>
   );

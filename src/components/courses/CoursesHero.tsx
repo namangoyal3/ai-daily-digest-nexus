@@ -2,78 +2,92 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { GraduationCap, Book, Award } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function CoursesHero() {
   return (
-    <div className="relative min-h-[90vh] flex items-center">
-      {/* Background with overlay */}
-      <div 
-        className="absolute inset-0 z-0" 
-        style={{
-          backgroundImage: "url('/photo-1488590528505-98d2b5aba04b')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
-        <div className="absolute inset-0 bg-black/50" />
+    <div className="relative min-h-[90vh] flex items-center bg-gradient-to-br from-aiblue/5 via-aipurple/5 to-aiteal/5">
+      <div className="absolute top-0 left-0 w-full h-full">
+        <div className="absolute top-20 right-10 w-72 h-72 bg-aipurple/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"></div>
+        <div className="absolute bottom-20 left-10 w-72 h-72 bg-aiblue/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"></div>
       </div>
 
-      {/* Content */}
-      <div className="container mx-auto relative z-10 px-4 py-20">
+      <div className="container mx-auto px-4 py-20 relative z-10">
         <div className="max-w-3xl">
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 font-heading">
-            Master Artificial Intelligence
-          </h1>
-          <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed">
-            Comprehensive AI courses designed by industry experts. Learn practical skills in machine learning, deep learning, and AI applications.
-          </p>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-4xl md:text-6xl font-bold text-aiblue mb-6 font-heading"
+          >
+            Master AI Technology with Expert-Led Courses
+          </motion.h1>
           
-          {/* Features */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-xl text-gray-600 mb-8 leading-relaxed"
+          >
+            Comprehensive AI courses designed by industry experts. Learn practical skills in machine learning, deep learning, and AI applications through hands-on projects.
+          </motion.p>
+          
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
+          >
             {[
               {
                 icon: GraduationCap,
                 title: "Expert-Led Training",
-                description: "Learn from industry professionals"
+                description: "Learn from industry professionals with real-world AI experience"
               },
               {
                 icon: Book,
                 title: "Practical Projects",
-                description: "Build real-world AI applications"
+                description: "Build production-ready AI applications and tools"
               },
               {
                 icon: Award,
                 title: "Certification",
-                description: "Earn recognized credentials"
+                description: "Earn recognized credentials trusted by employers"
               }
             ].map((feature, index) => (
-              <div 
+              <motion.div 
                 key={index}
-                className="bg-white/10 backdrop-blur-lg rounded-lg p-6 border border-white/20"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + index * 0.1 }}
+                className="bg-white/90 backdrop-blur-sm rounded-lg p-6 shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                <feature.icon className="h-8 w-8 text-white mb-4" />
-                <h3 className="text-white font-semibold mb-2">{feature.title}</h3>
-                <p className="text-white/80 text-sm">{feature.description}</p>
-              </div>
+                <feature.icon className="h-8 w-8 text-aiblue mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
+                <p className="text-gray-600 text-sm">{feature.description}</p>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="flex flex-col sm:flex-row gap-4"
+          >
             <Button
               size="lg"
-              className="bg-primary hover:bg-primary/90 text-white px-8"
+              className="bg-gradient-to-r from-aiblue to-aipurple text-white font-medium hover:opacity-90"
             >
               Explore Courses
             </Button>
             <Button
               variant="outline"
               size="lg"
-              className="border-white/20 text-white hover:bg-white/10 px-8"
+              className="border-aiblue text-aiblue hover:bg-aiblue hover:text-white"
             >
               View Curriculum
             </Button>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>
