@@ -1,21 +1,22 @@
 
-import { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import Benefits from "@/components/Benefits";
+import ContentPreview from "@/components/ContentPreview";
+import SubscriptionForm from "@/components/SubscriptionForm";
+import Pricing from "@/components/Pricing";
+import FAQ from "@/components/FAQ";
+import Footer from "@/components/Footer";
+import FloatingSubscribeButton from "@/components/FloatingSubscribeButton";
+import PromotionBanner from "@/components/PromotionBanner";
 import { motion } from "framer-motion";
-
-// Lazy load components for better performance
-const Benefits = lazy(() => import("@/components/Benefits"));
-const ContentPreview = lazy(() => import("@/components/ContentPreview"));
-const SubscriptionForm = lazy(() => import("@/components/SubscriptionForm"));
-const FAQ = lazy(() => import("@/components/FAQ"));
-const Footer = lazy(() => import("@/components/Footer"));
-const FloatingSubscribeButton = lazy(() => import("@/components/FloatingSubscribeButton"));
 
 export default function AIDigest() {
   const [scrolled, setScrolled] = useState(false);
 
+  // Add scroll event listener
   useEffect(() => {
     const handleScroll = () => {
       const isScrolled = window.scrollY > 10;
@@ -50,24 +51,14 @@ export default function AIDigest() {
   return (
     <>
       <Helmet>
-        <title>AI Daily Digest - Stay Ahead with AI Insights | AI News & Updates 2025</title>
-        <meta 
-          name="description" 
-          content="Get curated AI news, breakthroughs, and analysis in a 5-minute daily read. Join 2000+ professionals staying ahead with AI Daily Digest, your trusted source for AI insights."
-        />
-        <meta 
-          name="keywords" 
-          content="AI news, artificial intelligence digest, AI insights, tech newsletter, AI updates, daily AI news, AI breakthroughs 2025"
-        />
+        <title>AI Daily Digest - Stay Ahead with AI Insights</title>
+        <meta name="description" content="Get curated AI news, breakthroughs, and analysis in a 5-minute daily read. Join 2000+ professionals staying ahead with AI Daily Digest." />
+        <meta name="keywords" content="AI news, artificial intelligence digest, AI insights, tech newsletter, AI updates, daily AI news" />
         <meta property="og:title" content="AI Daily Digest - Daily AI Insights Newsletter" />
         <meta property="og:description" content="Stay informed with curated AI news and insights delivered daily to your inbox." />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <link rel="canonical" href="https://aidailydigest.com" />
-        {/* Preload critical resources */}
-        <link rel="preload" href="/fonts/poppins-v15-latin-regular.woff2" as="font" type="font/woff2" crossOrigin="" />
-        <link rel="preload" href="/fonts/poppins-v15-latin-500.woff2" as="font" type="font/woff2" crossOrigin="" />
-        <link rel="preload" href="/fonts/inter-v3-latin-regular.woff2" as="font" type="font/woff2" crossOrigin="" />
         <script type="application/ld+json">
           {`
             {
@@ -90,7 +81,13 @@ export default function AIDigest() {
       </Helmet>
       
       <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
-        <div className={`sticky top-0 z-30 transition-all duration-300 ${
+        {/* Sticky PromotionBanner */}
+        <div className="sticky top-0 z-40">
+          <PromotionBanner />
+        </div>
+
+        {/* Sticky Header with enhanced styling */}
+        <div className={`sticky top-[40px] z-30 transition-all duration-300 ${
           scrolled ? "shadow-md bg-white/95 backdrop-blur-sm" : ""
         }`}>
           <Header />
@@ -106,67 +103,65 @@ export default function AIDigest() {
               <Hero />
             </motion.section>
             
-            <Suspense fallback={<div className="h-60 flex items-center justify-center">Loading...</div>}>
-              <motion.section 
-                variants={fadeIn}
-                viewport={{ once: true, amount: 0.2 }}
-                initial="hidden"
-                whileInView="visible"
-              >
-                <Benefits />
-              </motion.section>
-            </Suspense>
+            <motion.section 
+              variants={fadeIn}
+              viewport={{ once: true, amount: 0.2 }}
+              initial="hidden"
+              whileInView="visible"
+            >
+              <Benefits />
+            </motion.section>
             
-            <Suspense fallback={<div className="h-60 flex items-center justify-center">Loading...</div>}>
-              <motion.section 
-                variants={fadeIn}
-                viewport={{ once: true, amount: 0.2 }}
-                initial="hidden"
-                whileInView="visible"
-              >
-                <ContentPreview />
-              </motion.section>
-            </Suspense>
+            <motion.section 
+              variants={fadeIn}
+              viewport={{ once: true, amount: 0.2 }}
+              initial="hidden"
+              whileInView="visible"
+            >
+              <ContentPreview />
+            </motion.section>
             
-            <Suspense fallback={<div className="h-60 flex items-center justify-center">Loading...</div>}>
-              <motion.section 
-                variants={fadeIn}
-                viewport={{ once: true, amount: 0.2 }}
-                initial="hidden"
-                whileInView="visible"
-                id="subscribe-section"
-              >
-                <SubscriptionForm />
-              </motion.section>
-            </Suspense>
+            <motion.section 
+              variants={fadeIn}
+              viewport={{ once: true, amount: 0.2 }}
+              initial="hidden"
+              whileInView="visible"
+            >
+              <Pricing />
+            </motion.section>
             
-            <Suspense fallback={<div className="h-60 flex items-center justify-center">Loading...</div>}>
-              <motion.section 
-                variants={fadeIn}
-                viewport={{ once: true, amount: 0.2 }}
-                initial="hidden"
-                whileInView="visible"
-              >
-                <FAQ />
-              </motion.section>
-            </Suspense>
+            <motion.section 
+              variants={fadeIn}
+              viewport={{ once: true, amount: 0.2 }}
+              initial="hidden"
+              whileInView="visible"
+              id="subscribe-section"
+            >
+              <SubscriptionForm />
+            </motion.section>
+            
+            <motion.section 
+              variants={fadeIn}
+              viewport={{ once: true, amount: 0.2 }}
+              initial="hidden"
+              whileInView="visible"
+            >
+              <FAQ />
+            </motion.section>
           </motion.div>
         </main>
         
-        <Suspense fallback={<div className="h-20 flex items-center justify-center">Loading...</div>}>
-          <Footer />
-        </Suspense>
+        <Footer />
         
+        {/* Enhanced FloatingSubscribeButton with scroll threshold */}
         {scrolled && (
-          <Suspense fallback={null}>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <FloatingSubscribeButton />
-            </motion.div>
-          </Suspense>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <FloatingSubscribeButton />
+          </motion.div>
         )}
       </div>
     </>
