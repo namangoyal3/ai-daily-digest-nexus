@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Mail, MapPin, Phone, Twitter, Facebook, Instagram, Linkedin, Youtube, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EmailSubscribe from "./EmailSubscribe";
+import FooterSubscribeSection from "./FooterSubscribeSection";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -10,14 +11,8 @@ export default function Footer() {
     <footer className="bg-gray-900 text-gray-300">
       <div className="container mx-auto px-4">
         {/* Newsletter Signup Section */}
-        <div className="rounded-t-xl" style={{background: "linear-gradient(90deg,#9b87f5,#7c3aed)"}}>
-          <EmailSubscribe
-            bg={false}
-            containerClassName="py-12 px-2"
-            inputClassName="w-full sm:w-96 h-12 px-4 rounded-lg bg-[#2a2350] border border-white/20 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-white text-base"
-            buttonClassName="h-12 min-w-[120px] font-semibold px-6 rounded-lg bg-white text-[#7c3aed] hover:bg-[#9b87f5] hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
-            lottiePath="/lovable-uploads/party-celebration-11702446.json"
-          />
+        <div className="rounded-t-xl py-12">
+          <FooterSubscribeSection />
         </div>
 
         {/* Main Footer Content */}
