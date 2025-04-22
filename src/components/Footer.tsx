@@ -1,35 +1,23 @@
 import { Link } from "react-router-dom";
 import { Mail, MapPin, Phone, Twitter, Facebook, Instagram, Linkedin, Youtube, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import EmailSubscribe from "./EmailSubscribe";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  
+
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="container mx-auto px-4">
         {/* Newsletter Signup Section */}
-        <div className="py-12 border-b border-gray-800">
-          <div className="max-w-3xl mx-auto text-center">
-            <h3 className="text-2xl font-bold text-white mb-2">Stay Updated with AI Trends</h3>
-            <p className="text-gray-400 mb-6">
-              Join 20,000+ subscribers receiving our weekly AI insights newsletter.
-              No spam, just the latest in AI.
-            </p>
-            <form className="flex flex-col sm:flex-row gap-2">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-md bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-aiblue"
-              />
-              <Button 
-                type="submit" 
-                className="bg-white text-aiblue hover:bg-gray-100 transition-colors"
-              >
-                Subscribe
-              </Button>
-            </form>
-          </div>
+        <div className="rounded-t-xl" style={{background: "linear-gradient(90deg,#9b87f5,#7c3aed)"}}>
+          <EmailSubscribe
+            bg={false}
+            containerClassName="py-12 px-2"
+            inputClassName="w-full sm:w-96 h-12 px-4 rounded-lg bg-[#2a2350] border border-white/20 text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-white text-base"
+            buttonClassName="h-12 min-w-[120px] font-semibold px-6 rounded-lg bg-white text-[#7c3aed] hover:bg-[#9b87f5] hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+            lottiePath="/lovable-uploads/party-celebration-11702446.json"
+          />
         </div>
 
         {/* Main Footer Content */}
