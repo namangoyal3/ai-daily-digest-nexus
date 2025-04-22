@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, Star, BookOpen, Users, CheckCircle, Search } from "lucide-react";
+import { ArrowDown, BookOpen, Users, CheckCircle, Search, GraduationCap } from "lucide-react";
 
 export default function AICoursesHero() {
   const scrollToCourses = () => {
@@ -23,9 +23,9 @@ export default function AICoursesHero() {
             Discover AI Courses for Every Skill Level
           </h1>
           <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-lg">
-            Browse our curated directory of 2,500+ AI courses from beginner to advanced. Find free and premium resources rated&nbsp;
-            <span className="inline-flex items-center text-aipurple font-semibold">
-              4.9 <Star className="ml-1 h-4 w-4" fill="#7c3aed" />
+            Browse our curated directory of 2,500+ AI courses from beginner to advanced. Find free and premium resources with
+            <span className="inline-flex items-center text-aipurple font-semibold ml-1">
+              expert-led instruction
             </span>
           </p>
           
@@ -68,15 +68,15 @@ export default function AICoursesHero() {
         <div className="w-full md:w-1/2 flex justify-center md:justify-end relative">
           <div className="absolute -top-6 -right-6 w-32 h-32 bg-yellow-100 rounded-full z-0"></div>
           <img
-            src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600"
-            alt="AI Courses Directory"
+            src="https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?w=600"
+            alt="AI Learning Resources"
             className="rounded-xl shadow-xl w-[400px] h-[300px] object-cover border-4 border-white relative z-10"
             draggable={false}
           />
           <div className="absolute -bottom-3 -left-3 bg-white shadow-lg rounded-lg p-3 z-20 flex items-center">
-            <Star className="h-5 w-5 text-yellow-500 mr-1" fill="#EAB308" />
-            <span className="font-bold mr-1">4.9</span>
-            <span className="text-gray-500 text-sm">(2.5k+ reviews)</span>
+            <GraduationCap className="h-5 w-5 text-aipurple mr-1" />
+            <span className="font-bold mr-1">2,500+</span>
+            <span className="text-gray-500 text-sm">courses available</span>
           </div>
         </div>
       </div>

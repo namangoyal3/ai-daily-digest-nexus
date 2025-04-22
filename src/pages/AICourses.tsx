@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import AICoursesHero from "@/components/AICoursesHero";
@@ -374,15 +373,6 @@ export default function AICourses() {
             <Button variant="outline">
               Contact Us for Support
             </Button>
-          </div>
-        </div>
-      </section>
-      
-      {/* CTA Section */}
-      <section className="bg-gray-50 py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto">
-            <FooterSubscribeSection />
           </div>
         </div>
       </section>

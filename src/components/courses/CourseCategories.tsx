@@ -1,7 +1,8 @@
-
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Code, BookOpen, Brain, Briefcase, Users, Building, Lightbulb } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 interface CategoryProps {
   icon: React.ReactNode;
@@ -33,7 +34,7 @@ export default function CourseCategories() {
   ];
 
   return (
-    <section className="bg-gray-50 py-12">
+    <section className="bg-gray-50 py-12" id="courses">
       <div className="container mx-auto px-4">
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-bold mb-2">Explore AI Course Categories</h2>
@@ -55,6 +56,13 @@ export default function CourseCategories() {
               {categories.map((category, index) => (
                 <CategoryCard key={index} {...category} />
               ))}
+            </div>
+            <div className="mt-8 text-center">
+              <Link to="/ai-courses/directory">
+                <Button className="bg-gradient-to-r from-aiblue to-aipurple">
+                  View All Courses
+                </Button>
+              </Link>
             </div>
           </TabsContent>
           
