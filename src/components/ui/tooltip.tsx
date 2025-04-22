@@ -4,17 +4,18 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
 import { cn } from "@/lib/utils"
 
-// Update the TooltipProvider component to accept delayDuration as a prop
-const TooltipProvider = React.forwardRef<
-  React.ElementRef<typeof TooltipPrimitive.Provider>,
-  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Provider>
->(({ children, ...props }, ref) => {
+// Fix the TooltipProvider component to handle props correctly
+const TooltipProvider = ({ 
+  children, 
+  delayDuration = 200,
+  ...props 
+}: React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Provider>) => {
   return (
-    <TooltipPrimitive.Provider ref={ref} {...props}>
+    <TooltipPrimitive.Provider delayDuration={delayDuration} {...props}>
       {children}
     </TooltipPrimitive.Provider>
   );
-});
+};
 TooltipProvider.displayName = TooltipPrimitive.Provider.displayName
 
 const Tooltip = TooltipPrimitive.Root
