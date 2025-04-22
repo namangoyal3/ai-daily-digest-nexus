@@ -2,7 +2,6 @@
 import { useRef, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Lottie from "lottie-react";
-import partyAnimation from "../../public/lovable-uploads/party-celebration-11702446.json";
 
 /**
  * Props:
@@ -114,7 +113,218 @@ export default function EmailSubscribe({
           <div className="flex justify-center mb-2">
             <div className="w-36 h-36 mx-auto flex items-center justify-center">
               <Lottie
-                animationData={partyAnimation}
+                animationData={{
+                  "v": "5.7.6",
+                  "fr": 30,
+                  "ip": 0,
+                  "op": 60,
+                  "w": 1080,
+                  "h": 1080,
+                  "nm": "Party-celebration",
+                  "ddd": 0,
+                  "assets": [],
+                  "layers": [
+                    {
+                      "ddd": 0,
+                      "ind": 1,
+                      "ty": 4,
+                      "nm": "Confetti",
+                      "sr": 1,
+                      "ks": {
+                        "o": { "a": 0, "k": 100, "ix": 11 },
+                        "r": { "a": 0, "k": 0, "ix": 10 },
+                        "p": { "a": 0, "k": [540, 540, 0], "ix": 2, "l": 2 },
+                        "a": { "a": 0, "k": [0, 0, 0], "ix": 1, "l": 2 },
+                        "s": { "a": 0, "k": [100, 100, 100], "ix": 6, "l": 2 }
+                      },
+                      "ao": 0,
+                      "shapes": [
+                        {
+                          "ty": "gr",
+                          "it": [
+                            {
+                              "d": 1,
+                              "ty": "el",
+                              "s": { "a": 0, "k": [20, 20], "ix": 2 },
+                              "p": { "a": 0, "k": [0, 0], "ix": 3 },
+                              "nm": "Ellipse Path 1",
+                              "mn": "ADBE Vector Shape - Ellipse",
+                              "hd": false
+                            },
+                            {
+                              "ty": "fl",
+                              "c": { "a": 0, "k": [0.9, 0.2, 0.2, 1], "ix": 4 },
+                              "o": { "a": 0, "k": 100, "ix": 5 },
+                              "r": 1,
+                              "bm": 0,
+                              "nm": "Fill 1",
+                              "mn": "ADBE Vector Graphic - Fill",
+                              "hd": false
+                            },
+                            {
+                              "ty": "tr",
+                              "p": { "a": 1, "k": [{ "i": { "x": 0.667, "y": 1 }, "o": { "x": 0.333, "y": 0 }, "t": 0, "s": [0, -200], "to": [33.333, 66.667], "ti": [-33.333, -66.667] }, { "t": 60, "s": [200, 200] }], "ix": 2 },
+                              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+                              "s": { "a": 0, "k": [100, 100], "ix": 3 },
+                              "r": { "a": 0, "k": 0, "ix": 6 },
+                              "o": { "a": 0, "k": 100, "ix": 7 },
+                              "sk": { "a": 0, "k": 0, "ix": 4 },
+                              "sa": { "a": 0, "k": 0, "ix": 5 },
+                              "nm": "Transform"
+                            }
+                          ],
+                          "nm": "Confetti 1",
+                          "np": 2,
+                          "cix": 2,
+                          "bm": 0,
+                          "ix": 1,
+                          "mn": "ADBE Vector Group",
+                          "hd": false
+                        },
+                        {
+                          "ty": "gr",
+                          "it": [
+                            {
+                              "ty": "rc",
+                              "d": 1,
+                              "s": { "a": 0, "k": [20, 20], "ix": 2 },
+                              "p": { "a": 0, "k": [0, 0], "ix": 3 },
+                              "r": { "a": 0, "k": 0, "ix": 4 },
+                              "nm": "Rectangle Path 1",
+                              "mn": "ADBE Vector Shape - Rect",
+                              "hd": false
+                            },
+                            {
+                              "ty": "fl",
+                              "c": { "a": 0, "k": [0.2, 0.5, 0.9, 1], "ix": 4 },
+                              "o": { "a": 0, "k": 100, "ix": 5 },
+                              "r": 1,
+                              "bm": 0,
+                              "nm": "Fill 1",
+                              "mn": "ADBE Vector Graphic - Fill",
+                              "hd": false
+                            },
+                            {
+                              "ty": "tr",
+                              "p": { "a": 1, "k": [{ "i": { "x": 0.667, "y": 1 }, "o": { "x": 0.333, "y": 0 }, "t": 0, "s": [0, -200], "to": [-33.333, 66.667], "ti": [33.333, -66.667] }, { "t": 60, "s": [-200, 200] }], "ix": 2 },
+                              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+                              "s": { "a": 0, "k": [100, 100], "ix": 3 },
+                              "r": { "a": 1, "k": [{ "i": { "x": [0.833], "y": [0.833] }, "o": { "x": [0.167], "y": [0.167] }, "t": 0, "s": [0] }, { "t": 60, "s": [180] }], "ix": 6 },
+                              "o": { "a": 0, "k": 100, "ix": 7 },
+                              "sk": { "a": 0, "k": 0, "ix": 4 },
+                              "sa": { "a": 0, "k": 0, "ix": 5 },
+                              "nm": "Transform"
+                            }
+                          ],
+                          "nm": "Confetti 2",
+                          "np": 2,
+                          "cix": 2,
+                          "bm": 0,
+                          "ix": 2,
+                          "mn": "ADBE Vector Group",
+                          "hd": false
+                        },
+                        {
+                          "ty": "gr",
+                          "it": [
+                            {
+                              "ty": "sr",
+                              "d": 1,
+                              "pt": { "a": 0, "k": 5, "ix": 3 },
+                              "p": { "a": 0, "k": [0, 0], "ix": 4 },
+                              "or": { "a": 0, "k": 10, "ix": 7 },
+                              "ir": { "a": 0, "k": 5, "ix": 6 },
+                              "is": { "a": 0, "k": 0, "ix": 8 },
+                              "ix": 1,
+                              "nm": "Polystar Path 1",
+                              "mn": "ADBE Vector Shape - Star",
+                              "hd": false
+                            },
+                            {
+                              "ty": "fl",
+                              "c": { "a": 0, "k": [0.9, 0.7, 0.2, 1], "ix": 4 },
+                              "o": { "a": 0, "k": 100, "ix": 5 },
+                              "r": 1,
+                              "bm": 0,
+                              "nm": "Fill 1",
+                              "mn": "ADBE Vector Graphic - Fill",
+                              "hd": false
+                            },
+                            {
+                              "ty": "tr",
+                              "p": { "a": 1, "k": [{ "i": { "x": 0.667, "y": 1 }, "o": { "x": 0.333, "y": 0 }, "t": 0, "s": [-100, -200], "to": [0, 66.667], "ti": [0, -66.667] }, { "t": 60, "s": [-100, 200] }], "ix": 2 },
+                              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+                              "s": { "a": 0, "k": [100, 100], "ix": 3 },
+                              "r": { "a": 1, "k": [{ "i": { "x": [0.833], "y": [0.833] }, "o": { "x": [0.167], "y": [0.167] }, "t": 0, "s": [0] }, { "t": 60, "s": [180] }], "ix": 6 },
+                              "o": { "a": 0, "k": 100, "ix": 7 },
+                              "sk": { "a": 0, "k": 0, "ix": 4 },
+                              "sa": { "a": 0, "k": 0, "ix": 5 },
+                              "nm": "Transform"
+                            }
+                          ],
+                          "nm": "Confetti 3",
+                          "np": 2,
+                          "cix": 2,
+                          "bm": 0,
+                          "ix": 3,
+                          "mn": "ADBE Vector Group",
+                          "hd": false
+                        },
+                        {
+                          "ty": "gr",
+                          "it": [
+                            {
+                              "ty": "sr",
+                              "d": 1,
+                              "pt": { "a": 0, "k": 5, "ix": 3 },
+                              "p": { "a": 0, "k": [0, 0], "ix": 4 },
+                              "or": { "a": 0, "k": 10, "ix": 7 },
+                              "ir": { "a": 0, "k": 5, "ix": 6 },
+                              "is": { "a": 0, "k": 0, "ix": 8 },
+                              "ix": 1,
+                              "nm": "Polystar Path 1",
+                              "mn": "ADBE Vector Shape - Star",
+                              "hd": false
+                            },
+                            {
+                              "ty": "fl",
+                              "c": { "a": 0, "k": [0.2, 0.9, 0.5, 1], "ix": 4 },
+                              "o": { "a": 0, "k": 100, "ix": 5 },
+                              "r": 1,
+                              "bm": 0,
+                              "nm": "Fill 1",
+                              "mn": "ADBE Vector Graphic - Fill",
+                              "hd": false
+                            },
+                            {
+                              "ty": "tr",
+                              "p": { "a": 1, "k": [{ "i": { "x": 0.667, "y": 1 }, "o": { "x": 0.333, "y": 0 }, "t": 0, "s": [100, -200], "to": [0, 66.667], "ti": [0, -66.667] }, { "t": 60, "s": [100, 200] }], "ix": 2 },
+                              "a": { "a": 0, "k": [0, 0], "ix": 1 },
+                              "s": { "a": 0, "k": [100, 100], "ix": 3 },
+                              "r": { "a": 1, "k": [{ "i": { "x": [0.833], "y": [0.833] }, "o": { "x": [0.167], "y": [0.167] }, "t": 0, "s": [0] }, { "t": 60, "s": [180] }], "ix": 6 },
+                              "o": { "a": 0, "k": 100, "ix": 7 },
+                              "sk": { "a": 0, "k": 0, "ix": 4 },
+                              "sa": { "a": 0, "k": 0, "ix": 5 },
+                              "nm": "Transform"
+                            }
+                          ],
+                          "nm": "Confetti 4",
+                          "np": 2,
+                          "cix": 2,
+                          "bm": 0,
+                          "ix": 4,
+                          "mn": "ADBE Vector Group",
+                          "hd": false
+                        }
+                      ],
+                      "ip": 0,
+                      "op": 60,
+                      "st": 0,
+                      "bm": 0
+                    }
+                  ],
+                  "markers": []
+                }}
                 loop={false}
                 autoplay
                 style={{ width: "130px", height: "130px" }}
