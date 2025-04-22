@@ -45,4 +45,4 @@ jobs:
 
       - name: Restart Nginx
         run: |
-          ssh -v -i private_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "sudo systemctl restart nginx"
+          ssh -vvv -i private_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "sudo systemctl restart nginx"
