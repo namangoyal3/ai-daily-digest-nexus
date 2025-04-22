@@ -52,19 +52,38 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				// AI Daily Digest custom colors
+				neural: {
+					DEFAULT: '#0B2447',
+					light: '#143975',
+					dark: '#051834',
+				},
+				luminous: {
+					DEFAULT: '#301E67',
+					light: '#4C3399',
+					dark: '#221648',
+				},
+				teal: {
+					DEFAULT: '#05BFDB',
+					light: '#20D7F3',
+					dark: '#0496AD',
+				},
+				gold: {
+					DEFAULT: '#FFD700',
+					light: '#FFDF33',
+					dark: '#CCAC00',
+				},
 				aiblue: {
-					DEFAULT: '#1E3A8A', // Deep blue
+					DEFAULT: '#1E3A8A',
 					light: '#3151B2',
 					dark: '#152A63',
 				},
 				aipurple: {
-					DEFAULT: '#7C3AED', // Vibrant purple
+					DEFAULT: '#7C3AED',
 					light: '#9F6EF3',
 					dark: '#6025C6',
 				},
 				aiteal: {
-					DEFAULT: '#0D9488', // Soft teal
+					DEFAULT: '#0D9488',
 					light: '#12B5A7',
 					dark: '#0A7269',
 				},
@@ -114,17 +133,32 @@ export default {
 				'pulse-slow': {
 					'0%, 100%': { opacity: 1 },
 					'50%': { opacity: 0.8 }
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0)' },
+					'50%': { transform: 'translateY(-10px)' }
+				},
+				'glow': {
+					'0%, 100%': { boxShadow: '0 0 5px 2px rgba(5, 191, 219, 0.3)' },
+					'50%': { boxShadow: '0 0 15px 5px rgba(5, 191, 219, 0.6)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.7s ease-out',
-				'pulse-slow': 'pulse-slow 3s infinite ease-in-out'
+				'pulse-slow': 'pulse-slow 3s infinite ease-in-out',
+				'float': 'float 6s infinite ease-in-out',
+				'glow': 'glow 3s infinite ease-in-out'
 			},
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
-				heading: ['Montserrat', 'sans-serif'],
+				heading: ['Poppins', 'sans-serif'],
+			},
+			backgroundImage: {
+				'neural-gradient': 'linear-gradient(135deg, #0B2447 0%, #301E67 100%)',
+				'neural-accent': 'linear-gradient(135deg, #05BFDB 0%, #301E67 100%)',
+				'neural-gold': 'linear-gradient(135deg, #FFD700 30%, #301E67 100%)',
 			}
 		}
 	},

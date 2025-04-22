@@ -23,6 +23,7 @@ import AdminPromotions from "./pages/AdminPromotions";
 import { Helmet } from "react-helmet";
 import { useEffect } from "react";
 import AIBlogs from "./pages/AIBlogs";
+import CourseDetail from "./pages/CourseDetail";
 
 // ScrollToTop component to reset scroll position on route change
 function ScrollToTop() {
@@ -60,6 +61,7 @@ const App = () => (
           <Route path="/ai-agents" element={<AIAgents />} />
           <Route path="/ai-courses" element={<AICourses />} />
           <Route path="/ai-courses/directory" element={<AICoursesDirectory />} />
+          <Route path="/ai-courses/:courseId" element={<CourseDetail />} />
           <Route path="/agent/:agentSlug" element={<AgentDetails />} />
           <Route path="/agent/midjourney" element={<MidjourneyDetails />} />
           <Route path="/category/:categorySlug" element={<AIAgents />} />

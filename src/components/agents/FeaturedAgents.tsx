@@ -68,12 +68,12 @@ export default function FeaturedAgents() {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-br from-white via-blue-50/20 to-purple-50/20">
+    <section className="py-16 md:py-24 bg-gradient-to-br from-white via-neural/5 to-luminous/5">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-12">
             <div>
-              <h2 className="font-heading text-3xl md:text-4xl font-bold text-aiblue mb-2">
+              <h2 className="font-heading text-3xl md:text-4xl font-bold text-neural mb-2">
                 Featured AI Agents
               </h2>
               <p className="text-gray-600 max-w-2xl">
@@ -83,7 +83,7 @@ export default function FeaturedAgents() {
             <div className="mt-4 md:mt-0">
               <Button 
                 variant="outline"
-                className="border-aiblue text-aiblue hover:bg-aiblue hover:text-white"
+                className="border-neural text-neural hover:bg-neural hover:text-white"
                 asChild
               >
                 <Link to="/ai-agents">
@@ -97,7 +97,7 @@ export default function FeaturedAgents() {
             {featuredAgents.map((agent) => (
               <div 
                 key={agent.id}
-                className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-100"
+                className="neural-card neural-card-hover transition-shadow duration-300"
               >
                 <div className="flex p-6">
                   <div className="w-20 h-20 mr-6 flex-shrink-0">
@@ -110,7 +110,7 @@ export default function FeaturedAgents() {
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-1">
                       <h3 className="font-heading text-xl font-semibold">{agent.name}</h3>
-                      <span className="text-sm font-medium text-white bg-gradient-to-r from-aiblue to-aipurple px-3 py-1 rounded-full">
+                      <span className="text-sm font-medium text-white bg-gradient-to-r from-neural to-luminous px-3 py-1 rounded-full">
                         {agent.pricing}
                       </span>
                     </div>
@@ -122,20 +122,20 @@ export default function FeaturedAgents() {
                           {[...Array(5)].map((_, i) => (
                             <Star 
                               key={i} 
-                              className={`h-4 w-4 ${i < Math.floor(agent.rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`} 
+                              className={`h-4 w-4 ${i < Math.floor(agent.rating) ? 'text-gold fill-gold' : 'text-gray-300'}`} 
                             />
                           ))}
                         </div>
                         <span className="ml-2 text-sm text-gray-600">({agent.reviewCount})</span>
                       </div>
-                      <span className="text-sm text-aipurple font-medium">{agent.category}</span>
+                      <span className="text-sm text-luminous font-medium">{agent.category}</span>
                     </div>
                   </div>
                 </div>
                 <div className="flex border-t border-gray-100">
                   <Button 
                     variant="ghost" 
-                    className="flex-1 rounded-none py-3 text-aiblue hover:bg-gray-50"
+                    className="flex-1 rounded-none py-3 text-neural hover:bg-gray-50"
                     asChild
                   >
                     <Link to={`/agent/${agent.id}`}>
@@ -145,7 +145,7 @@ export default function FeaturedAgents() {
                   <div className="w-px bg-gray-100"></div>
                   <Button 
                     variant="ghost"
-                    className="flex-1 rounded-none py-3 text-aiblue hover:bg-gray-50"
+                    className="flex-1 rounded-none py-3 text-neural hover:bg-gray-50"
                     onClick={() => handleVisitWebsite(agent)}
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />

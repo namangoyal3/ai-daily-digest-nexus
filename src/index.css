@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
@@ -16,16 +16,16 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 226 65% 33%; /* Deep blue #1E3A8A */
+    --primary: 217 85% 16%; /* Deep space blue #0B2447 */
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 262 83% 58%; /* Vibrant purple #7C3AED */
+    --secondary: 262 55% 26%; /* Purple #301E67 */
     --secondary-foreground: 210 40% 98%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
+    --accent: 187 96% 44%; /* Electric teal #05BFDB */
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
@@ -33,47 +33,40 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 187 96% 44%;
 
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 217 85% 9%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 217 85% 12%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 217 85% 9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
+    --primary: 187 96% 44%; /* Reversed for dark mode - Electric teal #05BFDB */
     --primary-foreground: 222.2 47.4% 11.2%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 60 100% 50%; /* Gold #FFD700 for dark mode */
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 262 55% 26%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
@@ -81,7 +74,8 @@
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 187 96% 44%;
+    
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -100,6 +94,11 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
   }
 
   html {
@@ -121,10 +120,42 @@
 
 /* Enhanced CTA Button Styles */
 .cta-button {
-  @apply bg-gradient-to-r from-aiblue to-aipurple text-white px-6 py-3 rounded-md 
+  @apply bg-gradient-to-r from-neural to-luminous text-white px-6 py-3 rounded-md 
   font-medium transition-all duration-300 hover:shadow-lg hover:-translate-y-1
-  focus:outline-none focus:ring-2 focus:ring-aipurple focus:ring-opacity-50
+  focus:outline-none focus:ring-2 focus:ring-teal focus:ring-opacity-50
   cursor-pointer inline-flex items-center justify-center;
+}
+
+/* Neural Luminescence specific styles */
+.neural-card {
+  @apply bg-white/90 backdrop-blur-sm border border-neural/10 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl;
+}
+
+.neural-card-hover {
+  @apply hover:border-teal/30 hover:shadow-teal/20;
+}
+
+/* Glass morphism effects */
+.glass-panel {
+  @apply bg-white/70 backdrop-blur-md border border-white/30 shadow-lg;
+}
+
+.glass-dark {
+  @apply bg-neural/70 backdrop-blur-md border border-luminous/30 text-white shadow-lg;
+}
+
+/* Animated Border */
+.animated-border {
+  @apply relative;
+}
+
+.animated-border::after {
+  content: '';
+  @apply absolute bottom-0 left-0 h-0.5 w-0 bg-teal transition-all duration-300 ease-in-out;
+}
+
+.animated-border:hover::after {
+  @apply w-full;
 }
 
 /* Animations */
@@ -139,4 +170,13 @@
 
 .animate-pulse-slow {
   animation: pulse-slow 6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Particle background */
+.particle-background {
+  @apply relative overflow-hidden;
+}
+
+.particle {
+  @apply absolute rounded-full bg-teal/20 pointer-events-none animate-float;
 }

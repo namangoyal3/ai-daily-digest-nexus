@@ -32,14 +32,14 @@ export default function Hero() {
   };
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-aiblue/5 via-aipurple/5 to-aiteal/5 py-12 md:py-20 w-full">
+    <div className="relative overflow-hidden bg-gradient-to-br from-neural/5 via-luminous/5 to-teal/5 py-12 md:py-20 w-full">
       <div className="absolute top-0 left-0 w-full h-full">
-        <div className="absolute top-20 right-10 w-72 h-72 bg-aipurple/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"></div>
-        <div className="absolute bottom-20 left-10 w-72 h-72 bg-aiblue/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"></div>
+        <div className="absolute top-20 right-10 w-72 h-72 bg-luminous/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"></div>
+        <div className="absolute bottom-20 left-10 w-72 h-72 bg-neural/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"></div>
       </div>
       
       <div className="container mx-auto px-4 relative z-10">
-        <div className="flex flex-col md:flex-row items-center">
+        <div className="flex flex-col md:flex-row items-center justify-between">
           <motion.div 
             className="w-full md:w-1/2 md:pr-12 mb-8 md:mb-0"
             initial="hidden"
@@ -53,7 +53,7 @@ export default function Hero() {
             }}
           >
             <motion.h1 
-              className="text-3xl md:text-5xl lg:text-6xl font-heading font-bold text-aiblue leading-tight mb-4 md:mb-6"
+              className="text-3xl md:text-5xl lg:text-6xl font-heading font-bold text-neural leading-tight mb-4 md:mb-6"
               variants={fadeIn}
               custom={0}
             >
@@ -70,45 +70,45 @@ export default function Hero() {
             </motion.p>
             
             <motion.div 
-              className="bg-white/90 backdrop-blur-sm rounded-xl p-5 shadow-lg mb-8 border border-aiblue/10"
+              className="neural-card neural-card-hover p-5 mb-8"
               variants={fadeIn}
               custom={2}
             >
-              <h2 className="font-heading font-medium text-lg text-aiblue mb-3">What You'll Get</h2>
+              <h2 className="font-heading font-medium text-lg text-neural mb-3">What You'll Get</h2>
               <div className="grid grid-cols-2 gap-4">
                 <motion.div 
-                  className="flex items-center bg-gradient-to-r from-aiblue/5 to-aipurple/5 p-4 rounded-lg hover:shadow-md transition-all"
+                  className="flex items-center bg-gradient-to-r from-neural/5 to-luminous/5 p-4 rounded-lg hover:shadow-md transition-all"
                   whileHover={{ scale: 1.03 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Brain className="h-8 w-8 text-aiblue mr-3 flex-shrink-0" />
+                  <Brain className="h-8 w-8 text-neural mr-3 flex-shrink-0" />
                   <span className="text-sm font-medium">AI Breakthroughs</span>
                 </motion.div>
                 
                 <motion.div 
-                  className="flex items-center bg-gradient-to-r from-aipurple/5 to-aiteal/5 p-4 rounded-lg hover:shadow-md transition-all"
+                  className="flex items-center bg-gradient-to-r from-luminous/5 to-teal/5 p-4 rounded-lg hover:shadow-md transition-all"
                   whileHover={{ scale: 1.03 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <Zap className="h-8 w-8 text-aipurple mr-3 flex-shrink-0" />
+                  <Zap className="h-8 w-8 text-luminous mr-3 flex-shrink-0" />
                   <span className="text-sm font-medium">Industry Insights</span>
                 </motion.div>
                 
                 <motion.div 
-                  className="flex items-center bg-gradient-to-r from-aiteal/5 to-aiblue/5 p-4 rounded-lg hover:shadow-md transition-all"
+                  className="flex items-center bg-gradient-to-r from-teal/5 to-neural/5 p-4 rounded-lg hover:shadow-md transition-all"
                   whileHover={{ scale: 1.03 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <LineChart className="h-8 w-8 text-aiteal mr-3 flex-shrink-0" />
+                  <LineChart className="h-8 w-8 text-teal mr-3 flex-shrink-0" />
                   <span className="text-sm font-medium">Market Trends</span>
                 </motion.div>
                 
                 <motion.div 
-                  className="flex items-center bg-gradient-to-r from-aiblue/5 to-aipurple/5 p-4 rounded-lg hover:shadow-md transition-all"
+                  className="flex items-center bg-gradient-to-r from-neural/5 to-luminous/5 p-4 rounded-lg hover:shadow-md transition-all"
                   whileHover={{ scale: 1.03 }}
                   transition={{ type: "spring", stiffness: 400, damping: 10 }}
                 >
-                  <BarChart3 className="h-8 w-8 text-aiblue mr-3 flex-shrink-0" />
+                  <BarChart3 className="h-8 w-8 text-neural mr-3 flex-shrink-0" />
                   <span className="text-sm font-medium">Growth Stats</span>
                 </motion.div>
               </div>
@@ -125,7 +125,7 @@ export default function Hero() {
               >
                 <Button 
                   id="hero-subscribe"
-                  className="rounded-full bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark text-white font-medium px-8 py-6 text-lg shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 transition-all"
+                  className="rounded-full bg-gradient-to-r from-neural to-luminous hover:from-neural-dark hover:to-luminous-dark text-white font-medium px-8 py-6 text-lg shadow-lg shadow-luminous/20 hover:shadow-luminous/40 transition-all"
                   onClick={scrollToSubscribe}
                   aria-label="Subscribe to AI Daily Digest"
                 >
@@ -158,14 +158,14 @@ export default function Hero() {
                   />
                 </div>
                 <p className="ml-4 text-sm text-gray-500">
-                  Joined by <span className="font-semibold text-aiblue">2,000+</span> AI enthusiasts
+                  Joined by <span className="font-semibold text-neural">2,000+</span> AI enthusiasts
                 </p>
               </div>
             </motion.div>
           </motion.div>
 
           <motion.div 
-            className="w-full md:w-1/2 px-4 md:px-0"
+            className="w-full md:w-1/2 px-4 md:px-0 md:ml-8"
             initial="hidden"
             animate="visible"
             variants={{
@@ -175,12 +175,12 @@ export default function Hero() {
           >
             <div className="relative">
               <motion.div 
-                className="bg-white rounded-xl shadow-xl p-4 md:p-6 transform hover:rotate-0 transition-transform duration-300 z-20 relative"
+                className="neural-card p-4 md:p-6 transform hover:rotate-0 transition-transform duration-300 z-20 relative"
                 initial={{ rotate: 1 }}
                 whileHover="hover"
                 variants={cardHover}
               >
-                <div className="bg-gradient-to-r from-aiblue-light to-aipurple rounded-lg p-2 text-white text-sm font-medium mb-4 inline-block">
+                <div className="bg-gradient-to-r from-neural-light to-luminous rounded-lg p-2 text-white text-sm font-medium mb-4 inline-block">
                   Today's Edition
                 </div>
                 <h3 className="font-heading text-xl md:text-2xl font-bold mb-4">
@@ -198,12 +198,12 @@ export default function Hero() {
               </motion.div>
               
               <motion.div 
-                className="absolute -bottom-4 right-4 bg-white rounded-xl shadow-xl p-4 md:p-6 transform hover:rotate-0 transition-transform duration-300 z-10 w-4/5 md:w-2/3"
+                className="absolute -bottom-4 right-4 neural-card p-4 md:p-6 transform hover:rotate-0 transition-transform duration-300 z-10 w-4/5 md:w-2/3"
                 initial={{ rotate: -2 }}
                 whileHover="hover"
                 variants={cardHover}
               >
-                <div className="bg-gradient-to-r from-aiteal to-aiteal-light rounded-lg p-2 text-white text-sm font-medium mb-4 inline-block">
+                <div className="bg-gradient-to-r from-teal to-teal-light rounded-lg p-2 text-white text-sm font-medium mb-4 inline-block">
                   AI Market Trends
                 </div>
                 <h3 className="font-heading text-lg md:text-xl font-bold mb-2">
