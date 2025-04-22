@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Mail, MapPin, Phone, Twitter, Facebook, Instagram, Linkedin, Youtube, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,7 +22,10 @@ export default function Footer() {
                 placeholder="Enter your email"
                 className="flex-1 px-4 py-3 rounded-md bg-gray-800 border border-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-aiblue"
               />
-              <Button type="submit" className="bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark transition-all">
+              <Button 
+                type="submit" 
+                className="bg-white text-aiblue hover:bg-gray-100 transition-colors"
+              >
                 Subscribe
               </Button>
             </form>
@@ -67,9 +69,9 @@ export default function Footer() {
             <ul className="space-y-3">
               <li><Link to="/ai-digest" className="hover:text-white transition-colors">AI Daily Digest</Link></li>
               <li><Link to="/ai-agents" className="hover:text-white transition-colors">AI Agents Marketplace</Link></li>
-              <li><Link to="/ai-courses" className="hover:text-white transition-colors">AI Courses</Link></li>
-              <li><a href="#" className="hover:text-white transition-colors">Enterprise Solutions</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">API Access</a></li>
+              <li><Link to="/ai-courses" className="hover:text-white transition-colors text-white">AI Courses</Link></li>
+              <li><a href="#" className="hover:text-white transition-colors text-white">Enterprise Solutions</a></li>
+              <li><a href="#" className="hover:text-white transition-colors text-white">API Access</a></li>
             </ul>
           </div>
           
@@ -106,9 +108,9 @@ export default function Footer() {
         <div className="border-t border-gray-800 py-8 text-sm flex flex-col md:flex-row justify-between items-center">
           <p>&copy; {currentYear} NeuralNextGen. All rights reserved.</p>
           <div className="mt-4 md:mt-0 flex gap-4">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-white transition-colors">Cookie Policy</a>
+            <a href="#" className="text-white hover:opacity-80 transition-opacity">Privacy Policy</a>
+            <a href="#" className="text-white hover:opacity-80 transition-opacity">Terms of Service</a>
+            <a href="#" className="text-white hover:opacity-80 transition-opacity">Cookie Policy</a>
           </div>
         </div>
       </div>
