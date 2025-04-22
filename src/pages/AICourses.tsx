@@ -1,16 +1,16 @@
-import React from "react";
+
+import React, { useState } from "react";
 import AICoursesHero from "@/components/AICoursesHero";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { 
-  GraduationCap, Book, Code, Brain, ArrowRight, Users, CheckCircle, 
+  GraduationCap, BookOpen, Code, Brain, ArrowRight, Users, CheckCircle, 
   Award, BarChart, LineChart, Briefcase, Building, Lightbulb, Zap, 
   Clock, LucideIcon, ChevronDown, ChevronUp, Star, BadgeCheck,
-  Search, Filter, SlidersHorizontal, Tags, BookOpen
+  Search, Filter, SlidersHorizontal, Tags
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Carousel,
@@ -34,6 +34,7 @@ const FAQItem = ({ question, answer }: FAQItemProps) => {
       <button 
         className="flex justify-between items-center w-full text-left font-medium text-lg"
         onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
       >
         <span>{question}</span>
         {isOpen ? <ChevronUp className="h-5 w-5 flex-shrink-0" /> : <ChevronDown className="h-5 w-5 flex-shrink-0" />}
@@ -227,9 +228,250 @@ const FilterCategory = ({ title, options, expanded = false }: FilterCategoryProp
 };
 
 export default function AICourses() {
+  // Sample data
+  const featuredCourses = [
+    {
+      title: "Complete AI & Machine Learning Bootcamp 2025",
+      instructor: "Dr. Sarah Johnson",
+      rating: 4.9,
+      students: 12520,
+      skillLevel: "Beginner to Advanced",
+      duration: "48 hours",
+      price: "$94.99",
+      originalPrice: "$199.99",
+      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500",
+      bestseller: true
+    },
+    {
+      title: "Prompt Engineering Masterclass: ChatGPT & Beyond",
+      instructor: "Michael Chang",
+      rating: 4.8,
+      students: 8340,
+      skillLevel: "Intermediate",
+      duration: "12 hours",
+      price: "$59.99",
+      originalPrice: "$119.99",
+      image: "https://images.unsplash.com/photo-1682687220063-4742bd7fd538?w=500"
+    },
+    {
+      title: "Building AI Applications with TensorFlow & PyTorch",
+      instructor: "Raj Patel, PhD",
+      rating: 4.7,
+      students: 6780,
+      skillLevel: "Advanced",
+      duration: "36 hours",
+      price: "$84.99",
+      originalPrice: "$169.99",
+      image: "https://images.unsplash.com/photo-1526378722484-bd91ca387e72?w=500"
+    },
+    {
+      title: "AI for Business Leaders: Strategy & Implementation",
+      instructor: "Emma Wilson, MBA",
+      rating: 4.8,
+      students: 5230,
+      skillLevel: "All Levels",
+      duration: "15 hours",
+      price: "$69.99",
+      originalPrice: "$139.99",
+      image: "https://images.unsplash.com/photo-1581092921461-eab10342d9b3?w=500",
+      isNew: true
+    }
+  ];
+
+  const learningPaths = [
+    {
+      title: "AI Developer",
+      icon: Code,
+      description: "Build and deploy cutting-edge AI applications with Python, TensorFlow and PyTorch.",
+      timeCommitment: "4-6 months",
+      skills: ["Python", "TensorFlow", "PyTorch", "Deep Learning", "API Integration"],
+      color: "border-blue-500"
+    },
+    {
+      title: "Prompt Engineer",
+      icon: Brain,
+      description: "Master the art of crafting effective prompts for LLMs and generative AI systems.",
+      timeCommitment: "1-2 months",
+      skills: ["Prompt Design", "Context Engineering", "System Optimization", "Content Generation"],
+      color: "border-purple-500"
+    },
+    {
+      title: "AI Business Analyst",
+      icon: BarChart,
+      description: "Learn to leverage AI for business intelligence, analytics and strategic decision-making.",
+      timeCommitment: "2-3 months",
+      skills: ["Data Analysis", "Business Intelligence", "Strategy", "Decision Science"],
+      color: "border-green-500"
+    }
+  ];
+
+  const faqs = [
+    {
+      question: "How are NeuralNextGen courses different from free content?",
+      answer: "Our courses offer structured learning paths, hands-on projects, expert feedback, and certification. Unlike free content, we provide comprehensive, curated curriculum designed by industry experts with real-world applications and dedicated support."
+    },
+    {
+      question: "Do I get a certificate upon completion?",
+      answer: "Yes, all our courses include a verifiable certificate upon successful completion that you can share on LinkedIn and with potential employers."
+    },
+    {
+      question: "How long do I have access to the course materials?",
+      answer: "Once enrolled, you have lifetime access to all course materials, including future updates and improvements."
+    },
+    {
+      question: "What if I'm not satisfied with a course?",
+      answer: "We offer a 30-day money-back guarantee. If you're not completely satisfied with your purchase, we'll provide a full refund, no questions asked."
+    }
+  ];
+
   return (
     <>
+      <Header />
       <AICoursesHero />
+      
+      {/* Featured Courses Section */}
+      <section id="courses" className="bg-white py-16">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-baseline mb-8">
+            <div>
+              <h2 className="text-3xl font-bold mb-2">Featured AI Courses</h2>
+              <p className="text-gray-600">Top-rated courses trusted by professionals worldwide</p>
+            </div>
+            <Link to="/ai-courses/directory" className="text-aiblue font-medium flex items-center mt-4 md:mt-0">
+              View All Courses <ArrowRight className="ml-1 h-4 w-4" />
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featuredCourses.map((course, index) => (
+              <CourseCard key={index} {...course} />
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* Learning Paths Section */}
+      <section className="bg-gray-50 py-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-3">Career Learning Paths</h2>
+            <p className="text-gray-600 max-w-xl mx-auto">
+              Structured curriculum designed to take you from beginner to professional in specific AI career tracks
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {learningPaths.map((path, index) => (
+              <LearningPath key={index} {...path} />
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* Student Success Section */}
+      <section className="bg-white py-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-3">Student Success Stories</h2>
+            <p className="text-gray-600 max-w-xl mx-auto">
+              See how our AI courses have helped students advance their careers
+            </p>
+          </div>
+          
+          <div className="max-w-5xl mx-auto">
+            <Carousel className="w-full">
+              <CarouselContent>
+                <CarouselItem className="md:basis-1/1">
+                  <div className="bg-gray-50 rounded-xl p-8 shadow-sm">
+                    <div className="flex flex-col md:flex-row gap-6">
+                      <div className="md:w-1/4">
+                        <img 
+                          src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=150" 
+                          alt="Student" 
+                          className="w-20 h-20 object-cover rounded-full mx-auto md:mx-0" 
+                        />
+                      </div>
+                      <div className="md:w-3/4">
+                        <div className="flex text-yellow-500 mb-2">
+                          {Array(5).fill(0).map((_, i) => (
+                            <Star key={i} className="h-4 w-4 fill-yellow-400" />
+                          ))}
+                        </div>
+                        <p className="text-gray-700 mb-4">
+                          "The AI Developer course completely transformed my career. Within weeks of completing it, I landed a job as a Machine Learning Engineer at a tech startup with a 40% salary increase."
+                        </p>
+                        <div>
+                          <h4 className="font-bold text-lg">David Chen</h4>
+                          <p className="text-gray-600">Machine Learning Engineer @ TechAI</p>
+                          <div className="flex items-center mt-2">
+                            <BadgeCheck className="h-4 w-4 text-blue-600 mr-1" />
+                            <span className="text-sm text-blue-600">Verified Graduate</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CarouselItem>
+                <CarouselItem className="md:basis-1/1">
+                  <div className="bg-gray-50 rounded-xl p-8 shadow-sm">
+                    <div className="flex flex-col md:flex-row gap-6">
+                      <div className="md:w-1/4">
+                        <img 
+                          src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150" 
+                          alt="Student" 
+                          className="w-20 h-20 object-cover rounded-full mx-auto md:mx-0" 
+                        />
+                      </div>
+                      <div className="md:w-3/4">
+                        <div className="flex text-yellow-500 mb-2">
+                          {Array(5).fill(0).map((_, i) => (
+                            <Star key={i} className="h-4 w-4 fill-yellow-400" />
+                          ))}
+                        </div>
+                        <p className="text-gray-700 mb-4">
+                          "As a marketer, the Prompt Engineering course helped me leverage AI to create better campaigns. My content performance improved by 200% within 3 months of applying what I learned."
+                        </p>
+                        <div>
+                          <h4 className="font-bold text-lg">Jessica Miller</h4>
+                          <p className="text-gray-600">Digital Marketing Director @ GrowthLabs</p>
+                          <div className="flex items-center mt-2">
+                            <BadgeCheck className="h-4 w-4 text-blue-600 mr-1" />
+                            <span className="text-sm text-blue-600">Verified Graduate</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CarouselItem>
+              </CarouselContent>
+              <div className="flex justify-center mt-4">
+                <CarouselPrevious className="relative left-0 right-0 translate-y-0 static mx-2" />
+                <CarouselNext className="relative left-0 right-0 translate-y-0 static mx-2" />
+              </div>
+            </Carousel>
+          </div>
+        </div>
+      </section>
+      
+      {/* FAQ Section */}
+      <section className="bg-gray-50 py-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-3">Frequently Asked Questions</h2>
+            <p className="text-gray-600 max-w-xl mx-auto">
+              Get answers to common questions about our AI courses
+            </p>
+          </div>
+          
+          <div className="max-w-3xl mx-auto">
+            {faqs.map((faq, index) => (
+              <FAQItem key={index} question={faq.question} answer={faq.answer} />
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      <Footer />
     </>
   );
 }

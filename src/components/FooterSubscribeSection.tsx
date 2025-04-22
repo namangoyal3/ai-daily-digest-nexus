@@ -16,12 +16,15 @@ export default function FooterSubscribeSection() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    
     if (!validateEmail(email)) {
       setError("Please enter a valid email address.");
       setStatus("error");
       return;
     }
+    
     setStatus("loading");
+    
     // Simulate async call
     setTimeout(() => {
       setStatus("success");
@@ -34,27 +37,31 @@ export default function FooterSubscribeSection() {
       <h3 className="text-white text-2xl md:text-3xl font-bold mb-2 text-center">
         Subscribe for Weekly AI Insights
       </h3>
-      <p className="text-white/80 mb-4 text-center text-sm md:text-base max-w-sm">
+      <p className="text-white/80 mb-6 text-center text-sm md:text-base max-w-sm">
         Get exclusive news, tips, and resources delivered straight to your inbox. Never miss a breakthrough.
       </p>
+      
       <form
-        className="w-full flex flex-col sm:flex-row gap-2 mt-1"
+        className="w-full flex flex-col sm:flex-row gap-2"
         onSubmit={handleSubmit}
       >
-        <Input
-          type="email"
-          placeholder="you@example.com"
-          value={email}
-          className="flex-1 h-12 border-none rounded-md bg-white/90 focus:ring-aipurple text-gray-900 text-base"
-          onChange={e => setEmail(e.target.value)}
-          disabled={status === "loading" || status === "success"}
-          autoComplete="email"
-          aria-label="Email address"
-          required
-        />
+        <div className="flex-1 relative">
+          <Input
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            className="h-12 border-none rounded-md bg-white/90 focus:ring-2 focus:ring-white text-gray-900 text-base px-4"
+            onChange={e => setEmail(e.target.value)}
+            disabled={status === "loading" || status === "success"}
+            autoComplete="email"
+            aria-label="Email address"
+            required
+          />
+        </div>
+        
         <Button
           type="submit"
-          className="h-12 px-6 text-base font-semibold rounded-md bg-aiblue hover:bg-aipurple text-white transition"
+          className="h-12 px-6 text-base font-semibold rounded-md bg-aiblue hover:bg-blue-700 text-white transition"
           disabled={status === "loading" || status === "success"}
         >
           {status === "loading" ? (
@@ -72,19 +79,21 @@ export default function FooterSubscribeSection() {
           )}
         </Button>
       </form>
-      <div className="h-4 mt-1 w-full">
+      
+      <div className="h-4 mt-2 w-full">
         {status === "error" && error && (
-          <div className="flex items-center text-pink-100 text-xs mt-1">
+          <div className="flex items-center text-pink-100 text-sm">
             <AlertCircle className="h-4 w-4 mr-1" /> {error}
           </div>
         )}
         {status === "success" && (
-          <div className="flex items-center text-green-100 text-xs mt-1">
+          <div className="flex items-center text-green-100 text-sm">
             <Check className="h-4 w-4 mr-1" /> Thank you! Check your inbox to confirm.
           </div>
         )}
       </div>
-      <div className="mt-3 text-center text-xs text-white/70 flex items-center justify-center">
+      
+      <div className="mt-3 text-center text-xs text-white/70">
         We never send spam &mdash; unsubscribe any time.
       </div>
     </div>
