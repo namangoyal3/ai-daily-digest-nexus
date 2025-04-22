@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { 
@@ -73,7 +72,7 @@ export default function ParentLanding() {
                     <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop&crop=faces" alt="User avatar" className="w-8 h-8 rounded-full border-2 border-white"/>
                   </div>
                   <p className="text-sm text-gray-600">
-                    Trusted by <span className="font-semibold text-aiblue">50,000+</span> AI professionals
+                    Trusted by <span className="font-semibold text-aiblue">25,000+</span> AI professionals
                   </p>
                 </div>
               </div>
