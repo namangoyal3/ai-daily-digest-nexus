@@ -23,7 +23,6 @@ import AdminPromotions from "./pages/AdminPromotions";
 import { Helmet } from "react-helmet";
 import { useEffect } from "react";
 import AIBlogs from "./pages/AIBlogs";
-import CourseDetail from "./pages/CourseDetail";
 
 // ScrollToTop component to reset scroll position on route change
 function ScrollToTop() {
@@ -36,72 +35,61 @@ function ScrollToTop() {
   return null;
 }
 
-// Create QueryClient outside of the component
 const queryClient = new QueryClient();
 
-const AppRoutes = () => {
-  return (
-    <>
-      <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<ParentLanding />} />
-        <Route path="/ai-digest" element={<AIDigest />} />
-        <Route path="/ai-agents" element={<AIAgents />} />
-        <Route path="/ai-courses" element={<AICourses />} />
-        <Route path="/ai-courses/directory" element={<AICoursesDirectory />} />
-        <Route path="/ai-courses/:courseId" element={<CourseDetail />} />
-        <Route path="/agent/:agentSlug" element={<AgentDetails />} />
-        <Route path="/agent/midjourney" element={<MidjourneyDetails />} />
-        <Route path="/category/:categorySlug" element={<AIAgents />} />
-        <Route path="/article/:articleSlug" element={<NotFound />} />
-        <Route path="/guide/:guideSlug" element={<NotFound />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/admin/content" element={<AdminContent />} />
-        <Route path="/admin/homepage" element={<AdminHomePage />} />
-        <Route path="/admin/pages" element={<AdminPages />} />
-        <Route path="/admin/users" element={<AdminUsers />} />
-        <Route path="/admin/analytics" element={<AdminAnalytics />} />
-        <Route path="/admin/seo" element={<AdminSEO />} />
-        <Route path="/admin/comments" element={<NotFound />} />
-        <Route path="/admin/media" element={<NotFound />} />
-        <Route path="/admin/campaigns" element={<NotFound />} />
-        <Route path="/admin/leads" element={<NotFound />} />
-        <Route path="/admin/settings" element={<NotFound />} />
-        <Route path="/admin/calendar" element={<NotFound />} />
-        <Route path="/admin/themes" element={<NotFound />} />
-        <Route path="/admin/promotions" element={<AdminPromotions />} />
-        <Route path="/admin/structure" element={<NotFound />} />
-        <Route path="/admin/notifications" element={<NotFound />} />
-        <Route path="/admin/search" element={<NotFound />} />
-        <Route path="/admin/backups" element={<NotFound />} />
-        <Route path="/ai-blogs" element={<AIBlogs />} />
-        <Route path="/ai-blogs/:blogId" element={<NotFound />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </>
-  );
-};
-
-// The main App component wrapping providers around the router
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <Helmet>
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-          <meta name="robots" content="index, follow" />
-          <meta name="description" content="NeuralNextGen - Your comprehensive AI technology partner offering AI Agents, Daily AI Newsletter, and AI Courses." />
-          <meta property="og:title" content="NeuralNextGen - AI Technology Partner" />
-          <meta property="og:description" content="Bridging AI gaps with comprehensive solutions: AI Agents Marketplace, Daily AI Newsletter, and AI Courses." />
-          <meta property="og:type" content="website" />
-        </Helmet>
-        <AppRoutes />
-      </TooltipProvider>
-    </BrowserRouter>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <Helmet>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <meta name="robots" content="index, follow" />
+        <meta name="description" content="NeuralNextGen - Your comprehensive AI technology partner offering AI Agents, Daily AI Newsletter, and AI Courses." />
+        <meta property="og:title" content="NeuralNextGen - AI Technology Partner" />
+        <meta property="og:description" content="Bridging AI gaps with comprehensive solutions: AI Agents Marketplace, Daily AI Newsletter, and AI Courses." />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <BrowserRouter>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<ParentLanding />} />
+          <Route path="/ai-digest" element={<AIDigest />} />
+          <Route path="/ai-agents" element={<AIAgents />} />
+          <Route path="/ai-courses" element={<AICourses />} />
+          <Route path="/ai-courses/directory" element={<AICoursesDirectory />} />
+          <Route path="/agent/:agentSlug" element={<AgentDetails />} />
+          <Route path="/agent/midjourney" element={<MidjourneyDetails />} />
+          <Route path="/category/:categorySlug" element={<AIAgents />} />
+          <Route path="/article/:articleSlug" element={<NotFound />} />
+          <Route path="/guide/:guideSlug" element={<NotFound />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/content" element={<AdminContent />} />
+          <Route path="/admin/homepage" element={<AdminHomePage />} />
+          <Route path="/admin/pages" element={<AdminPages />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/analytics" element={<AdminAnalytics />} />
+          <Route path="/admin/seo" element={<AdminSEO />} />
+          <Route path="/admin/comments" element={<NotFound />} />
+          <Route path="/admin/media" element={<NotFound />} />
+          <Route path="/admin/campaigns" element={<NotFound />} />
+          <Route path="/admin/leads" element={<NotFound />} />
+          <Route path="/admin/settings" element={<NotFound />} />
+          <Route path="/admin/calendar" element={<NotFound />} />
+          <Route path="/admin/themes" element={<NotFound />} />
+          <Route path="/admin/promotions" element={<AdminPromotions />} />
+          <Route path="/admin/structure" element={<NotFound />} />
+          <Route path="/admin/notifications" element={<NotFound />} />
+          <Route path="/admin/search" element={<NotFound />} />
+          <Route path="/admin/backups" element={<NotFound />} />
+          <Route path="/ai-blogs" element={<AIBlogs />} />
+          <Route path="/ai-blogs/:blogId" element={<NotFound />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
   </QueryClientProvider>
 );
 
