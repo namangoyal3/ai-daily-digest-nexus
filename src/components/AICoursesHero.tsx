@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, Brain, Code, Lightbulb, CircuitBoard, Search, CheckCircle, BookOpen, Users } from "lucide-react";
+import { Brain, Code, Lightbulb, BookOpen } from "lucide-react";
 
 export default function AICoursesHero() {
   const scrollToCourses = () => {
@@ -12,81 +12,74 @@ export default function AICoursesHero() {
   };
 
   return (
-    <section className="relative w-full bg-gradient-to-br from-[#f5f7fe] via-[#e5e5ff] to-[#e3f3fa] py-20 md:py-28 overflow-hidden">
-      {/* Decorative AI-themed Circles */}
-      <div className="absolute right-12 top-16 w-60 h-60 bg-aipurple/10 rounded-full blur-2xl opacity-40" />
-      <div className="absolute left-0 -top-10 w-32 h-32 bg-blue-200/20 rounded-full blur-3xl opacity-40" />
-      <div className="container mx-auto px-4 z-10 relative flex flex-col md:flex-row items-center">
+    <section className="relative w-full bg-gradient-to-br from-[#f5f7fe] via-[#e5e5ff] to-[#e3f3fa] py-20 md:py-32 overflow-hidden">
+      {/* AI theme illustration */}
+      <div className="absolute right-2 top-5 w-80 h-80 bg-gradient-to-br from-aipurple/20 via-[#ccfbf1] to-[#e3f3fa] rounded-full blur-3xl opacity-30" />
+      <div className="container mx-auto px-4 z-10 relative flex flex-col md:flex-row items-center md:justify-between">
         {/* Hero Left */}
-        <div className="w-full md:w-1/2 mb-10 md:mb-0 md:pr-10">
-          <span className="bg-aipurple/20 text-aipurple font-medium px-4 py-1.5 rounded-full text-sm inline-flex items-center mb-4">
-            <Brain className="h-5 w-5 mr-2 text-aipurple" />
-            The World’s Most Comprehensive AI Courses Directory
+        <div className="w-full md:w-6/12 text-center md:text-left">
+          <span className="inline-flex items-center bg-gradient-to-r from-aipurple/10 to-blue-100 rounded-full px-4 py-2 mb-6">
+            <Brain className="h-6 w-6 text-aipurple mr-2" />
+            <strong className="font-semibold text-aipurple">AI & Machine Learning</strong>
           </span>
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-heading font-extrabold text-aiblue leading-tight mb-4">
-            <span className="block">Discover, Compare &</span>
-            <span className="block text-aipurple">Master AI</span>
-            <span className="block">with Top-Rated Online Courses</span>
+          <h1 className="text-3xl md:text-5xl font-extrabold font-heading text-aiblue leading-tight mb-4">
+            <span className="block">Accelerate Your AI Learning</span>
+            <span className="block text-aipurple">with Top Online Courses</span>
           </h1>
-          <h2 className="sr-only">Best Free AI Courses, Certifications, AI Learning for Beginners & Professionals</h2>
-          <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-lg">
-            Unlock access to over <span className="font-bold text-aipurple">2,500+ curated AI & Machine Learning courses</span> from leading universities and top platforms—covering everything from Generative AI, LLMs, Prompt Engineering, to AI Tools. Start learning for free, or get premium certification!
+          <p className="text-lg md:text-xl text-gray-700 mb-7 max-w-xl mx-auto md:mx-0">
+            Browse curated AI & ML courses for all levels. Master generative models, coding, and the latest AI skills.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center mb-6">
-            <Button
-              className="rounded-full bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark text-white font-bold px-8 py-5 text-lg shadow-lg transition-all"
-              onClick={scrollToCourses}
-              aria-label="Browse AI Courses Directory"
-            >
-              Explore Courses
-              <ArrowDown className="ml-2 h-5 w-5" />
-            </Button>
-            <div className="flex items-center text-gray-500 text-sm ml-3">
-              <Search className="h-4 w-4 mr-1 text-aipurple" />
-              <span>Filter courses by skill, topic & type</span>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-4 mt-2">
-            <div className="flex items-center bg-white/80 shadow rounded-full px-3 py-1 text-sm font-medium">
-              <CircuitBoard className="h-4 w-4 text-aipurple mr-2" />
-              Learn with Real AI Models
-            </div>
-            <div className="flex items-center bg-white/80 shadow rounded-full px-3 py-1 text-sm font-medium">
-              <Lightbulb className="h-4 w-4 text-blue-500 mr-2" />
-              Up-to-date with Latest AI Trends
-            </div>
-            <div className="flex items-center bg-white/80 shadow rounded-full px-3 py-1 text-sm font-medium">
-              <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-              500+ Free Resources
-            </div>
-            <div className="flex items-center bg-white/80 shadow rounded-full px-3 py-1 text-sm font-medium">
-              <Users className="h-4 w-4 text-aipurple mr-2" />
-              Trusted by professionals
-            </div>
-          </div>
+          <Button
+            className="rounded-full bg-gradient-to-r from-aiblue to-aipurple hover:opacity-90 text-white font-bold px-8 py-4 text-lg shadow-md transition-all"
+            onClick={scrollToCourses}
+            aria-label="Browse AI Courses Directory"
+          >
+            Explore Courses
+            <Code className="ml-2 h-5 w-5" />
+          </Button>
         </div>
-        {/* Hero Right */}
-        <div className="w-full md:w-1/2 flex justify-center md:justify-end relative">
-          {/* Decorative Circle */}
-          <div className="absolute -top-6 -right-6 w-32 h-32 bg-yellow-100 rounded-full z-0"></div>
-          {/* AI-themed image */}
-          <img
-            src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600"
-            alt="AI models and machine learning brain illustration"
-            className="rounded-xl shadow-xl w-[400px] h-[300px] object-cover border-4 border-white relative z-10"
-            draggable={false}
-            loading="eager"
-          />
-          {/* Highlight Badge */}
-          <div className="absolute -bottom-3 -left-3 bg-white shadow-lg rounded-lg p-3 z-20 flex items-center">
-            <BookOpen className="h-5 w-5 text-aipurple mr-1" />
-            <span className="font-bold mr-1">2500+</span>
-            <span className="text-gray-500 text-sm">courses indexed</span>
+        {/* Hero Right: AI/ML Illustration */}
+        <div className="w-full md:w-5/12 mt-12 md:mt-0 flex justify-center md:justify-end relative">
+          <div className="absolute -top-8 -right-8 w-36 h-36 bg-purple-100 rounded-full blur-lg opacity-40" />
+          <div className="relative z-10 flex items-center justify-center">
+            <svg width="320" height="240" viewBox="0 0 320 240" fill="none" className="block rounded-xl shadow-2xl border-4 border-white bg-white">
+              {/* Abstract neural network/AI Illustration */}
+              <circle cx="80" cy="120" r="50" fill="#ecdefc" />
+              <circle cx="240" cy="120" r="50" fill="#d1f0fd" />
+              <circle cx="160" cy="70" r="30" fill="#f9fafb" />
+              <circle cx="160" cy="170" r="34" fill="#ede9fe" />
+              {/* "Connections" */}
+              <line x1="80" y1="120" x2="160" y2="70" stroke="#b794f4" strokeWidth="7" strokeLinecap="round" opacity="0.6"/>
+              <line x1="240" y1="120" x2="160" y2="70" stroke="#60a5fa" strokeWidth="7" strokeLinecap="round" opacity="0.6"/>
+              <line x1="80" y1="120" x2="160" y2="170" stroke="#34d399" strokeWidth="7" strokeLinecap="round" opacity="0.5"/>
+              <line x1="240" y1="120" x2="160" y2="170" stroke="#6366f1" strokeWidth="7" strokeLinecap="round" opacity="0.5"/>
+              {/* Animated brain dot */}
+              <circle cx="160" cy="120" r="26" fill="#c7d2fe">
+                <animate attributeName="r" values="24;32;24" dur="2s" repeatCount="indefinite" />
+                <animate attributeName="fill" values="#a5b4fc;#dbeafe;#a5b4fc" dur="2s" repeatCount="indefinite" />
+              </circle>
+              {/* Overlay Lucide icons for visual interest */}
+              <g>
+                <foreignObject x="147" y="102" width="32" height="32">
+                  <div className="flex items-center justify-center">
+                    <Brain className="text-aipurple" size={28} />
+                  </div>
+                </foreignObject>
+                <foreignObject x="230" y="148" width="28" height="28">
+                  <BookOpen className="text-blue-400" size={24} />
+                </foreignObject>
+                <foreignObject x="62" y="140" width="28" height="28">
+                  <Lightbulb className="text-amber-400" size={20} />
+                </foreignObject>
+              </g>
+            </svg>
           </div>
         </div>
       </div>
-      {/* SEO Subheading for Accessibility */}
-      <h2 className="sr-only">AI Courses Directory - Best Free & Paid Machine Learning, LLM, and Generative AI Online Courses</h2>
+      {/* SEO friendly subheading (visually hidden) */}
+      <h2 className="sr-only">
+        AI Courses Directory: Best Machine Learning, Generative AI, and Prompt Engineering Certifications Online
+      </h2>
     </section>
   );
 }
