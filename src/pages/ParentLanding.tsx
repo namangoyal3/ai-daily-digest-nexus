@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import NewHomepageSubscribeSection from "@/components/NewHomepageSubscribeSection";
 
 export default function ParentLanding() {
   return (
@@ -97,6 +98,9 @@ export default function ParentLanding() {
             </div>
           </div>
         </section>
+
+        {/* New Subscribe Section */}
+        <NewHomepageSubscribeSection />
 
         {/* Products Section */}
         <section className="py-16 bg-gradient-to-br from-aiblue/5 to-aipurple/5">
