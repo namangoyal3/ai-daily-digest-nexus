@@ -597,3 +597,35 @@ export default function ParentLanding() {
               <div className="bg-white p-6 rounded-xl shadow-md">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
+                    <img 
+                      src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&h=100" 
+                      alt="Testimonial author" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Priya Patel</h4>
+                    <p className="text-sm text-gray-600">Founder, EdTech AI</p>
+                  </div>
+                </div>
+                <p className="text-gray-700 italic">
+                  "The AI Courses are fantastic for our team's learning and upskilling. The format is intuitive,
+                  and the material stays updated with fast-moving AI trends."
+                </p>
+                <div className="flex text-yellow-400 mt-4">
+                  <Star className="w-5 h-5 fill-yellow-400" />
+                  <Star className="w-5 h-5 fill-yellow-400" />
+                  <Star className="w-5 h-5 fill-yellow-400" />
+                  <Star className="w-5 h-5 fill-yellow-400" />
+                  <Star className="w-5 h-5 fill-yellow-400" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <Footer />
+      </div>
+    </>
+  );
+}
