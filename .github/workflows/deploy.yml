@@ -1,0 +1,49 @@
+name: Deploy to EC2 Nginx Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Build and Deploy to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js (if applicable)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build application
+        run: npm run build
+
+      - name: Prepare SSH Key
+        run: |
+          echo "$EC2_KEY" > private_key.pem
+          chmod 600 private_key.pem
+        env:
+          EC2_KEY: ${{ secrets.EC2_KEY }}
+
+      - name: Sync files to EC2
+        run: |
+          rsync -avz --delete -e "ssh -i private_key.pem -o StrictHostKeyChecking=no" \
+          ./dist/ $EC2_USER@$EC2_HOST:$EC2_PATH
+        # Use ./out/ for Next.js static exports
+
+        env:
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_PATH: ${{ secrets.EC2_PATH }}
+
+      - name: Restart Nginx
+        run: |
+          ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST \
+          "sudo systemctl restart nginx"
