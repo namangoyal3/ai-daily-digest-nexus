@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowDown, Star, BookOpen, Users, CheckCircle } from "lucide-react";
+import { ArrowDown, Star, BookOpen, Users, CheckCircle, Search } from "lucide-react";
 
 export default function AICoursesHero() {
   const scrollToCourses = () => {
@@ -20,10 +20,10 @@ export default function AICoursesHero() {
             Top-rated AI Education
           </span>
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-heading font-extrabold text-aiblue leading-tight mb-6">
-            Master AI Skills That<br /> Get You Hired
+            Discover AI Courses for Every Skill Level
           </h1>
           <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-lg">
-            Learn practical AI skills from industry experts. Join 2,500+ successful students rated&nbsp;
+            Browse our curated directory of 2,500+ AI courses from beginner to advanced. Find free and premium resources rated&nbsp;
             <span className="inline-flex items-center text-aipurple font-semibold">
               4.9 <Star className="ml-1 h-4 w-4" fill="#7c3aed" />
             </span>
@@ -35,28 +35,32 @@ export default function AICoursesHero() {
               onClick={scrollToCourses}
               aria-label="Browse AI Courses"
             >
-              Browse Courses
+              Explore Directory
               <ArrowDown className="ml-2 h-5 w-5" />
             </Button>
             
             <div className="flex items-center text-gray-500 text-sm ml-3">
-              <Users className="h-4 w-4 mr-1 text-aipurple" /> 
-              <span>2,500+ enrolled students</span>
+              <Search className="h-4 w-4 mr-1 text-aipurple" /> 
+              <span>Filter by skill level or topic</span>
             </div>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
             <div className="flex items-center text-sm">
               <CheckCircle className="h-4 w-4 text-green-500 mr-2" /> 
-              <span>Career-focused curriculum</span>
+              <span>500+ Free Resources</span>
             </div>
             <div className="flex items-center text-sm">
               <CheckCircle className="h-4 w-4 text-green-500 mr-2" /> 
-              <span>Certificate on completion</span>
+              <span>Premium Certifications</span>
+            </div>
+            <div className="flex items-center text-sm">
+              <Users className="h-4 w-4 text-aipurple mr-2" /> 
+              <span>Community-vetted</span>
             </div>
             <div className="flex items-center text-sm">
               <BookOpen className="h-4 w-4 text-aipurple mr-2" /> 
-              <span>All skill levels</span>
+              <span>Updated Weekly</span>
             </div>
           </div>
         </div>
@@ -65,7 +69,7 @@ export default function AICoursesHero() {
           <div className="absolute -top-6 -right-6 w-32 h-32 bg-yellow-100 rounded-full z-0"></div>
           <img
             src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600"
-            alt="AI Courses Hero"
+            alt="AI Courses Directory"
             className="rounded-xl shadow-xl w-[400px] h-[300px] object-cover border-4 border-white relative z-10"
             draggable={false}
           />

@@ -3,11 +3,13 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mail, Check, AlertCircle } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function FooterSubscribeSection() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle"|"loading"|"success"|"error">("idle");
   const [error, setError] = useState("");
+  const { toast } = useToast();
 
   function validateEmail(email: string) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -26,10 +28,19 @@ export default function FooterSubscribeSection() {
     setStatus("loading");
     
     // Simulate async call
-    setTimeout(() => {
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1200));
       setStatus("success");
       setEmail("");
-    }, 1200);
+      
+      toast({
+        title: "Successfully subscribed!",
+        description: "Thank you for subscribing to our AI learning newsletter.",
+      });
+    } catch (err) {
+      setStatus("error");
+      setError("Something went wrong. Please try again.");
+    }
   }
 
   return (
