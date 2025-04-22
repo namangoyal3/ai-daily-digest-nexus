@@ -2,6 +2,7 @@
 import { useRef, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Lottie from "lottie-react";
+import partyAnimation from "../../public/lovable-uploads/party-celebration-11702446.json";
 
 /**
  * Props:
@@ -113,7 +114,7 @@ export default function EmailSubscribe({
           <div className="flex justify-center mb-2">
             <div className="w-36 h-36 mx-auto flex items-center justify-center">
               <Lottie
-                animationData={require("../../public/lovable-uploads/party-celebration-11702446.json")}
+                animationData={partyAnimation}
                 loop={false}
                 autoplay
                 style={{ width: "130px", height: "130px" }}

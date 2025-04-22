@@ -6,6 +6,6 @@ import EmailSubscribe from "./EmailSubscribe";
  */
 export default function NewHomepageSubscribeSection() {
   return (
-    <EmailSubscribe />
+    <EmailSubscribe bg={true} />
   );
 }
