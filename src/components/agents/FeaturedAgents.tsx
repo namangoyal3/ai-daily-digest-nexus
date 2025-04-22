@@ -2,6 +2,7 @@
 import { Star, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 const featuredAgents = [
   {
@@ -13,7 +14,8 @@ const featuredAgents = [
     pricing: "Paid",
     rating: 4.9,
     reviewCount: 1245,
-    logo: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?auto=format&fit=crop&w=100&h=100&q=80"
+    logo: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?auto=format&fit=crop&w=100&h=100&q=80",
+    website: "https://openai.com/gpt-4"
   },
   {
     id: "astra",
@@ -24,7 +26,8 @@ const featuredAgents = [
     pricing: "Enterprise",
     rating: 4.8,
     reviewCount: 867,
-    logo: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=100&h=100&q=80"
+    logo: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=100&h=100&q=80",
+    website: "https://deepmind.com"
   },
   {
     id: "autogpt",
@@ -35,7 +38,8 @@ const featuredAgents = [
     pricing: "Freemium",
     rating: 4.6,
     reviewCount: 1032,
-    logo: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=100&h=100&q=80"
+    logo: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=100&h=100&q=80",
+    website: "https://github.com/Significant-Gravitas/AutoGPT"
   },
   {
     id: "devin",
@@ -46,11 +50,23 @@ const featuredAgents = [
     pricing: "Paid",
     rating: 4.7,
     reviewCount: 593,
-    logo: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=100&h=100&q=80"
+    logo: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=100&h=100&q=80",
+    website: "https://cognition.dev"
   }
 ];
 
 export default function FeaturedAgents() {
+  const { toast } = useToast();
+
+  const handleVisitWebsite = (agent) => {
+    toast({
+      title: `Visiting ${agent.name}`,
+      description: `Opening ${agent.website} in a new tab`,
+      duration: 2000,
+    });
+    window.open(agent.website, "_blank");
+  };
+
   return (
     <section className="py-16 md:py-24 bg-gradient-to-br from-white via-blue-50/20 to-purple-50/20">
       <div className="container mx-auto px-4">
@@ -130,7 +146,7 @@ export default function FeaturedAgents() {
                   <Button 
                     variant="ghost"
                     className="flex-1 rounded-none py-3 text-aiblue hover:bg-gray-50"
-                    onClick={() => window.open("https://example.com", "_blank")}
+                    onClick={() => handleVisitWebsite(agent)}
                   >
                     <ExternalLink className="h-4 w-4 mr-2" />
                     Visit Website

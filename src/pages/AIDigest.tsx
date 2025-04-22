@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
@@ -82,14 +81,13 @@ export default function AIDigest() {
       </Helmet>
       
       <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
-        {/* Fix the header to not show empty space when fixed */}
         <header className={`sticky top-0 z-30 w-full transition-all duration-300 ${
           scrolled ? "shadow-md bg-white/95 backdrop-blur-sm" : "bg-white"
         }`}>
           <Header />
         </header>
         
-        <main>
+        <main className="w-full overflow-hidden">
           <ErrorBoundary>
             <motion.div
               initial="hidden"

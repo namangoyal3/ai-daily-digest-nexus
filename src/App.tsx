@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,6 +8,7 @@ import ParentLanding from "./pages/ParentLanding";
 import AIDigest from "./pages/AIDigest";
 import AIAgents from "./pages/AIAgents";
 import AICourses from "./pages/AICourses";
+import AICoursesDirectory from "./pages/AICoursesDirectory";
 import AgentDetails from "./pages/AgentDetails";
 import MidjourneyDetails from "./pages/MidjourneyDetails";
 import NotFound from "./pages/NotFound";
@@ -57,6 +59,7 @@ const App = () => (
           <Route path="/ai-digest" element={<AIDigest />} />
           <Route path="/ai-agents" element={<AIAgents />} />
           <Route path="/ai-courses" element={<AICourses />} />
+          <Route path="/ai-courses/directory" element={<AICoursesDirectory />} />
           <Route path="/agent/:agentSlug" element={<AgentDetails />} />
           <Route path="/agent/midjourney" element={<MidjourneyDetails />} />
           <Route path="/category/:categorySlug" element={<AIAgents />} />
