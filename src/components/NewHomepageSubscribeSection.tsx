@@ -2,10 +2,12 @@
 import EmailSubscribe from "./EmailSubscribe";
 
 /**
- * This just reuses the main EmailSubscribe component.
+ * This component uses the main EmailSubscribe component with a full-width background.
  */
 export default function NewHomepageSubscribeSection() {
   return (
-    <EmailSubscribe bg={true} />
+    <div className="w-full py-0">
+      <EmailSubscribe bg={true} />
+    </div>
   );
 }

@@ -1,13 +1,17 @@
 
 import { Button } from "@/components/ui/button";
-import { Search, Filter, SlidersHorizontal, X } from "lucide-react";
+import { Search, SlidersHorizontal, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function AgentHero() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("All Categories");
+  const navigate = useNavigate();
+  const { toast } = useToast();
   
   const categories = [
     "All Categories", 
@@ -21,6 +25,44 @@ export default function AgentHero() {
     "Marketing Tools",
     "Data Analysis"
   ];
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      toast({
+        title: "Search initiated",
+        description: `Searching for "${searchTerm}"...`,
+        duration: 3000,
+      });
+      // In a real app, navigate to search results
+      navigate(`/ai-agents?search=${encodeURIComponent(searchTerm)}`);
+    }
+  };
+
+  const handleCategorySelect = (category: string) => {
+    setActiveCategory(category);
+    toast({
+      title: "Category selected",
+      description: `Showing ${category}`,
+      duration: 2000,
+    });
+    
+    // In a real app, navigate to category filter
+    if (category !== "All Categories") {
+      navigate(`/category/${category.toLowerCase().replace(/\s+/g, '-')}`);
+    } else {
+      navigate('/ai-agents');
+    }
+  };
+
+  const handleBadgeClick = (filter: string) => {
+    toast({
+      title: "Filter applied",
+      description: `Showing ${filter}`,
+      duration: 2000,
+    });
+    // In a real app, apply the filter
+  };
 
   // Framer motion variants
   const containerVariants = {
@@ -64,7 +106,7 @@ export default function AgentHero() {
             variants={itemVariants}
             className="max-w-2xl mx-auto"
           >
-            <div className="flex flex-col md:flex-row gap-4 justify-center">
+            <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4 justify-center">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input 
@@ -79,6 +121,7 @@ export default function AgentHero() {
                     onClick={() => setSearchTerm("")}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                     aria-label="Clear search"
+                    type="button"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -86,12 +129,20 @@ export default function AgentHero() {
               </div>
               <Button 
                 variant="outline"
+                type="button"
                 className="flex items-center gap-2 px-6 py-3 h-auto rounded-xl border-gray-300 hover:border-aiblue transition-all duration-200"
+                onClick={() => {
+                  toast({
+                    title: "Advanced Filters",
+                    description: "Filter options are now available",
+                    duration: 2000,
+                  });
+                }}
               >
                 <SlidersHorizontal className="w-4 h-4" />
                 <span className="hidden sm:inline">Advanced</span> Filters
               </Button>
-            </div>
+            </form>
             
             <motion.div 
               variants={itemVariants}
@@ -106,7 +157,7 @@ export default function AgentHero() {
                       ? "bg-gradient-to-r from-aiblue to-aipurple text-white border-transparent" 
                       : "bg-white/50 hover:bg-white"
                   }`}
-                  onClick={() => setActiveCategory(category)}
+                  onClick={() => handleCategorySelect(category)}
                 >
                   {category}
                 </Button>
@@ -117,19 +168,19 @@ export default function AgentHero() {
               variants={itemVariants}
               className="mt-6 flex flex-wrap gap-3 justify-center"
             >
-              <Badge variant="outline" className="bg-white/80 cursor-pointer hover:bg-white">
+              <Badge variant="outline" className="bg-white/80 cursor-pointer hover:bg-white" onClick={() => handleBadgeClick("Free Tools")}>
                 Free Tools
               </Badge>
-              <Badge variant="outline" className="bg-white/80 cursor-pointer hover:bg-white">
+              <Badge variant="outline" className="bg-white/80 cursor-pointer hover:bg-white" onClick={() => handleBadgeClick("Trending")}>
                 Trending
               </Badge>
-              <Badge variant="outline" className="bg-white/80 cursor-pointer hover:bg-white">
+              <Badge variant="outline" className="bg-white/80 cursor-pointer hover:bg-white" onClick={() => handleBadgeClick("New Releases")}>
                 New Releases
               </Badge>
-              <Badge variant="outline" className="bg-white/80 cursor-pointer hover:bg-white">
+              <Badge variant="outline" className="bg-white/80 cursor-pointer hover:bg-white" onClick={() => handleBadgeClick("Most Popular")}>
                 Most Popular
               </Badge>
-              <Badge variant="outline" className="bg-white/80 cursor-pointer hover:bg-white">
+              <Badge variant="outline" className="bg-white/80 cursor-pointer hover:bg-white" onClick={() => handleBadgeClick("Enterprise Grade")}>
                 Enterprise Grade
               </Badge>
             </motion.div>

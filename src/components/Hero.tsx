@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowDown, Brain, Zap, LineChart, BarChart3 } from "lucide-react";
@@ -31,7 +32,7 @@ export default function Hero() {
   };
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-aiblue/5 via-aipurple/5 to-aiteal/5 py-12 md:py-20">
+    <div className="relative overflow-hidden bg-gradient-to-br from-aiblue/5 via-aipurple/5 to-aiteal/5 py-12 md:py-20 w-full">
       <div className="absolute top-0 left-0 w-full h-full">
         <div className="absolute top-20 right-10 w-72 h-72 bg-aipurple/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"></div>
         <div className="absolute bottom-20 left-10 w-72 h-72 bg-aiblue/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse-slow"></div>
@@ -172,45 +173,47 @@ export default function Hero() {
               visible: { opacity: 1, transition: { delay: 0.6, duration: 0.6 } }
             }}
           >
-            <motion.div 
-              className="bg-white rounded-xl shadow-xl p-4 md:p-6 transform hover:rotate-0 transition-transform duration-300"
-              initial={{ rotate: 1 }}
-              whileHover="hover"
-              variants={cardHover}
-            >
-              <div className="bg-gradient-to-r from-aiblue-light to-aipurple rounded-lg p-2 text-white text-sm font-medium mb-4 inline-block">
-                Today's Edition
-              </div>
-              <h3 className="font-heading text-xl md:text-2xl font-bold mb-4">
-                Google's DeepMind Reveals New AI Breakthrough in Protein Folding
-              </h3>
-              <p className="text-gray-600 mb-4 line-clamp-4">
-                DeepMind's latest algorithm now predicts protein structures with atomic-level accuracy, 
-                opening doors for revolutionary drug discovery methods and personalized medicine approaches.
-                This advancement could reduce drug development timelines by years...
-              </p>
-              <div className="flex items-center text-sm text-gray-500">
-                <span className="font-medium">Read time:</span>
-                <span className="ml-1">5 min</span>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              className="absolute -bottom-4 -left-4 bg-white rounded-xl shadow-xl p-4 md:p-6 transform hover:rotate-0 transition-transform duration-300 z-10"
-              initial={{ rotate: -2 }}
-              whileHover="hover"
-              variants={cardHover}
-            >
-              <div className="bg-gradient-to-r from-aiteal to-aiteal-light rounded-lg p-2 text-white text-sm font-medium mb-4 inline-block">
-                AI Market Trends
-              </div>
-              <h3 className="font-heading text-lg md:text-xl font-bold mb-2">
-                Top 5 AI Startups Securing Major Funding This Week
-              </h3>
-              <p className="text-gray-600 line-clamp-2">
-                Exclusive analysis of venture capital movements in the AI landscape...
-              </p>
-            </motion.div>
+            <div className="relative">
+              <motion.div 
+                className="bg-white rounded-xl shadow-xl p-4 md:p-6 transform hover:rotate-0 transition-transform duration-300 z-20 relative"
+                initial={{ rotate: 1 }}
+                whileHover="hover"
+                variants={cardHover}
+              >
+                <div className="bg-gradient-to-r from-aiblue-light to-aipurple rounded-lg p-2 text-white text-sm font-medium mb-4 inline-block">
+                  Today's Edition
+                </div>
+                <h3 className="font-heading text-xl md:text-2xl font-bold mb-4">
+                  Google's DeepMind Reveals New AI Breakthrough in Protein Folding
+                </h3>
+                <p className="text-gray-600 mb-4 line-clamp-4">
+                  DeepMind's latest algorithm now predicts protein structures with atomic-level accuracy, 
+                  opening doors for revolutionary drug discovery methods and personalized medicine approaches.
+                  This advancement could reduce drug development timelines by years...
+                </p>
+                <div className="flex items-center text-sm text-gray-500">
+                  <span className="font-medium">Read time:</span>
+                  <span className="ml-1">5 min</span>
+                </div>
+              </motion.div>
+              
+              <motion.div 
+                className="absolute -bottom-4 right-4 bg-white rounded-xl shadow-xl p-4 md:p-6 transform hover:rotate-0 transition-transform duration-300 z-10 w-4/5 md:w-2/3"
+                initial={{ rotate: -2 }}
+                whileHover="hover"
+                variants={cardHover}
+              >
+                <div className="bg-gradient-to-r from-aiteal to-aiteal-light rounded-lg p-2 text-white text-sm font-medium mb-4 inline-block">
+                  AI Market Trends
+                </div>
+                <h3 className="font-heading text-lg md:text-xl font-bold mb-2">
+                  Top 5 AI Startups Securing Major Funding This Week
+                </h3>
+                <p className="text-gray-600 line-clamp-2">
+                  Exclusive analysis of venture capital movements in the AI landscape...
+                </p>
+              </motion.div>
+            </div>
           </motion.div>
         </div>
       </div>
