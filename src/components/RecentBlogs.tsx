@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText } from "lucide-react";
+import { FileText, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import BlogCardSkeleton from "./skeletons/BlogCardSkeleton";
 
@@ -38,13 +38,23 @@ const recentBlogs = [
 
 export default function RecentBlogs() {
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    const fetchBlogs = async () => {
+      try {
+        // Simulating API fetch with a timeout
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        // In a real app, you would fetch data from an API here
+        setIsLoading(false);
+      } catch (err) {
+        setError("Failed to load blog articles. Please try again later.");
+        setIsLoading(false);
+        console.error("Error fetching blogs:", err);
+      }
+    };
 
-    return () => clearTimeout(timer);
+    fetchBlogs();
   }, []);
 
   return (
@@ -59,50 +69,68 @@ export default function RecentBlogs() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
-          {isLoading ? (
-            Array(3).fill(0).map((_, index) => (
-              <BlogCardSkeleton key={index} />
-            ))
-          ) : (
-            recentBlogs.map((blog) => (
-              <Link to={`/ai-blogs/${blog.id}`} key={blog.id} className="focus:outline-none focus:ring-2 focus:ring-aiblue">
-                <Card className="h-full hover:shadow-lg transition-shadow duration-300 group">
-                  <div className="aspect-video w-full overflow-hidden rounded-t-lg">
-                    <img 
-                      src={blog.image} 
-                      alt={blog.title}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                  </div>
-                  <CardHeader className="p-4 md:p-6">
-                    <div className="flex flex-wrap items-center gap-2 text-xs md:text-sm text-gray-500 mb-2">
-                      <FileText className="h-4 w-4 flex-shrink-0" />
-                      <span>{blog.category}</span>
-                      <span>•</span>
-                      <span>{blog.readTime}</span>
+        {error ? (
+          <div className="text-center py-10">
+            <p className="text-red-500 mb-4">{error}</p>
+            <Button 
+              onClick={() => {setIsLoading(true); setError(null); setTimeout(() => setIsLoading(false), 1000);}}
+              className="bg-gradient-to-r from-aiblue to-aipurple text-white"
+            >
+              Try Again
+            </Button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
+            {isLoading ? (
+              Array(3).fill(0).map((_, index) => (
+                <BlogCardSkeleton key={index} />
+              ))
+            ) : (
+              recentBlogs.map((blog) => (
+                <Link to={`/ai-blogs/${blog.id}`} key={blog.id} className="focus:outline-none focus:ring-2 focus:ring-aiblue">
+                  <Card className="h-full hover:shadow-lg transition-shadow duration-300 group relative overflow-hidden">
+                    <div className="aspect-video w-full overflow-hidden rounded-t-lg">
+                      <img 
+                        src={blog.image} 
+                        alt={blog.title}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                      />
                     </div>
-                    <CardTitle className="text-lg md:text-xl mb-2 line-clamp-2 group-hover:text-aiblue transition-colors">
-                      {blog.title}
-                    </CardTitle>
-                    <CardDescription className="text-sm md:text-base line-clamp-3">
-                      {blog.excerpt}
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              </Link>
-            ))
-          )}
-        </div>
+                    <CardHeader className="p-4 md:p-6">
+                      <div className="flex flex-wrap items-center gap-2 text-xs md:text-sm text-gray-500 mb-2">
+                        <FileText className="h-4 w-4 flex-shrink-0" />
+                        <span>{blog.category}</span>
+                        <span>•</span>
+                        <span>{blog.readTime}</span>
+                      </div>
+                      <CardTitle className="text-lg md:text-xl mb-2 line-clamp-2 group-hover:text-aiblue transition-colors">
+                        {blog.title}
+                      </CardTitle>
+                      <CardDescription className="text-sm md:text-base line-clamp-3">
+                        {blog.excerpt}
+                      </CardDescription>
+                    </CardHeader>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-4">
+                      <span className="text-white font-medium text-sm px-3 py-1 rounded-full bg-aiblue/80 backdrop-blur-sm">
+                        Read Article
+                      </span>
+                    </div>
+                  </Card>
+                </Link>
+              ))
+            )}
+          </div>
+        )}
 
         <div className="text-center">
           <Button 
             asChild
-            className="w-full md:w-auto bg-gradient-to-r from-aiblue to-aipurple text-white hover:from-aipurple hover:to-aiblue font-medium px-8 py-2 shadow-md hover:shadow-lg transition-all relative overflow-hidden group"
+            className="w-full md:w-auto bg-gradient-to-r from-aiblue to-aipurple text-white hover:from-aipurple hover:to-aiblue font-medium px-8 py-2 shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden group"
           >
             <Link to="/ai-blogs" className="flex items-center justify-center">
               <span className="relative z-10">View All Articles</span>
+              <ArrowRight className="ml-2 h-5 w-5 transform group-hover:translate-x-1 transition-transform" />
               <span className="absolute inset-0 bg-gradient-to-r from-aiblue-dark to-aipurple-dark opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
             </Link>
           </Button>

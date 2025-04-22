@@ -12,6 +12,7 @@ import Footer from "@/components/Footer";
 import FloatingSubscribeButton from "@/components/FloatingSubscribeButton";
 import RecentBlogs from "@/components/RecentBlogs";
 import { motion } from "framer-motion";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export default function AIDigest() {
   const [scrolled, setScrolled] = useState(false);
@@ -51,7 +52,8 @@ export default function AIDigest() {
     <>
       <Helmet>
         <title>AI Daily Digest - Stay Ahead with AI Insights</title>
-        <meta name="description" content="Get curated AI news, breakthroughs, and analysis in a 5-minute daily read. Join 2000+ professionals staying ahead with AI Daily Digest." />
+        <meta name="description" content="Get curated AI news, breakthroughs, and analysis in a 5-minute daily read. Join 25,000+ professionals staying ahead with AI Daily Digest." />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
         <meta name="keywords" content="AI news, artificial intelligence digest, AI insights, tech newsletter, AI updates, daily AI news" />
         <meta property="og:title" content="AI Daily Digest - Daily AI Insights Newsletter" />
         <meta property="og:description" content="Stay informed with curated AI news and insights delivered daily to your inbox." />
@@ -80,77 +82,80 @@ export default function AIDigest() {
       </Helmet>
       
       <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
-        <div className={`sticky top-0 z-30 transition-all duration-300 ${
-          scrolled ? "shadow-md bg-white/95 backdrop-blur-sm" : ""
+        {/* Fix the header to not show empty space when fixed */}
+        <header className={`sticky top-0 z-30 w-full transition-all duration-300 ${
+          scrolled ? "shadow-md bg-white/95 backdrop-blur-sm" : "bg-white"
         }`}>
           <Header />
-        </div>
+        </header>
         
         <main>
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
-          >
-            <motion.section variants={fadeIn}>
-              <Hero />
-            </motion.section>
-            
-            <motion.section 
-              variants={fadeIn}
-              viewport={{ once: true, amount: 0.2 }}
+          <ErrorBoundary>
+            <motion.div
               initial="hidden"
-              whileInView="visible"
+              animate="visible"
+              variants={staggerContainer}
             >
-              <Benefits />
-            </motion.section>
-            
-            <motion.section 
-              variants={fadeIn}
-              viewport={{ once: true, amount: 0.2 }}
-              initial="hidden"
-              whileInView="visible"
-            >
-              <ContentPreview />
-            </motion.section>
-            
-            <motion.section 
-              variants={fadeIn}
-              viewport={{ once: true, amount: 0.2 }}
-              initial="hidden"
-              whileInView="visible"
-            >
-              <RecentBlogs />
-            </motion.section>
-            
-            <motion.section 
-              variants={fadeIn}
-              viewport={{ once: true, amount: 0.2 }}
-              initial="hidden"
-              whileInView="visible"
-            >
-              <Pricing />
-            </motion.section>
-            
-            <motion.section 
-              variants={fadeIn}
-              viewport={{ once: true, amount: 0.2 }}
-              initial="hidden"
-              whileInView="visible"
-              id="subscribe-section"
-            >
-              <SubscriptionForm />
-            </motion.section>
-            
-            <motion.section 
-              variants={fadeIn}
-              viewport={{ once: true, amount: 0.2 }}
-              initial="hidden"
-              whileInView="visible"
-            >
-              <FAQ />
-            </motion.section>
-          </motion.div>
+              <motion.section variants={fadeIn}>
+                <Hero />
+              </motion.section>
+              
+              <motion.section 
+                variants={fadeIn}
+                viewport={{ once: true, amount: 0.2 }}
+                initial="hidden"
+                whileInView="visible"
+              >
+                <Benefits />
+              </motion.section>
+              
+              <motion.section 
+                variants={fadeIn}
+                viewport={{ once: true, amount: 0.2 }}
+                initial="hidden"
+                whileInView="visible"
+              >
+                <ContentPreview />
+              </motion.section>
+              
+              <motion.section 
+                variants={fadeIn}
+                viewport={{ once: true, amount: 0.2 }}
+                initial="hidden"
+                whileInView="visible"
+              >
+                <RecentBlogs />
+              </motion.section>
+              
+              <motion.section 
+                variants={fadeIn}
+                viewport={{ once: true, amount: 0.2 }}
+                initial="hidden"
+                whileInView="visible"
+              >
+                <Pricing />
+              </motion.section>
+              
+              <motion.section 
+                variants={fadeIn}
+                viewport={{ once: true, amount: 0.2 }}
+                initial="hidden"
+                whileInView="visible"
+                id="subscribe-section"
+              >
+                <SubscriptionForm />
+              </motion.section>
+              
+              <motion.section 
+                variants={fadeIn}
+                viewport={{ once: true, amount: 0.2 }}
+                initial="hidden"
+                whileInView="visible"
+              >
+                <FAQ />
+              </motion.section>
+            </motion.div>
+          </ErrorBoundary>
         </main>
         
         <Footer />

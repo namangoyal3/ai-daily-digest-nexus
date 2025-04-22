@@ -36,17 +36,17 @@ export default function FloatingSubscribeButton() {
   return (
     <div 
       className={`fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${
-        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
+        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'
       }`}
       aria-hidden={!isVisible}
     >
       <Button 
         onClick={scrollToSubscribe}
-        className="rounded-full bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark text-white font-medium px-6 py-5 shadow-lg"
+        className="rounded-full bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark text-white font-medium px-6 py-5 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
         aria-label="Subscribe to AI Daily Digest newsletter"
       >
-        Subscribe Now
-        <ArrowUp className="ml-2 h-4 w-4" />
+        <span>Subscribe Now</span>
+        <ArrowUp className="ml-2 h-4 w-4 animate-bounce" />
       </Button>
     </div>
   );
