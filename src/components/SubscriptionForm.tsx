@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Lock, Send } from "lucide-react";
-import { addSubscriber } from "@/lib/supabase";
+import { addSubscriber } from "@/lib/postgres";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function SubscriptionForm() {

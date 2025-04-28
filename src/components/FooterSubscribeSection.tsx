@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mail, Check, AlertCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { addSubscriber } from "@/lib/supabase";
+import { addSubscriber } from "@/lib/postgres";
 
 export default function FooterSubscribeSection() {
   const [email, setEmail] = useState("");

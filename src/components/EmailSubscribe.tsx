@@ -1,7 +1,8 @@
+
 import { useRef, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Lottie from "lottie-react";
-import { addSubscriber } from "@/lib/supabase";
+import { addSubscriber } from "@/lib/postgres";
 import { useToast } from "@/components/ui/use-toast";
 
 /**
