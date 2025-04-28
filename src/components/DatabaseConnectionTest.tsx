@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { testDatabaseConnection, addSubscriber } from "@/lib/postgres";
-import { Check, X, Database, DatabaseOff } from "lucide-react";
+import { Check, X, Database } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function DatabaseConnectionTest() {
@@ -130,7 +130,7 @@ export default function DatabaseConnectionTest() {
             {status === "error" && (
               <div className="rounded-md bg-red-50 p-4">
                 <div className="flex">
-                  <DatabaseOff className="h-5 w-5 text-red-500 mr-2" />
+                  <Database className="h-5 w-5 text-red-500 mr-2" />
                   <div>
                     <h3 className="text-sm font-medium text-red-800">Connection Failed</h3>
                     <div className="mt-2 text-sm text-red-700">
