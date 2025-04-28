@@ -1,3 +1,4 @@
+
 // This file provides functions for client-side interaction with the PostgreSQL database via API
 
 // Type definitions to match responses
@@ -9,6 +10,16 @@ interface DBResponse {
     message: string;
   };
 }
+
+// Get the base URL for API requests based on environment
+const getBaseUrl = () => {
+  // For development or when running locally, use relative paths
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return '';
+  }
+  // For production environment
+  return window.location.origin;
+};
 
 // Function to subscribe to newsletter (client-side implementation)
 export async function addSubscriber(email: string, source: string = 'website'): Promise<DBResponse> {
@@ -24,7 +35,7 @@ export async function addSubscriber(email: string, source: string = 'website'): 
     console.log('Adding subscriber with email:', email);
 
     // Send request to our serverless API endpoint
-    const response = await fetch('/api/subscribe', {
+    const response = await fetch(`${getBaseUrl()}/api/subscribe`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, source })
@@ -44,7 +55,7 @@ export async function addSubscriber(email: string, source: string = 'website'): 
 // Function to test the API connection - for client-side use
 export async function testDatabaseConnection(): Promise<DBResponse> {
   try {
-    const response = await fetch('/api/health-check', { method: 'GET' });
+    const response = await fetch(`${getBaseUrl()}/api/health-check`, { method: 'GET' });
     
     if (!response.ok) {
       throw new Error(`API returned ${response.status} ${response.statusText}`);
@@ -95,3 +106,4 @@ export async function initializeDatabase(): Promise<DBResponse> {
   // Test the database connection
   return testDatabaseConnection();
 }
+

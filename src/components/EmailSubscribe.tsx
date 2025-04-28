@@ -1,8 +1,8 @@
-
 import { useRef, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Lottie from "lottie-react";
 import { useToast } from "@/components/ui/use-toast";
+import { addSubscriber } from "@/lib/postgres";
 
 /**
  * Props:
@@ -50,16 +50,8 @@ export default function EmailSubscribe({
     setSubmitting(true);
     
     try {
-      // Use the serverless API endpoint to add the subscriber
-      const response = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, source }),
-      });
-      
-      const result = await response.json();
+      // Use our postgres utility function to add the subscriber
+      const result = await addSubscriber(email, source);
       
       if (result.success) {
         setModalOpen(true);

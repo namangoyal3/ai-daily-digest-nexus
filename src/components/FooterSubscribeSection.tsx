@@ -1,9 +1,9 @@
-
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mail, Check, AlertCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { addSubscriber } from "@/lib/postgres";
 
 export default function FooterSubscribeSection() {
   const [email, setEmail] = useState("");
@@ -28,15 +28,7 @@ export default function FooterSubscribeSection() {
     setStatus("loading");
     
     try {
-      const response = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, source: 'footer' }),
-      });
-      
-      const result = await response.json();
+      const result = await addSubscriber(email, 'footer');
       
       if (result.success) {
         setStatus("success");

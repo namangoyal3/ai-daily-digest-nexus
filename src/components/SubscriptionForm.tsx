@@ -50,8 +50,8 @@ export default function SubscriptionForm() {
     } catch (err) {
       setErrors({ email: "Failed to subscribe. Please try again later." });
       toast({
-        title: "Subscription Failed",
-        description: "There was a problem connecting to our service. Please try again.",
+        title: "Connection Error",
+        description: "We couldn't reach our service. Please try again later.",
         variant: "destructive"
       });
     } finally {
