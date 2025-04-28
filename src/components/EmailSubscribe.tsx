@@ -2,7 +2,6 @@
 import { useRef, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Lottie from "lottie-react";
-import { addSubscriber } from "@/lib/postgres";
 import { useToast } from "@/components/ui/use-toast";
 
 /**
@@ -46,8 +45,18 @@ export default function EmailSubscribe({
       return;
     }
     setSubmitting(true);
+    
     try {
-      const result = await addSubscriber(email);
+      // Use the serverless API endpoint to add the subscriber
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+      
+      const result = await response.json();
       
       if (result.success) {
         setModalOpen(true);
@@ -71,6 +80,11 @@ export default function EmailSubscribe({
       }
     } catch (err) {
       setError("Failed to subscribe. Please try again!");
+      toast({
+        title: "Subscription Failed",
+        description: "There was a problem connecting to our service. Please try again.",
+        variant: "destructive"
+      });
     } finally {
       setSubmitting(false);
     }

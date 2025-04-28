@@ -10,6 +10,7 @@ This document describes how to set up and configure the database for the newslet
 - **Port:** 5432
 - **Database:** neuralnextgen
 - **Username:** neuralnextgen
+- **Password:** neuralnextgen1997 (change this for production)
 
 ### Setting Up Environment Variables
 Create a `.env` file in the project root (do not commit this file) with the following variables:
@@ -19,18 +20,23 @@ VITE_DB_HOST=neuralnextgen.c3goisis4quk.eu-north-1.rds.amazonaws.com
 VITE_DB_PORT=5432
 VITE_DB_NAME=neuralnextgen
 VITE_DB_USER=neuralnextgen
-VITE_DB_PASSWORD=your_secure_password
-VITE_DB_USE_SSL=true
+VITE_DB_PASSWORD=neuralnextgen1997
 ```
 
 ### Creating Required Tables
 Connect to the database and run the SQL commands from the `database-setup.sql` file:
 
 ```bash
-psql -h neuralnextgen.c3goisis4quk.eu-north-1.rds.amazonaws.com -p 5432 -U neuralnextgen -d neuralnextgen -f database-setup.sql
+psql "sslmode=require host=neuralnextgen.c3goisis4quk.eu-north-1.rds.amazonaws.com port=5432 dbname=neuralnextgen user=neuralnextgen password=neuralnextgen1997" -f database-setup.sql
 ```
 
 Or copy the commands from the file and execute them directly in a PostgreSQL client.
+
+To manually connect to the database:
+
+```bash
+psql "sslmode=require host=neuralnextgen.c3goisis4quk.eu-north-1.rds.amazonaws.com port=5432 dbname=neuralnextgen user=neuralnextgen password=neuralnextgen1997"
+```
 
 ### Table Structure
 
@@ -40,13 +46,11 @@ Or copy the commands from the file and execute them directly in a PostgreSQL cli
 - `subscribed_at`: TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 
 ## Security Considerations
-- Use a strong, unique password for database access
+- For production, use a strong, unique password
 - Consider using a dedicated database user with limited permissions
-- Ensure SSL is enabled for database connections
-- Never store database credentials in your version control system
+- Store database credentials in environment variables or a secrets manager
+- Never expose your database credentials in client-side code
 
-## Production Deployment
-For production deployment, consider:
-- Using environment variables or a secrets manager for credentials
-- Setting up connection pooling for better performance
-- Implementing proper backup procedures
+## API Integration
+The application uses a serverless API endpoint at `/api/subscribe` to handle database operations securely.
+This endpoint handles adding new subscribers while keeping database credentials secure on the server.

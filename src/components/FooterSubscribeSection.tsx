@@ -1,10 +1,8 @@
-
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mail, Check, AlertCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { addSubscriber } from "@/lib/postgres";
 
 export default function FooterSubscribeSection() {
   const [email, setEmail] = useState("");
@@ -29,7 +27,15 @@ export default function FooterSubscribeSection() {
     setStatus("loading");
     
     try {
-      const result = await addSubscriber(email);
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+      
+      const result = await response.json();
       
       if (result.success) {
         setStatus("success");
@@ -40,17 +46,28 @@ export default function FooterSubscribeSection() {
           description: "Thank you for subscribing to our AI learning newsletter.",
         });
       } else {
-        // Check if it's a duplicate email error
         if (result.error && result.error.code === '23505') {
           setError("This email is already subscribed to our newsletter.");
         } else {
           setError("Something went wrong. Please try again.");
         }
         setStatus("error");
+        
+        toast({
+          title: "Subscription Failed",
+          description: "There was a problem signing you up. Please try again.",
+          variant: "destructive"
+        });
       }
     } catch (err) {
       setStatus("error");
       setError("Something went wrong. Please try again.");
+      
+      toast({
+        title: "Connection Error",
+        description: "We couldn't reach our service. Please try again later.",
+        variant: "destructive"
+      });
     }
   }
 

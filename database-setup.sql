@@ -11,8 +11,3 @@ CREATE TABLE IF NOT EXISTS newsletter_subscribers (
 
 -- Optional: Create an index on the email column for faster lookups
 CREATE INDEX IF NOT EXISTS idx_newsletter_subscribers_email ON newsletter_subscribers(email);
-
--- Optional: Create a role for limited access (if needed)
--- CREATE ROLE newsletter_app WITH LOGIN PASSWORD 'your_secure_password';
--- GRANT SELECT, INSERT, UPDATE, DELETE ON newsletter_subscribers TO newsletter_app;
--- GRANT USAGE, SELECT ON SEQUENCE newsletter_subscribers_id_seq TO newsletter_app;
