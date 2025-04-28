@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mail, Check, AlertCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { addSubscriber } from "@/lib/supabase";
 
 export default function FooterSubscribeSection() {
   const [email, setEmail] = useState("");
@@ -27,16 +28,26 @@ export default function FooterSubscribeSection() {
     
     setStatus("loading");
     
-    // Simulate async call
     try {
-      await new Promise(resolve => setTimeout(resolve, 1200));
-      setStatus("success");
-      setEmail("");
+      const result = await addSubscriber(email);
       
-      toast({
-        title: "Successfully subscribed!",
-        description: "Thank you for subscribing to our AI learning newsletter.",
-      });
+      if (result.success) {
+        setStatus("success");
+        setEmail("");
+        
+        toast({
+          title: "Successfully subscribed!",
+          description: "Thank you for subscribing to our AI learning newsletter.",
+        });
+      } else {
+        // Check if it's a duplicate email error
+        if (result.error && result.error.code === '23505') {
+          setError("This email is already subscribed to our newsletter.");
+        } else {
+          setError("Something went wrong. Please try again.");
+        }
+        setStatus("error");
+      }
     } catch (err) {
       setStatus("error");
       setError("Something went wrong. Please try again.");

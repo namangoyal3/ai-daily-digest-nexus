@@ -4,20 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Lock, Send } from "lucide-react";
+import { addSubscriber } from "@/lib/supabase";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function SubscriptionForm() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({ email: "" });
   const [submitted, setSubmitted] = useState(false);
+  const { toast } = useToast();
 
   const validateEmail = (email: string) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
   };
 
-  // Simulate backend submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({ email: "" });
 
@@ -28,10 +30,28 @@ export default function SubscriptionForm() {
 
     setIsSubmitting(true);
 
-    setTimeout(() => {
+    try {
+      const result = await addSubscriber(email);
+      
+      if (result.success) {
+        setSubmitted(true);
+        toast({
+          title: "Successfully subscribed!",
+          description: "Thank you for joining our AI learning community.",
+        });
+      } else {
+        // Check if it's a duplicate email error
+        if (result.error && result.error.code === '23505') {
+          setErrors({ email: "This email is already subscribed to our newsletter." });
+        } else {
+          setErrors({ email: "Something went wrong. Please try again." });
+        }
+      }
+    } catch (err) {
+      setErrors({ email: "Failed to subscribe. Please try again later." });
+    } finally {
       setIsSubmitting(false);
-      setSubmitted(true);
-    }, 1500);
+    }
   };
 
   const resetForm = () => {

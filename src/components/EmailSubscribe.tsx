@@ -1,7 +1,8 @@
-
 import { useRef, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Lottie from "lottie-react";
+import { addSubscriber } from "@/lib/supabase";
+import { useToast } from "@/components/ui/use-toast";
 
 /**
  * Props:
@@ -31,6 +32,7 @@ export default function EmailSubscribe({
   const [modalOpen, setModalOpen] = useState(false);
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const validateEmail = (val: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
@@ -44,14 +46,28 @@ export default function EmailSubscribe({
     }
     setSubmitting(true);
     try {
-      await fetch("/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      setModalOpen(true);
-      setEmail("");
-      inputRef.current?.blur();
+      const result = await addSubscriber(email);
+      
+      if (result.success) {
+        setModalOpen(true);
+        setEmail("");
+        inputRef.current?.blur();
+        toast({
+          title: "Success!",
+          description: "You've been added to our newsletter list.",
+        });
+      } else {
+        if (result.error && result.error.code === '23505') {
+          setError("This email is already subscribed to our newsletter.");
+        } else {
+          setError("Failed to subscribe. Please try again!");
+        }
+        toast({
+          title: "Subscription Failed",
+          description: "There was a problem signing you up. Please try again.",
+          variant: "destructive"
+        });
+      }
     } catch (err) {
       setError("Failed to subscribe. Please try again!");
     } finally {
@@ -59,7 +75,6 @@ export default function EmailSubscribe({
     }
   };
 
-  // Embed the animation data directly rather than importing it from a file
   const partyAnimationData = {
     "v": "5.7.6",
     "fr": 30,
