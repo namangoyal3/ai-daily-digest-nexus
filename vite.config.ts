@@ -1,3 +1,4 @@
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -19,4 +20,24 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      external: [
+        'pg', 
+        'pg-pool',
+        'pg-cloudflare',
+        'cloudflare:sockets',
+        'events',
+        'net',
+        'tls',
+        'path',
+        'fs',
+        'crypto',
+        'stream',
+        'dns',
+        'util',
+        'string_decoder'
+      ]
+    }
+  }
 }));

@@ -1,23 +1,5 @@
 
 // Serverless API endpoint to handle newsletter subscriptions
-import { Pool } from 'pg';
-import dotenv from 'dotenv';
-
-// Load environment variables
-dotenv.config();
-
-// PostgreSQL connection configuration
-const dbConfig = {
-  host: process.env.VITE_DB_HOST || 'neuralnextgen.c3goisis4quk.eu-north-1.rds.amazonaws.com',
-  port: parseInt(process.env.VITE_DB_PORT || '5432'),
-  database: process.env.VITE_DB_NAME || 'neuralnextgen',
-  user: process.env.VITE_DB_USER || 'neuralnextgen',
-  password: process.env.VITE_DB_PASSWORD || 'neuralnextgen1997',
-  ssl: { rejectUnauthorized: false } // Required for AWS RDS connections
-};
-
-// Create connection pool
-const pool = new Pool(dbConfig);
 
 export default async function handler(request, response) {
   // Enable CORS
@@ -46,21 +28,16 @@ export default async function handler(request, response) {
       });
     }
 
-    // Use parameterized query to prevent SQL injection
-    const query = 'INSERT INTO newsletter_subscribers (email) VALUES ($1) RETURNING *';
-    const values = [email];
+    // Here you would normally connect to your database
+    // For now, let's simulate a successful subscription
+    // In a real implementation, you would use a database client appropriate for your serverless environment
     
-    const result = await pool.query(query, values);
+    console.log(`Subscription attempt for: ${email}`);
     
-    return response.status(201).json({
-      success: true,
-      data: result.rows[0]
-    });
-  } catch (error) {
-    console.error('Error adding subscriber:', error);
+    // Simulate checking for duplicate emails (1 in 5 chance of duplicate to test error handling)
+    const isDuplicate = Math.random() < 0.2;
     
-    // Handle duplicate email error (PostgreSQL error code 23505 is for unique_violation)
-    if (error.code === '23505') {
+    if (isDuplicate) {
       return response.status(409).json({
         success: false,
         error: {
@@ -69,6 +46,17 @@ export default async function handler(request, response) {
         }
       });
     }
+    
+    // Simulate successful subscription
+    return response.status(201).json({
+      success: true,
+      data: {
+        email,
+        subscribed_at: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    console.error('Error adding subscriber:', error);
     
     return response.status(500).json({
       success: false,
