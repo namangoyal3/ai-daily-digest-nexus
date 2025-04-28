@@ -11,6 +11,7 @@ import { useToast } from "@/components/ui/use-toast";
  * - buttonClassName for customizing button
  * - lottiePath for custom animation json url
  * - bg: boolean, set true if you want purple background
+ * - source: string to track where the subscription came from
  */
 interface EmailSubscribeProps {
   containerClassName?: string;
@@ -18,6 +19,7 @@ interface EmailSubscribeProps {
   buttonClassName?: string;
   lottiePath?: string;
   bg?: boolean;
+  source?: string;
 }
 
 export default function EmailSubscribe({
@@ -26,6 +28,7 @@ export default function EmailSubscribe({
   buttonClassName = "",
   lottiePath = "/lovable-uploads/party-celebration-11702446.json",
   bg = false,
+  source = "main-signup",
 }: EmailSubscribeProps) {
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -53,7 +56,7 @@ export default function EmailSubscribe({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, source }),
       });
       
       const result = await response.json();

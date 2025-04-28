@@ -1,5 +1,16 @@
 
 // Serverless API endpoint to handle newsletter subscriptions
+import { Pool } from 'pg';
+
+// Database connection configuration
+const dbConfig = {
+  host: process.env.VITE_DB_HOST || 'neuralnextgen.c3goisis4quk.eu-north-1.rds.amazonaws.com',
+  port: parseInt(process.env.VITE_DB_PORT || '5432'),
+  database: process.env.VITE_DB_NAME || 'neuralnextgen',
+  user: process.env.VITE_DB_USER || 'neuralnextgen',
+  password: process.env.VITE_DB_PASSWORD || 'neuralnextgen1997',
+  ssl: process.env.VITE_DB_USE_SSL !== 'false',
+};
 
 export default async function handler(request, response) {
   // Enable CORS
@@ -17,6 +28,7 @@ export default async function handler(request, response) {
     return response.status(405).json({ success: false, error: { message: 'Method not allowed' } });
   }
 
+  let pool = null;
   try {
     const { email } = request.body;
     
@@ -28,16 +40,47 @@ export default async function handler(request, response) {
       });
     }
 
-    // Here you would normally connect to your database
-    // For now, let's simulate a successful subscription
-    // In a real implementation, you would use a database client appropriate for your serverless environment
+    // Create a connection pool
+    pool = new Pool(dbConfig);
     
-    console.log(`Subscription attempt for: ${email}`);
+    // Get source, IP address and user agent if available
+    const source = request.body.source || 'website';
+    const ipAddress = request.headers['x-forwarded-for'] || request.socket.remoteAddress;
+    const userAgent = request.headers['user-agent'] || '';
     
-    // Simulate checking for duplicate emails (1 in 5 chance of duplicate to test error handling)
-    const isDuplicate = Math.random() < 0.2;
+    // Insert the email into the neural_next_gen_newsletter_leads table
+    const insertQuery = `
+      INSERT INTO neural_next_gen_newsletter_leads (email, source, ip_address, user_agent)
+      VALUES ($1, $2, $3, $4)
+      RETURNING id, email, subscribed_at
+    `;
     
-    if (isDuplicate) {
+    const result = await pool.query(insertQuery, [email, source, ipAddress, userAgent]);
+    
+    // Also insert into the legacy table for backward compatibility
+    try {
+      await pool.query(
+        'INSERT INTO newsletter_subscribers (email) VALUES ($1) ON CONFLICT (email) DO NOTHING', 
+        [email]
+      );
+    } catch (legacyError) {
+      // Log but don't fail if legacy insert fails
+      console.warn('Legacy table insert failed:', legacyError.message);
+    }
+    
+    return response.status(201).json({
+      success: true,
+      data: {
+        id: result.rows[0].id,
+        email: result.rows[0].email,
+        subscribed_at: result.rows[0].subscribed_at
+      }
+    });
+  } catch (error) {
+    console.error('Error adding subscriber:', error);
+    
+    // Check for duplicate key violation
+    if (error.code === '23505') {
       return response.status(409).json({
         success: false,
         error: {
@@ -47,20 +90,14 @@ export default async function handler(request, response) {
       });
     }
     
-    // Simulate successful subscription
-    return response.status(201).json({
-      success: true,
-      data: {
-        email,
-        subscribed_at: new Date().toISOString()
-      }
-    });
-  } catch (error) {
-    console.error('Error adding subscriber:', error);
-    
     return response.status(500).json({
       success: false,
       error: { message: 'Something went wrong. Please try again.' }
     });
+  } finally {
+    // Always close the pool if it was created
+    if (pool) {
+      await pool.end();
+    }
   }
 }

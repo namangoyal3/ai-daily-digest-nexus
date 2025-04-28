@@ -1,7 +1,6 @@
-// This file provides a mock implementation for client-side use
-// The actual database operations will be performed by the serverless API endpoint
+// This file provides functions for client-side interaction with the PostgreSQL database via API
 
-// Type definitions to match real PostgreSQL client responses
+// Type definitions to match responses
 interface DBResponse {
   success: boolean;
   data?: any;
@@ -12,7 +11,7 @@ interface DBResponse {
 }
 
 // Function to subscribe to newsletter (client-side implementation)
-export async function addSubscriber(email: string): Promise<DBResponse> {
+export async function addSubscriber(email: string, source: string = 'website'): Promise<DBResponse> {
   try {
     // Basic email validation
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -28,7 +27,7 @@ export async function addSubscriber(email: string): Promise<DBResponse> {
     const response = await fetch('/api/subscribe', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ email, source })
     });
     
     const result = await response.json();
@@ -62,9 +61,9 @@ export async function testDatabaseConnection(): Promise<DBResponse> {
   }
 }
 
-// Other functions from the original file are simplified to work client-side
+// Keep the mock implementations for compatibility
 export function initializePool() {
-  console.log('Mock PostgreSQL pool initialized (client-side)');
+  console.log('PostgreSQL pool initialized via API');
   return null;
 }
 
@@ -93,9 +92,6 @@ export async function createSubscribersTable(): Promise<DBResponse> {
 }
 
 export async function initializeDatabase(): Promise<DBResponse> {
-  console.log('Mock database initialization (client-side)');
-  return {
-    success: true,
-    data: { message: 'Mock database initialized' }
-  };
+  // Test the database connection
+  return testDatabaseConnection();
 }

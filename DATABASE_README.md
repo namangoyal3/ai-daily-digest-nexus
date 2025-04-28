@@ -21,6 +21,7 @@ VITE_DB_PORT=5432
 VITE_DB_NAME=neuralnextgen
 VITE_DB_USER=neuralnextgen
 VITE_DB_PASSWORD=neuralnextgen1997
+VITE_DB_USE_SSL=true
 ```
 
 ### Creating Required Tables
@@ -40,10 +41,19 @@ psql "sslmode=require host=neuralnextgen.c3goisis4quk.eu-north-1.rds.amazonaws.c
 
 ### Table Structure
 
-#### newsletter_subscribers
+#### newsletter_subscribers (legacy table)
 - `id`: SERIAL PRIMARY KEY
 - `email`: VARCHAR(255) UNIQUE NOT NULL
 - `subscribed_at`: TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+
+#### neural_next_gen_newsletter_leads (new table)
+- `id`: SERIAL PRIMARY KEY
+- `email`: VARCHAR(255) UNIQUE NOT NULL
+- `subscribed_at`: TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+- `source`: VARCHAR(100) - Tracks where the subscriber came from
+- `status`: VARCHAR(50) DEFAULT 'active' - For managing subscription status
+- `ip_address`: VARCHAR(45) - Stores subscriber's IP address
+- `user_agent`: TEXT - Stores browser/device information
 
 ## Security Considerations
 - For production, use a strong, unique password
@@ -52,5 +62,13 @@ psql "sslmode=require host=neuralnextgen.c3goisis4quk.eu-north-1.rds.amazonaws.c
 - Never expose your database credentials in client-side code
 
 ## API Integration
-The application uses a serverless API endpoint at `/api/subscribe` to handle database operations securely.
-This endpoint handles adding new subscribers while keeping database credentials secure on the server.
+The application uses serverless API endpoints at `/api/subscribe` and `/api/health-check` to handle database operations securely.
+These endpoints handle adding new subscribers while keeping database credentials secure on the server.
+
+## Troubleshooting
+If you encounter connection issues:
+
+1. Verify your environment variables are set correctly
+2. Check that your network allows connections to the database port
+3. Run the health check endpoint to verify connectivity: `/api/health-check`
+4. Check database logs for any connection errors or permission issues

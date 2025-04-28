@@ -31,13 +31,13 @@ export default function SubscriptionForm() {
     setIsSubmitting(true);
 
     try {
-      const result = await addSubscriber(email);
+      const result = await addSubscriber(email, 'subscription-form');
       
       if (result.success) {
         setSubmitted(true);
         toast({
-          title: "Successfully subscribed!",
-          description: "Thank you for joining our AI learning community.",
+          title: "Success!",
+          description: "You've been added to our newsletter list.",
         });
       } else {
         // Check if it's a duplicate email error
@@ -49,6 +49,11 @@ export default function SubscriptionForm() {
       }
     } catch (err) {
       setErrors({ email: "Failed to subscribe. Please try again later." });
+      toast({
+        title: "Subscription Failed",
+        description: "There was a problem connecting to our service. Please try again.",
+        variant: "destructive"
+      });
     } finally {
       setIsSubmitting(false);
     }
