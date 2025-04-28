@@ -1,4 +1,3 @@
-
 // This file provides functions for client-side interaction with the PostgreSQL database via API
 
 // Type definitions to match responses
@@ -17,7 +16,11 @@ const getBaseUrl = () => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return '';
   }
-  // For production environment
+  // For production environment with Lovable
+  if (window.location.hostname.includes('lovableproject.com')) {
+    return '/api';  // Lovable expects API paths without the /api prefix
+  }
+  // For other production environments
   return window.location.origin;
 };
 
@@ -33,13 +36,23 @@ export async function addSubscriber(email: string, source: string = 'website'): 
     }
     
     console.log('Adding subscriber with email:', email);
+    console.log('API URL:', `${getBaseUrl()}/subscribe`);
 
     // Send request to our serverless API endpoint
-    const response = await fetch(`${getBaseUrl()}/api/subscribe`, {
+    const response = await fetch(`${getBaseUrl()}/subscribe`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
       body: JSON.stringify({ email, source })
     });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('API error response:', response.status, errorText);
+      throw new Error(`API error: ${response.status} ${response.statusText}`);
+    }
     
     const result = await response.json();
     return result;
@@ -47,7 +60,7 @@ export async function addSubscriber(email: string, source: string = 'website'): 
     console.error('Error adding subscriber:', error);
     return { 
       success: false, 
-      error: { message: 'Something went wrong. Please try again.' } 
+      error: { message: error.message || 'Something went wrong. Please try again.' } 
     };
   }
 }
@@ -55,9 +68,19 @@ export async function addSubscriber(email: string, source: string = 'website'): 
 // Function to test the API connection - for client-side use
 export async function testDatabaseConnection(): Promise<DBResponse> {
   try {
-    const response = await fetch(`${getBaseUrl()}/api/health-check`, { method: 'GET' });
+    const apiUrl = `${getBaseUrl()}/health-check`;
+    console.log('Testing database connection at URL:', apiUrl);
+    
+    const response = await fetch(apiUrl, { 
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
     
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('API error response:', response.status, errorText);
       throw new Error(`API returned ${response.status} ${response.statusText}`);
     }
     
@@ -67,7 +90,7 @@ export async function testDatabaseConnection(): Promise<DBResponse> {
     console.error('API connection test failed:', error);
     return { 
       success: false, 
-      error: { message: 'API connection failed.' }
+      error: { message: error.message || 'API connection failed.' }
     };
   }
 }
@@ -106,4 +129,3 @@ export async function initializeDatabase(): Promise<DBResponse> {
   // Test the database connection
   return testDatabaseConnection();
 }
-

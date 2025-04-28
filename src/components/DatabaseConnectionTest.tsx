@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +13,12 @@ export default function DatabaseConnectionTest() {
   const [subscribeStatus, setSubscribeStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [subscribeResult, setSubscribeResult] = useState<any>(null);
   const { toast } = useToast();
+
+  const environmentInfo = {
+    baseUrl: window.location.origin,
+    hostname: window.location.hostname,
+    apiPath: window.location.hostname.includes('lovableproject.com') ? '/api' : `${window.location.origin}/api`,
+  };
 
   // Function to test database connection
   const checkConnection = async () => {
