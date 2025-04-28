@@ -23,6 +23,7 @@ import AdminPromotions from "./pages/AdminPromotions";
 import { Helmet } from "react-helmet";
 import { useEffect } from "react";
 import AIBlogs from "./pages/AIBlogs";
+import DbTestPage from "./pages/DbTestPage";
 
 // ScrollToTop component to reset scroll position on route change
 function ScrollToTop() {
@@ -86,6 +87,7 @@ const App = () => (
           <Route path="/admin/backups" element={<NotFound />} />
           <Route path="/ai-blogs" element={<AIBlogs />} />
           <Route path="/ai-blogs/:blogId" element={<NotFound />} />
+          <Route path="/db-test" element={<DbTestPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
