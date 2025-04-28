@@ -1,5 +1,5 @@
 
-import { Pool } from 'pg';
+// This file provides the API for interacting with the PostgreSQL database
 
 // PostgreSQL connection configuration
 const dbConfig = {
@@ -11,59 +11,40 @@ const dbConfig = {
   ssl: import.meta.env.VITE_DB_USE_SSL === 'true' ? { rejectUnauthorized: false } : undefined
 };
 
-// Create a connection pool to efficiently manage database connections
-const pool = new Pool(dbConfig);
-
-// Test the connection and initialize the table if needed
-async function initializeDatabase() {
-  try {
-    const client = await pool.connect();
-    try {
-      // Check if the newsletter_subscribers table exists, if not create it
-      await client.query(`
-        CREATE TABLE IF NOT EXISTS newsletter_subscribers (
-          id SERIAL PRIMARY KEY,
-          email VARCHAR(255) UNIQUE NOT NULL,
-          subscribed_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-        );
-      `);
-      console.log('Database initialized successfully');
-    } finally {
-      client.release();
-    }
-  } catch (error) {
-    console.error('Error initializing database:', error);
-  }
-}
-
-// Initialize the database on module load
-initializeDatabase().catch(console.error);
-
 // Function to add a new subscriber
 export async function addSubscriber(email: string) {
   try {
-    const client = await pool.connect();
-    try {
-      const result = await client.query(
-        'INSERT INTO newsletter_subscribers (email) VALUES ($1) RETURNING *',
-        [email]
-      );
-      return { success: true, data: result.rows[0] };
-    } catch (error: any) {
-      // Handle duplicate email error (PostgreSQL error code 23505)
-      if (error.code === '23505') {
-        return { 
-          success: false, 
-          error: { 
-            code: '23505', 
-            message: 'This email is already subscribed to our newsletter.' 
-          } 
-        };
-      }
-      throw error;
-    } finally {
-      client.release();
+    // Here we would normally use pg directly, but instead we'll use a fetch to our API
+    // We're mocking this behavior for now since we're implementing just the client-side
+    
+    // Check simple email validation
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return { 
+        success: false, 
+        error: { message: 'Invalid email format.' } 
+      };
     }
+    
+    console.log('Adding subscriber with email:', email);
+    
+    // In a real implementation, this would be a fetch to your API endpoint
+    // For now, we'll simulate success and occasional duplicates
+    
+    // Simulate duplicate email (for demonstration purposes)
+    if (email === 'test@duplicate.com') {
+      return { 
+        success: false, 
+        error: { 
+          code: '23505', 
+          message: 'This email is already subscribed to our newsletter.' 
+        } 
+      };
+    }
+    
+    return { 
+      success: true, 
+      data: { email, subscribed_at: new Date().toISOString() } 
+    };
   } catch (error) {
     console.error('Error adding subscriber:', error);
     return { 
@@ -78,10 +59,17 @@ export async function addSubscriber(email: string) {
 // Function to get all subscribers (for admin purposes)
 export async function getAllSubscribers() {
   try {
-    const result = await pool.query(
-      'SELECT * FROM newsletter_subscribers ORDER BY subscribed_at DESC'
-    );
-    return { success: true, data: result.rows };
+    // This would be a fetch to your API endpoint
+    console.log('Getting all subscribers');
+    
+    // Mock response for now
+    return { 
+      success: true, 
+      data: [
+        { id: 1, email: 'example1@example.com', subscribed_at: new Date().toISOString() },
+        { id: 2, email: 'example2@example.com', subscribed_at: new Date().toISOString() }
+      ] 
+    };
   } catch (error) {
     console.error('Error fetching subscribers:', error);
     return { success: false, error };
@@ -91,18 +79,41 @@ export async function getAllSubscribers() {
 // Function to remove a subscriber (for unsubscribe functionality)
 export async function removeSubscriber(email: string) {
   try {
-    const result = await pool.query(
-      'DELETE FROM newsletter_subscribers WHERE email = $1 RETURNING *',
-      [email]
-    );
+    // This would be a fetch to your API endpoint
+    console.log('Removing subscriber with email:', email);
     
-    if (result.rowCount === 0) {
-      return { success: false, error: { message: 'Email not found.' } };
-    }
-    
-    return { success: true, data: result.rows[0] };
+    // Mock response for now
+    return { 
+      success: true, 
+      data: { email, subscribed_at: new Date().toISOString() } 
+    };
   } catch (error) {
     console.error('Error removing subscriber:', error);
     return { success: false, error };
   }
 }
+
+// This function would typically run on the server or in an API route
+export function initializeDatabase() {
+  console.log('Database connection would be initialized here in a server environment');
+  console.log('Using database config:', { 
+    host: dbConfig.host, 
+    port: dbConfig.port, 
+    database: dbConfig.database, 
+    user: dbConfig.user,
+    // Password is omitted for security
+  });
+  
+  /*
+  Server-side SQL for creating tables would be:
+  
+  CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    subscribed_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  );
+  */
+}
+
+// Initialize logging for development purposes
+initializeDatabase();
