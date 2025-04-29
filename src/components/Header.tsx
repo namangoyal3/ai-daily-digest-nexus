@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
@@ -29,10 +28,13 @@ export default function Header() {
   }, [location.pathname]);
 
   const scrollToSubscribe = () => {
-    document.getElementById('subscribe-section')?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    });
+    const subscribeSection = document.getElementById('subscribe-section');
+    if (subscribeSection) {
+      subscribeSection.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
   };
 
   const navLinks = [
