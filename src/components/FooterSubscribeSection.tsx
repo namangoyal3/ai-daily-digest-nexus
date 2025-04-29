@@ -67,7 +67,7 @@ export default function FooterSubscribeSection() {
   return (
     <div className="w-full max-w-xl mx-auto bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] rounded-xl p-6 md:p-8 flex flex-col items-center shadow-lg border border-white/10">
       <h3 className="text-white text-2xl md:text-3xl font-bold mb-2 text-center">
-        Subscribe for Weekly AI Insights
+        Subscribe for Daily AI Insights
       </h3>
       <p className="text-white/80 mb-6 text-center text-sm md:text-base max-w-sm">
         Get exclusive news, tips, and resources delivered straight to your inbox. Never miss a breakthrough.
