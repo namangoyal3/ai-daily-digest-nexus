@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { 
-  Newspaper, Bot, GraduationCap, ArrowRight, Brain, Zap, 
+  Newspaper, Bot, ArrowRight, Brain, Zap, 
   Users, Code, BarChart, LineChart, CheckCircle, Award,
   Briefcase, Building, Lightbulb, Sparkles, Share2, Star
 } from "lucide-react";
@@ -12,11 +12,18 @@ import Header from "@/components/Header";
 import NewHomepageSubscribeSection from "@/components/NewHomepageSubscribeSection";
 
 export default function ParentLanding() {
+  const scrollToSubscribe = () => {
+    document.getElementById('subscribe-section')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  };
+
   return (
     <>
       <Helmet>
         <title>NeuralNextGen - Your AI Technology Partner</title>
-        <meta name="description" content="Bridging AI gaps with comprehensive solutions: AI Agents Marketplace, Daily AI Newsletter, and AI Courses. Making artificial intelligence accessible and practical." />
+        <meta name="description" content="Bridging AI gaps with comprehensive solutions: AI Agents Marketplace, Daily AI Newsletter, and AI Daily Digest. Making artificial intelligence accessible and practical." />
         <script type="application/ld+json">
           {`
             {
@@ -113,7 +120,7 @@ export default function ParentLanding() {
               </p>
             </div>
             
-            <div className="grid gap-8 md:grid-cols-3">
+            <div className="grid gap-8 md:grid-cols-2">
               {/* AI Daily Digest Card */}
               <div className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
                 <div className="h-48 bg-gradient-to-br from-blue-500/90 to-purple-600/90 relative overflow-hidden">
@@ -136,7 +143,7 @@ export default function ParentLanding() {
                     </div>
                     <div className="flex items-center">
                       <Users className="w-5 h-5 text-aiblue mr-2" />
-                      <span className="text-sm">2,000+ subscribers</span>
+                      <span className="text-sm">25,000+ subscribers</span>
                     </div>
                   </div>
                   <Button asChild className="w-full bg-gradient-to-r from-aiblue to-aipurple">
@@ -175,39 +182,6 @@ export default function ParentLanding() {
                   <Button asChild className="w-full bg-gradient-to-r from-aiblue to-aipurple">
                     <Link to="/ai-agents" className="flex items-center justify-center">
                       Explore Agents <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-
-              {/* AI Courses Card */}
-              <div className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
-                <div className="h-48 bg-gradient-to-br from-green-500/90 to-blue-600/90 relative overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <GraduationCap className="w-20 h-20 text-white/80" />
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-4">
-                    <h3 className="text-white text-xl font-bold">AI Courses</h3>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <p className="text-gray-600 mb-6">
-                    Learn AI concepts through practical, hands-on courses designed for all skill levels.
-                    Advance your career with in-demand AI skills.
-                  </p>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center">
-                      <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
-                      <span className="text-sm">85% completion rate</span>
-                    </div>
-                    <div className="flex items-center">
-                      <Users className="w-5 h-5 text-aiblue mr-2" />
-                      <span className="text-sm">20+ courses</span>
-                    </div>
-                  </div>
-                  <Button asChild className="w-full bg-gradient-to-r from-aiblue to-aipurple">
-                    <Link to="/ai-courses" className="flex items-center justify-center">
-                      Start Learning <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
                 </div>
@@ -602,19 +576,19 @@ export default function ParentLanding() {
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
                     <img 
-                      src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&h=100" 
+                      src="https://images.unsplash.com/photo-1665050110501-502800000000?auto=format&fit=crop&w=100&h=100" 
                       alt="Testimonial author" 
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <div>
-                    <h4 className="font-semibold">Priya Patel</h4>
-                    <p className="text-sm text-gray-600">Founder, EdTech AI</p>
+                    <h4 className="font-semibold">David Thompson</h4>
+                    <p className="text-sm text-gray-600">Research Lead, AI Innovations</p>
                   </div>
                 </div>
                 <p className="text-gray-700 italic">
-                  "The AI Courses are fantastic for our team's learning and upskilling. The format is intuitive,
-                  and the material stays updated with fast-moving AI trends."
+                  "The AI Daily Digest newsletter has become an essential resource for our team. 
+                  The curated insights keep us ahead of AI trends and save us valuable research time."
                 </p>
                 <div className="flex text-yellow-400 mt-4">
                   <Star className="w-5 h-5 fill-yellow-400" />

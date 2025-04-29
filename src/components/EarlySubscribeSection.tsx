@@ -71,7 +71,7 @@ export default function EarlySubscribeSection() {
           Stay Updated with AI Trends
         </h3>
         <p className="text-gray-200 mb-6">
-          Join 25,000+ subscribers receiving our daily AI insights newsletter.<br />
+          Join 25,000+ AI professionals receiving our daily AI insights newsletter.<br />
           No spam, just the latest in AI.
         </p>
         <form

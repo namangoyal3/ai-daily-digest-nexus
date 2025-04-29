@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 export default function Hero() {
   const scrollToSubscribe = () => {
-    document.getElementById('subscribe')?.scrollIntoView({ 
+    document.getElementById('subscribe-section')?.scrollIntoView({ 
       behavior: 'smooth',
       block: 'start'
     });

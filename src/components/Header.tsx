@@ -28,11 +28,17 @@ export default function Header() {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
+  const scrollToSubscribe = () => {
+    document.getElementById('subscribe-section')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  };
+
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "AI Daily Digest", path: "/ai-digest" },
-    { name: "AI Agents", path: "/ai-agents" },
-    { name: "AI Courses", path: "/ai-courses" }
+    { name: "AI Agents", path: "/ai-agents" }
   ];
 
   const isCurrentPage = (path) => {
@@ -126,8 +132,11 @@ export default function Header() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Button className="bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark transition-all shadow-md shadow-purple-500/20 hover:shadow-purple-500/40">
-              <Link to="/ai-agents">Get Started</Link>
+            <Button 
+              className="bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark transition-all shadow-md shadow-purple-500/20 hover:shadow-purple-500/40"
+              onClick={scrollToSubscribe}
+            >
+              Subscribe Now
             </Button>
           </motion.div>
         </nav>
@@ -201,10 +210,14 @@ export default function Header() {
                   className="pt-2"
                   variants={menuItemVariants}
                 >
-                  <Button className="w-full bg-gradient-to-r from-aiblue to-aipurple shadow-md">
-                    <Link to="/ai-agents" onClick={() => setMobileMenuOpen(false)}>
-                      Get Started
-                    </Link>
+                  <Button 
+                    className="w-full bg-gradient-to-r from-aiblue to-aipurple shadow-md"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      scrollToSubscribe();
+                    }}
+                  >
+                    Subscribe Now
                   </Button>
                 </motion.div>
               </div>
