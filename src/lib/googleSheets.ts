@@ -13,10 +13,13 @@ interface SubmissionResult {
 // Convert FormData to URL encoded string
 function formDataToUrlEncoded(formData: FormData): string {
   const params = new URLSearchParams();
-  // @ts-ignore - FormData entries() is available in modern browsers
-  for (const [key, value] of formData.entries()) {
-    params.append(key, value);
-  }
+  
+  // Properly handle FormDataEntryValue types
+  formData.forEach((value, key) => {
+    // Convert any non-string values to strings
+    params.append(key, value instanceof File ? value.name : String(value));
+  });
+  
   return params.toString();
 }
 
@@ -47,13 +50,14 @@ export async function submitToGoogleSheets(email: string, source: string): Promi
       form.style.display = 'none';
       
       // Add form fields
-      for (const [key, value] of formData.entries()) {
+      formData.forEach((value, key) => {
         const input = document.createElement('input');
         input.type = 'hidden';
         input.name = key;
-        input.value = value as string;
+        // Ensure all values are strings
+        input.value = value instanceof File ? value.name : String(value);
         form.appendChild(input);
-      }
+      });
       
       // Add the form to the document
       document.body.appendChild(form);
