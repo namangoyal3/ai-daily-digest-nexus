@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
@@ -32,8 +31,7 @@ export default function Header() {
     { name: "Home", path: "/" },
     { name: "AI Daily Digest", path: "/ai-digest" },
     { name: "AI Agents", path: "/ai-agents" },
-    { name: "AI Courses", path: "/ai-courses" },
-    { name: "Google Sheets", path: "/google-sheets-integration" }
+    { name: "AI Courses", path: "/ai-courses" }
   ];
 
   const isCurrentPage = (path) => {

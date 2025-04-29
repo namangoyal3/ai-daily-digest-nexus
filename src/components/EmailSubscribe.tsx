@@ -1,4 +1,3 @@
-
 import { useRef, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Lottie from "lottie-react";
@@ -14,7 +13,6 @@ import { addSubscriberToGoogleSheet } from "@/lib/googleSheets";
  * - lottiePath for custom animation json url
  * - bg: boolean, set true if you want purple background
  * - source: string to track where the subscription came from
- * - googleSheetId: optional Google Sheet ID to send data to
  */
 interface EmailSubscribeProps {
   containerClassName?: string;
@@ -23,7 +21,6 @@ interface EmailSubscribeProps {
   lottiePath?: string;
   bg?: boolean;
   source?: string;
-  googleSheetId?: string;
 }
 
 export default function EmailSubscribe({
@@ -33,7 +30,6 @@ export default function EmailSubscribe({
   lottiePath = "/lovable-uploads/party-celebration-11702446.json",
   bg = false,
   source = "main-signup",
-  googleSheetId,
 }: EmailSubscribeProps) {
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -41,10 +37,6 @@ export default function EmailSubscribe({
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-
-  // Get Google Sheet ID from props or URL param
-  const urlParams = new URLSearchParams(window.location.search);
-  const sheetId = googleSheetId || urlParams.get('sheetId') || '';
 
   const validateEmail = (val: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
@@ -64,7 +56,7 @@ export default function EmailSubscribe({
       
       if (result.success) {
         // Also try to add to Google Sheet
-        addSubscriberToGoogleSheet(email, source, sheetId)
+        addSubscriberToGoogleSheet(email, source)
           .then((sheetResult) => {
             if (sheetResult.success) {
               console.log('Added to Google Sheet successfully');

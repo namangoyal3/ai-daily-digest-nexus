@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,7 +41,7 @@ export default function SubscriptionForm() {
       // If database addition was successful, also try to add to Google Sheet
       if (result.success) {
         // Try to add to Google Sheet but don't block on it
-        addSubscriberToGoogleSheet(email, 'subscription-form', googleSheetId)
+        addSubscriberToGoogleSheet(email, 'subscription-form')
           .then((sheetResult) => {
             if (sheetResult.success) {
               console.log('Added to Google Sheet successfully');

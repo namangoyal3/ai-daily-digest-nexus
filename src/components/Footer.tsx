@@ -54,7 +54,6 @@ export default function Footer() {
               <li><Link to="/ai-digest" className="hover:text-white transition-colors">AI Daily Digest</Link></li>
               <li><Link to="/ai-agents" className="hover:text-white transition-colors">AI Agents Marketplace</Link></li>
               <li><Link to="/ai-courses" className="hover:text-white transition-colors text-white">AI Courses</Link></li>
-              <li><Link to="/google-sheets-integration" className="hover:text-white transition-colors">Google Sheets Integration</Link></li>
               <li><a href="#" className="hover:text-white transition-colors text-white">Enterprise Solutions</a></li>
               <li><a href="#" className="hover:text-white transition-colors text-white">API Access</a></li>
             </ul>
@@ -102,4 +101,3 @@ export default function Footer() {
     </footer>
   );
 }
-

@@ -6,7 +6,6 @@ import {
 } from "react-router-dom";
 import AIDigest from "./pages/AIDigest";
 import DbTestPage from "./pages/DbTestPage";
-import GoogleSheetsIntegration from "./pages/GoogleSheetsIntegration";
 
 function App() {
   const router = createBrowserRouter([
@@ -17,10 +16,6 @@ function App() {
     {
       path: "/db-test",
       element: <DbTestPage />,
-    },
-    {
-      path: "/google-sheets-integration",
-      element: <GoogleSheetsIntegration />,
     },
   ]);
 

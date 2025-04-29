@@ -10,32 +10,23 @@ interface GoogleSheetsResponse {
   error?: string;
 }
 
+// Define the default Google Apps Script URL
+const DEFAULT_GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzD1_vqkNQYjdd6zJgd9A1FHh9C34__sDYECFZDN2dVk4a3kQ49YZVxv6fOCbhpjpf4/exec';
+
 /**
  * Function to send subscriber data to a Google Sheet
  * @param email - The email of the subscriber
  * @param source - The source of the subscription (e.g. 'website', 'landing-page')
- * @param sheetId - Optional Google Sheet ID (if not provided, will use the default from URL params or env)
  */
 export async function addSubscriberToGoogleSheet(
   email: string, 
-  source: string = 'website',
-  sheetId?: string
+  source: string = 'website'
 ): Promise<GoogleSheetsResponse> {
   try {
-    // Get the Google Sheet ID from URL params, function param, or default to empty
-    const urlParams = new URLSearchParams(window.location.search);
-    const googleSheetId = sheetId || urlParams.get('sheetId') || '';
-    
-    if (!googleSheetId) {
-      console.warn('No Google Sheet ID provided. Skipping Google Sheets integration.');
-      return { success: false, error: 'No Google Sheet ID provided' };
-    }
+    console.log(`Sending data to Google Sheet via Apps Script`);
 
-    console.log(`Sending data to Google Sheet: ${googleSheetId}`);
-
-    // Use public Google Apps Script Web App as a proxy to write to Google Sheets
-    // This requires deploying a Google Apps Script as a web app
-    const googleScriptUrl = `https://script.google.com/macros/s/${googleSheetId}/exec`;
+    // Use the default Google Apps Script Web App
+    const googleScriptUrl = DEFAULT_GOOGLE_SCRIPT_URL;
     
     // Prepare form data (Google Apps Script web apps expect form data)
     const formData = new FormData();
