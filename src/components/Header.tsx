@@ -32,7 +32,8 @@ export default function Header() {
     { name: "Home", path: "/" },
     { name: "AI Daily Digest", path: "/ai-digest" },
     { name: "AI Agents", path: "/ai-agents" },
-    { name: "AI Courses", path: "/ai-courses" }
+    { name: "AI Courses", path: "/ai-courses" },
+    { name: "Google Sheets", path: "/google-sheets-integration" }
   ];
 
   const isCurrentPage = (path) => {
