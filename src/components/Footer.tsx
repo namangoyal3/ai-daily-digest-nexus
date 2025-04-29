@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Mail, MapPin, Phone, Twitter, Facebook, Instagram, Linkedin, Youtube, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -52,9 +53,6 @@ export default function Footer() {
             <ul className="space-y-3">
               <li><Link to="/ai-digest" className="hover:text-white transition-colors">AI Daily Digest</Link></li>
               <li><Link to="/ai-agents" className="hover:text-white transition-colors">AI Agents Marketplace</Link></li>
-              <li><Link to="/ai-courses" className="hover:text-white transition-colors text-white">AI Courses</Link></li>
-              <li><a href="#" className="hover:text-white transition-colors text-white">Enterprise Solutions</a></li>
-              <li><a href="#" className="hover:text-white transition-colors text-white">API Access</a></li>
             </ul>
           </div>
           
@@ -82,7 +80,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center">
                 <Mail className="w-5 h-5 mr-2 text-aipurple" />
-                <span>info@neuralnextgen.com</span>
+                <span>support@neuralnextgen.com</span>
               </li>
             </ul>
           </div>
@@ -91,9 +89,9 @@ export default function Footer() {
         <div className="border-t border-gray-800 py-8 text-sm flex flex-col md:flex-row justify-between items-center">
           <p>&copy; {currentYear} NeuralNextGen. All rights reserved.</p>
           <div className="mt-4 md:mt-0 flex gap-4">
-            <a href="#" className="text-white hover:opacity-80 transition-opacity">Privacy Policy</a>
-            <a href="#" className="text-white hover:opacity-80 transition-opacity">Terms of Service</a>
-            <a href="#" className="text-white hover:opacity-80 transition-opacity">Cookie Policy</a>
+            <Link to="/privacy-policy" className="text-white hover:opacity-80 transition-opacity">Privacy Policy</Link>
+            <Link to="/terms-of-service" className="text-white hover:opacity-80 transition-opacity">Terms of Service</Link>
+            <Link to="/cookie-policy" className="text-white hover:opacity-80 transition-opacity">Cookie Policy</Link>
           </div>
         </div>
       </div>
