@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { 
@@ -523,9 +522,9 @@ export default function ParentLanding() {
               <div className="bg-white p-6 rounded-xl shadow-md">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
-                    <img 
-                      src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=100&h=100" 
-                      alt="Testimonial author" 
+                    <img
+                      src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=100&h=100"
+                      alt="Michael Chen avatar"
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -550,9 +549,9 @@ export default function ParentLanding() {
               <div className="bg-white p-6 rounded-xl shadow-md">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
-                    <img 
-                      src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100" 
-                      alt="Testimonial author" 
+                    <img
+                      src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100"
+                      alt="Sarah Johnson avatar"
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -577,9 +576,9 @@ export default function ParentLanding() {
               <div className="bg-white p-6 rounded-xl shadow-md">
                 <div className="flex items-center mb-4">
                   <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
-                    <img 
-                      src="https://images.unsplash.com/photo-1665050110501-502800000000?auto=format&fit=crop&w=100&h=100" 
-                      alt="Testimonial author" 
+                    <img
+                      src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=100&h=100"
+                      alt="David Thompson avatar"
                       className="w-full h-full object-cover"
                     />
                   </div>
