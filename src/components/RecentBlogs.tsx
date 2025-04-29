@@ -9,30 +9,30 @@ import BlogCardSkeleton from "./skeletons/BlogCardSkeleton";
 const recentBlogs = [
   {
     id: 1,
-    title: "The Future of AI in 2025: Trends and Predictions",
-    excerpt: "Explore the emerging trends and innovations that will shape artificial intelligence in the coming year.",
-    date: "2025-04-15",
-    readTime: "5 min read",
-    category: "AI Trends",
-    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
+    title: "Multimodal AI Systems: The Next Frontier in Human-Computer Interaction",
+    excerpt: "How systems that combine vision, language, and audio understanding are transforming the way we interact with technology.",
+    date: "2025-04-29",
+    readTime: "6 min read",
+    category: "Emerging Tech",
+    image: "https://images.unsplash.com/photo-1535378917042-10a22c95931a"
   },
   {
     id: 2,
-    title: "Understanding Large Language Models",
-    excerpt: "A comprehensive guide to how LLMs work and their impact on various industries.",
-    date: "2025-04-14",
-    readTime: "7 min read",
-    category: "Deep Learning",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475"
+    title: "Quantum Computing and AI: A New Paradigm for Machine Learning",
+    excerpt: "Exploring how quantum algorithms are beginning to reshape the foundations of deep learning and neural network design.",
+    date: "2025-04-27",
+    readTime: "8 min read",
+    category: "Quantum AI",
+    image: "https://images.unsplash.com/photo-1516192518150-0d8fee5425e3"
   },
   {
     id: 3,
-    title: "AI Ethics: Navigating the Challenges",
-    excerpt: "Key considerations for responsible AI development and implementation.",
-    date: "2025-04-13",
-    readTime: "6 min read",
-    category: "AI Ethics",
-    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81"
+    title: "Edge AI Development: Practical Solutions for Privacy-First Applications",
+    excerpt: "Best practices for deploying machine learning models directly on devices without compromising user privacy or security.",
+    date: "2025-04-25",
+    readTime: "7 min read",
+    category: "AI Development",
+    image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f"
   }
 ];
 
@@ -62,7 +62,7 @@ export default function RecentBlogs() {
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
           <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-aiblue">
-            Latest Insights from AI Daily Digest
+            Latest Insights from Tech Horizon
           </h2>
           <p className="text-gray-600 text-base md:text-lg px-4">
             Stay informed with our latest articles and analysis

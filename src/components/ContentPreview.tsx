@@ -7,7 +7,7 @@ export default function ContentPreview() {
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-12 md:mb-16">
           <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4 text-aiblue">
-            Daily AI Insights Delivered to Your Inbox
+            Tech Horizon: Your Daily AI Insights
           </h2>
           <p className="text-gray-600 text-lg md:text-xl">
             Stay informed with our expertly curated AI news and analysis
@@ -19,10 +19,10 @@ export default function ContentPreview() {
           <div className="bg-gradient-to-r from-aiblue to-aipurple p-6 text-white">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-heading text-xl font-bold">AI Daily Digest</h3>
+                <h3 className="font-heading text-xl font-bold">Tech Horizon</h3>
                 <div className="flex items-center text-white/80 text-sm mt-1">
                   <Calendar className="w-4 h-4 mr-1" /> 
-                  <time dateTime="2025-04-17">April 17, 2025</time>
+                  <time dateTime="2025-04-29">April 29, 2025</time>
                 </div>
               </div>
               <div className="bg-white/20 px-3 py-1 rounded-full text-sm">
@@ -42,12 +42,12 @@ export default function ContentPreview() {
               </div>
               
               <h5 className="font-heading font-bold text-lg mb-3" itemProp="headline">
-                OpenAI Unveils Revolutionary Text-to-Video Model
+                Google's DeepMind Achieves Breakthrough in Protein Structure Prediction
               </h5>
               <p className="text-gray-600" itemProp="description">
-                OpenAI's new model generates high-quality videos from text prompts, demonstrating remarkable temporal consistency and natural motion. The technology represents a significant leap forward in generative AI capabilities.
+                Google DeepMind's latest algorithm can predict protein structures with unprecedented accuracy, potentially revolutionizing drug discovery and biomedical research. Scientists believe this could accelerate development of new treatments for currently incurable diseases.
               </p>
-              <meta itemProp="datePublished" content="2025-04-17" />
+              <meta itemProp="datePublished" content="2025-04-29" />
             </article>
             
             <article className="border-b border-gray-100 pb-6 mb-6" itemScope itemType="https://schema.org/Article">
@@ -59,12 +59,12 @@ export default function ContentPreview() {
               </div>
               
               <h5 className="font-heading font-bold text-lg mb-3" itemProp="headline">
-                AI Hardware Market Expected to Reach ₹10,000 Crore by 2026
+                AI Chip Market Grows 35% in Q1 2025, NVIDIA Maintains Leadership
               </h5>
               <p className="text-gray-600" itemProp="description">
-                A new report projects the AI hardware market to grow at 23% CAGR over the next two years. Key drivers include increased demand for specialized AI training chips and edge computing devices.
+                The global AI chip market has expanded by 35% in Q1 2025, reaching $42.3 billion in revenue. NVIDIA continues to dominate with 63% market share, while new entrants from China and Europe are beginning to capture specialized segments of the enterprise market.
               </p>
-              <meta itemProp="datePublished" content="2025-04-17" />
+              <meta itemProp="datePublished" content="2025-04-29" />
             </article>
             
             <article itemScope itemType="https://schema.org/Article">
@@ -76,13 +76,13 @@ export default function ContentPreview() {
               </div>
               
               <h5 className="font-heading font-bold text-lg mb-3" itemProp="headline">
-                The Future of Responsible AI Development
+                Navigating AI Regulation in a Multi-Polar World
               </h5>
               <p className="text-gray-600" itemProp="description">
-                Dr. Emily Chen, AI Ethics Researcher at MIT, shares her perspective on balancing innovation and responsible development in the rapidly evolving generative AI space.
+                Dr. Amara Okafor, AI Policy Researcher at Oxford, analyzes the diverging regulatory approaches between the EU, US, and China, offering insights on how companies can develop compliance strategies that work across jurisdictions while maintaining innovation.
               </p>
-              <meta itemProp="datePublished" content="2025-04-17" />
-              <meta itemProp="author" content="Dr. Emily Chen" />
+              <meta itemProp="datePublished" content="2025-04-29" />
+              <meta itemProp="author" content="Dr. Amara Okafor" />
             </article>
           </div>
         </div>

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Star, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface AgentCardProps {
   name: string;
@@ -79,7 +80,7 @@ export default function AgentGrid() {
       description: "Advanced language model for natural conversations and content generation",
       category: "Chat Bot",
       rating: 4.8,
-      image: "https://images.unsplash.com/photo-1677442136019-21780ecad995",
+      image: "https://images.unsplash.com/photo-1673187172310-98108bbcd0ea",
       price: "Free - $20/mo",
       slug: "gpt-4o",
       isTrending: true
@@ -89,7 +90,7 @@ export default function AgentGrid() {
       description: "AI assistant with advanced reasoning capabilities and long context windows",
       category: "Chat Bot",
       rating: 4.9,
-      image: "https://images.unsplash.com/photo-1678382178331-bea07b0fe97b",
+      image: "https://images.unsplash.com/photo-1676299081847-824862ec73ff",
       price: "From $20/mo",
       slug: "claude-3-opus",
       isTrending: true
@@ -99,7 +100,7 @@ export default function AgentGrid() {
       description: "AI pair programmer that helps you write better code faster",
       category: "Code Assistant",
       rating: 4.7,
-      image: "https://images.unsplash.com/photo-1661961110671-77b71b929d52",
+      image: "https://images.unsplash.com/photo-1629904853716-f0bc54eea481",
       price: "$10/mo",
       slug: "github-copilot"
     },
@@ -108,7 +109,7 @@ export default function AgentGrid() {
       description: "Create beautiful artwork using advanced AI image generation",
       category: "Image Generation",
       rating: 4.9,
-      image: "https://images.unsplash.com/photo-1633186640043-61586b2e2de5",
+      image: "https://images.unsplash.com/photo-1614729375474-902d70cafafa",
       price: "From $10/mo",
       slug: "midjourney"
     },
@@ -117,7 +118,7 @@ export default function AgentGrid() {
       description: "Google's multimodal AI for text, images, and complex reasoning",
       category: "Multimodal AI",
       rating: 4.6,
-      image: "https://images.unsplash.com/photo-1573804633927-bfcbcd909acd",
+      image: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b",
       price: "Free - $20/mo",
       slug: "gemini-pro"
     },
@@ -126,7 +127,7 @@ export default function AgentGrid() {
       description: "AI search engine that provides answers with real-time information and citations",
       category: "Search Engine",
       rating: 4.7,
-      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853",
+      image: "https://images.unsplash.com/photo-1698422559946-08cb53332805",
       price: "Free - $20/mo",
       slug: "perplexity-ai",
       isNew: true
@@ -136,7 +137,7 @@ export default function AgentGrid() {
       description: "Advanced reasoning assistant for complex tasks and long-context understanding",
       category: "Research Assistant",
       rating: 4.8,
-      image: "https://images.unsplash.com/photo-1516259762381-22954d7d3ad2",
+      image: "https://images.unsplash.com/photo-1517026575980-3e1e2dedeab4",
       price: "$20/mo",
       slug: "anthropic-claude"
     },
@@ -145,7 +146,7 @@ export default function AgentGrid() {
       description: "OpenAI's latest image generation model with enhanced creative capabilities",
       category: "Image Generation",
       rating: 4.9,
-      image: "https://images.unsplash.com/photo-1614728263952-84ea256f9679",
+      image: "https://images.unsplash.com/photo-1684891963316-7c21b0718c66",
       price: "Credit-based",
       slug: "dall-e-3",
       isNew: true
@@ -155,7 +156,7 @@ export default function AgentGrid() {
       description: "AI copywriting tool for marketing content creation and SEO optimization",
       category: "Content Creation",
       rating: 4.5,
-      image: "https://images.unsplash.com/photo-1542435503-956c469947f6",
+      image: "https://images.unsplash.com/photo-1495592822108-9e6261896da8",
       price: "From $39/mo",
       slug: "jasper-ai"
     },
@@ -164,7 +165,7 @@ export default function AgentGrid() {
       description: "OpenAI's text-to-video model for creating realistic video content",
       category: "Video Generation",
       rating: 4.9,
-      image: "https://images.unsplash.com/photo-1535016120720-40c646be5580",
+      image: "https://images.unsplash.com/photo-1551817958-d9d86fb29431",
       price: "Invite only",
       slug: "sora-ai",
       isNew: true
@@ -174,7 +175,7 @@ export default function AgentGrid() {
       description: "Create professional AI videos with virtual presenters in minutes",
       category: "Video Creation",
       rating: 4.6,
-      image: "https://images.unsplash.com/photo-1603766806347-783e0cba8eaf",
+      image: "https://images.unsplash.com/photo-1615598255772-be0e66da48cd",
       price: "From $22/mo",
       slug: "synthesia"
     },
@@ -183,7 +184,7 @@ export default function AgentGrid() {
       description: "AI-powered writing assistant for grammar, clarity, and style improvements",
       category: "Writing Assistant",
       rating: 4.7,
-      image: "https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3",
+      image: "https://images.unsplash.com/photo-1455390582262-044cdead277a",
       price: "Free - $30/mo",
       slug: "grammarly"
     },
