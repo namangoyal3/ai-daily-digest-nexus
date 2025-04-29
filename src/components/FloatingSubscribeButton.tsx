@@ -27,10 +27,21 @@ export default function FloatingSubscribeButton() {
   }, []);
 
   const scrollToSubscribe = () => {
-    document.getElementById('subscribe-section')?.scrollIntoView({ 
-      behavior: 'smooth',
-      block: 'center'
-    });
+    // Find the early subscribe section instead
+    const earlySubscribeSection = document.querySelector('.from-\\[\\#9b87f5\\].to-\\[\\#7c3aed\\].py-12');
+    
+    if (earlySubscribeSection) {
+      earlySubscribeSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'center'
+      });
+    } else {
+      // Fallback to the original subscribe section if early section not found
+      document.getElementById('subscribe-section')?.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
   };
 
   return (

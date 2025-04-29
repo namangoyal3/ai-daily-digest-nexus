@@ -6,10 +6,15 @@ import { motion } from "framer-motion";
 
 export default function Hero() {
   const scrollToSubscribe = () => {
-    document.getElementById('subscribe-section')?.scrollIntoView({ 
-      behavior: 'smooth',
-      block: 'start'
-    });
+    // Find the early subscribe section instead of the main subscribe section
+    const earlySubscribeSection = document.querySelector('.from-\\[\\#9b87f5\\].to-\\[\\#7c3aed\\].py-12');
+    
+    if (earlySubscribeSection) {
+      earlySubscribeSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
   };
 
   return (
