@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
+import { useLocation } from "react-router-dom";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
@@ -16,6 +17,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export default function AIDigest() {
   const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,6 +30,21 @@ export default function AIDigest() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [scrolled]);
+
+  useEffect(() => {
+    // Check if we should scroll to the early subscribe section
+    if (location.state && location.state.scrollToEarlySubscribe) {
+      setTimeout(() => {
+        const earlySubscribeSection = document.querySelector('.bg-gradient-to-r.from-\\[\\#9b87f5\\].to-\\[\\#7c3aed\\].py-12');
+        if (earlySubscribeSection) {
+          earlySubscribeSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }, 500); // Small delay to ensure the page has loaded
+    }
+  }, [location]);
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
@@ -104,6 +121,7 @@ export default function AIDigest() {
                 viewport={{ once: true, amount: 0.2 }}
                 initial="hidden"
                 whileInView="visible"
+                id="early-subscribe-section"
               >
                 <EarlySubscribeSection />
               </motion.section>

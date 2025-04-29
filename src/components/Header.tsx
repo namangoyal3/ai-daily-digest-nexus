@@ -1,5 +1,6 @@
+
 import { Button } from "@/components/ui/button";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,6 +9,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Add scroll event listener
   useEffect(() => {
@@ -28,12 +30,32 @@ export default function Header() {
   }, [location.pathname]);
 
   const scrollToSubscribe = () => {
-    const subscribeSection = document.getElementById('subscribe-section');
-    if (subscribeSection) {
-      subscribeSection.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
+    // If we're on the AI Daily Digest page, scroll to the early subscribe section
+    if (location.pathname === '/ai-digest') {
+      const earlySubscribeSection = document.querySelector('.bg-gradient-to-r.from-\\[\\#9b87f5\\].to-\\[\\#7c3aed\\].py-12');
+      if (earlySubscribeSection) {
+        earlySubscribeSection.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+        return;
+      }
+    }
+    
+    // If we're not on the AI Digest page or couldn't find the section, navigate to it first
+    if (location.pathname !== '/ai-digest') {
+      navigate('/ai-digest', { 
+        state: { scrollToEarlySubscribe: true } 
       });
+    } else {
+      // Fallback to the original subscribe section
+      const subscribeSection = document.getElementById('subscribe-section');
+      if (subscribeSection) {
+        subscribeSection.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
     }
   };
 

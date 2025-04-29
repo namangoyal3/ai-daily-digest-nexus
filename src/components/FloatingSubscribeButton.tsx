@@ -2,21 +2,36 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowUp } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function FloatingSubscribeButton() {
   const [isVisible, setIsVisible] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const subscribeSection = document.getElementById('subscribe-section');
+    const earlySubscribeSection = document.querySelector('.bg-gradient-to-r.from-\\[\\#9b87f5\\].to-\\[\\#7c3aed\\].py-12');
     
     const handleScroll = () => {
-      if (!subscribeSection) return;
+      if (!subscribeSection && !earlySubscribeSection) return;
       
-      const subscribeRect = subscribeSection.getBoundingClientRect();
-      // Only show button when subscribe section is out of view (either above or below viewport)
-      const isSubscribeSectionOutOfView = subscribeRect.top > window.innerHeight || subscribeRect.bottom < 0;
+      let isSubscribeSectionOutOfView = true;
       
-      setIsVisible(isSubscribeSectionOutOfView);
+      if (subscribeSection) {
+        const subscribeRect = subscribeSection.getBoundingClientRect();
+        // Only show button when subscribe section is out of view (either above or below viewport)
+        isSubscribeSectionOutOfView = subscribeRect.top > window.innerHeight || subscribeRect.bottom < 0;
+      }
+      
+      let isEarlySubscribeSectionOutOfView = true;
+      
+      if (earlySubscribeSection) {
+        const earlySubscribeRect = earlySubscribeSection.getBoundingClientRect();
+        isEarlySubscribeSectionOutOfView = earlySubscribeRect.top > window.innerHeight || earlySubscribeRect.bottom < 0;
+      }
+      
+      setIsVisible(isSubscribeSectionOutOfView && isEarlySubscribeSectionOutOfView);
     };
     
     window.addEventListener('scroll', handleScroll);
@@ -24,26 +39,34 @@ export default function FloatingSubscribeButton() {
     handleScroll();
     
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [location.pathname]);
 
   const scrollToSubscribe = () => {
-    // Find the early subscribe section
-    const earlySubscribeSection = document.querySelector('.from-\\[\\#9b87f5\\].to-\\[\\#7c3aed\\].py-12');
-    
-    if (earlySubscribeSection) {
-      earlySubscribeSection.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'center'
-      });
-    } else {
-      // Fallback to the original subscribe section if early section not found
-      const subscribeSection = document.getElementById('subscribe-section');
-      if (subscribeSection) {
-        subscribeSection.scrollIntoView({ 
+    // Check if we're on the AI Daily Digest page
+    if (location.pathname === '/ai-digest') {
+      // Find the early subscribe section
+      const earlySubscribeSection = document.querySelector('.bg-gradient-to-r.from-\\[\\#9b87f5\\].to-\\[\\#7c3aed\\].py-12');
+      
+      if (earlySubscribeSection) {
+        earlySubscribeSection.scrollIntoView({ 
           behavior: 'smooth',
           block: 'center'
         });
+      } else {
+        // Fallback to the original subscribe section if early section not found
+        const subscribeSection = document.getElementById('subscribe-section');
+        if (subscribeSection) {
+          subscribeSection.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'center'
+          });
+        }
       }
+    } else {
+      // If we're not on the AI Digest page, navigate to it and set state to scroll
+      navigate('/ai-digest', { 
+        state: { scrollToEarlySubscribe: true } 
+      });
     }
   };
 
