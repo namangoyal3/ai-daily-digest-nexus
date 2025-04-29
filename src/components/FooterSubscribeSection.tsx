@@ -40,7 +40,7 @@ export default function FooterSubscribeSection() {
           description: "Thank you for subscribing to our AI learning newsletter.",
         });
       } else {
-        setError("Something went wrong. Please try again.");
+        setError(result.error || "Something went wrong. Please try again.");
         setStatus("error");
         
         toast({

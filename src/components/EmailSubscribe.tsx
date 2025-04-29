@@ -1,3 +1,4 @@
+
 import { useRef, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Lottie from "lottie-react";
@@ -50,8 +51,9 @@ export default function EmailSubscribe({
     setSubmitting(true);
     
     try {
-      // Use our Google Sheets utility function to add the subscriber
+      console.log("Submitting to Google Sheets:", email);
       const result = await submitToGoogleSheets(email, source);
+      console.log("Google Sheets result:", result);
       
       if (result.success) {
         setModalOpen(true);
@@ -70,6 +72,7 @@ export default function EmailSubscribe({
         });
       }
     } catch (err) {
+      console.error("Error in handleSubmit:", err);
       setError("Failed to subscribe. Please try again!");
       toast({
         title: "Subscription Failed",
