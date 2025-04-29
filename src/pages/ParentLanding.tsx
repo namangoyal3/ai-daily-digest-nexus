@@ -1,9 +1,11 @@
+
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { 
   Newspaper, Bot, ArrowRight, Brain, Zap, 
   Users, Code, BarChart, LineChart, CheckCircle, Award,
-  Briefcase, Building, Lightbulb, Sparkles, Share2, Star
+  Briefcase, Building, Lightbulb, Sparkles, Share2, Star,
+  GraduationCap // Added GraduationCap import
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
