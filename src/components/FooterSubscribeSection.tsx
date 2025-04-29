@@ -126,7 +126,7 @@ export default function FooterSubscribeSection() {
       </div>
       
       <div className="mt-3 text-center text-xs text-white/70">
-        We never send spam &mdash; unsubscribe any time.
+        Join 25,000+ AI professionals. We never send spam &mdash; unsubscribe any time.
       </div>
     </div>
   );

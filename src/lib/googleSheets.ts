@@ -1,9 +1,8 @@
-
 /**
  * Utility for submitting data to Google Sheets via Google Apps Script
  */
 
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzD1_vqkNQYjdd6zJgd9A1FHh9C34__sDYECFZDN2dVk4a3kQ49YZVxv6fOCbhpjpf4/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyR9qlAxuuRrWICH5NwclkWKDQdRbVYKQvZMUHwcx9EQmnhh0tYnqUG1h4JD7aF0nZc4g/exec";
 
 interface SubmissionResult {
   success: boolean;
