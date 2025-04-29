@@ -10,8 +10,8 @@ interface GoogleSheetsResponse {
   error?: string;
 }
 
-// Define the default Google Apps Script URL
-const DEFAULT_GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzD1_vqkNQYjdd6zJgd9A1FHh9C34__sDYECFZDN2dVk4a3kQ49YZVxv6fOCbhpjpf4/exec';
+// Define the Google Apps Script URL
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzD1_vqkNQYjdd6zJgd9A1FHh9C34__sDYECFZDN2dVk4a3kQ49YZVxv6fOCbhpjpf4/exec';
 
 /**
  * Function to send subscriber data to a Google Sheet
@@ -24,9 +24,6 @@ export async function addSubscriberToGoogleSheet(
 ): Promise<GoogleSheetsResponse> {
   try {
     console.log(`Sending data to Google Sheet via Apps Script`);
-
-    // Use the default Google Apps Script Web App
-    const googleScriptUrl = DEFAULT_GOOGLE_SCRIPT_URL;
     
     // Prepare form data (Google Apps Script web apps expect form data)
     const formData = new FormData();
@@ -36,7 +33,7 @@ export async function addSubscriberToGoogleSheet(
     formData.append('location', window.location.href);
 
     // Send the data to the Google Apps Script
-    const response = await fetch(googleScriptUrl, {
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
       body: formData,
       mode: 'no-cors' // Required for Google Apps Script web apps

@@ -1,9 +1,9 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Lock, Send } from "lucide-react";
-import { addSubscriber } from "@/lib/postgres";
 import { addSubscriberToGoogleSheet } from "@/lib/googleSheets";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -13,10 +13,6 @@ export default function SubscriptionForm() {
   const [errors, setErrors] = useState({ email: "" });
   const [submitted, setSubmitted] = useState(false);
   const { toast } = useToast();
-
-  // Get Google Sheet ID from URL param or default to empty
-  const urlParams = new URLSearchParams(window.location.search);
-  const googleSheetId = urlParams.get('sheetId') || '';
 
   const validateEmail = (email: string) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -35,36 +31,17 @@ export default function SubscriptionForm() {
     setIsSubmitting(true);
 
     try {
-      // First, add subscriber to our database
-      const result = await addSubscriber(email, 'subscription-form');
+      // Add subscriber directly to Google Sheet
+      const result = await addSubscriberToGoogleSheet(email, 'subscription-form');
       
-      // If database addition was successful, also try to add to Google Sheet
       if (result.success) {
-        // Try to add to Google Sheet but don't block on it
-        addSubscriberToGoogleSheet(email, 'subscription-form')
-          .then((sheetResult) => {
-            if (sheetResult.success) {
-              console.log('Added to Google Sheet successfully');
-            } else {
-              console.warn('Failed to add to Google Sheet:', sheetResult.error);
-            }
-          })
-          .catch((err) => {
-            console.error('Error adding to Google Sheet:', err);
-          });
-          
         setSubmitted(true);
         toast({
           title: "Success!",
           description: "You've been added to our newsletter list.",
         });
       } else {
-        // Check if it's a duplicate email error
-        if (result.error && result.error.code === '23505') {
-          setErrors({ email: "This email is already subscribed to our newsletter." });
-        } else {
-          setErrors({ email: "Something went wrong. Please try again." });
-        }
+        setErrors({ email: "Something went wrong. Please try again." });
       }
     } catch (err) {
       setErrors({ email: "Failed to subscribe. Please try again later." });
