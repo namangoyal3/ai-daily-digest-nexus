@@ -27,7 +27,7 @@ export default function FloatingSubscribeButton() {
   }, []);
 
   const scrollToSubscribe = () => {
-    // Find the early subscribe section instead
+    // Find the early subscribe section
     const earlySubscribeSection = document.querySelector('.from-\\[\\#9b87f5\\].to-\\[\\#7c3aed\\].py-12');
     
     if (earlySubscribeSection) {
@@ -37,10 +37,13 @@ export default function FloatingSubscribeButton() {
       });
     } else {
       // Fallback to the original subscribe section if early section not found
-      document.getElementById('subscribe-section')?.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'center'
-      });
+      const subscribeSection = document.getElementById('subscribe-section');
+      if (subscribeSection) {
+        subscribeSection.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }
     }
   };
 
