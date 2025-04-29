@@ -31,7 +31,9 @@ export default function SubscriptionForm() {
     setIsSubmitting(true);
 
     try {
+      console.log("Submitting to Google Sheets (subscription-form):", email);
       const result = await submitToGoogleSheets(email, 'subscription-form');
+      console.log("Google Sheets result (subscription-form):", result);
       
       if (result.success) {
         setSubmitted(true);
@@ -40,9 +42,15 @@ export default function SubscriptionForm() {
           description: "You've been added to our newsletter list.",
         });
       } else {
-        setErrors({ email: "Something went wrong. Please try again." });
+        setErrors({ email: result.error || "Something went wrong. Please try again." });
+        toast({
+          title: "Subscription Failed",
+          description: "There was a problem signing you up. Please try again.",
+          variant: "destructive"
+        });
       }
     } catch (err) {
+      console.error("Error in subscription form handleSubmit:", err);
       setErrors({ email: "Failed to subscribe. Please try again later." });
       toast({
         title: "Connection Error",

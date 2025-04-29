@@ -10,6 +10,16 @@ interface SubmissionResult {
   error?: string;
 }
 
+// Convert FormData to URL encoded string
+function formDataToUrlEncoded(formData: FormData): string {
+  const params = new URLSearchParams();
+  // @ts-ignore - FormData entries() is available in modern browsers
+  for (const [key, value] of formData.entries()) {
+    params.append(key, value);
+  }
+  return params.toString();
+}
+
 export async function submitToGoogleSheets(email: string, source: string): Promise<SubmissionResult> {
   try {
     // Create form data for POST request
@@ -18,23 +28,73 @@ export async function submitToGoogleSheets(email: string, source: string): Promi
     formData.append('source', source);
     formData.append('timestamp', new Date().toISOString());
     
-    // Use fetch with POST method
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST',
-      body: formData,
-      mode: 'cors',
-      redirect: 'follow',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
+    // Use a hidden iframe approach to avoid CORS issues with Google Apps Script
+    return new Promise((resolve) => {
+      // Create a unique ID for the form and iframe
+      const uniqueId = `form_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+      
+      // Create a hidden iframe to target the form submission
+      const iframe = document.createElement('iframe');
+      iframe.name = uniqueId;
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+      
+      // Create a hidden form
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = GOOGLE_SCRIPT_URL;
+      form.target = uniqueId;
+      form.style.display = 'none';
+      
+      // Add form fields
+      for (const [key, value] of formData.entries()) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = value as string;
+        form.appendChild(input);
+      }
+      
+      // Add the form to the document
+      document.body.appendChild(form);
+      
+      // Set a timeout to consider the submission successful after 3 seconds
+      // Google Apps Script often doesn't return a proper response but the data gets submitted
+      const timer = setTimeout(() => {
+        cleanUp();
+        console.log("Google Sheets submission completed (timeout)");
+        resolve({ success: true });
+      }, 3000);
+      
+      // Listen for iframe load events
+      iframe.onload = () => {
+        cleanUp();
+        console.log("Google Sheets submission completed (iframe loaded)");
+        resolve({ success: true });
+      };
+      
+      // Error handler
+      iframe.onerror = () => {
+        cleanUp();
+        console.error("Error in Google Sheets iframe submission");
+        resolve({ success: false, error: "Failed to connect to Google Sheets" });
+      };
+      
+      // Clean up function
+      function cleanUp() {
+        clearTimeout(timer);
+        // Give a small delay before removing DOM elements to ensure the request completes
+        setTimeout(() => {
+          document.body.removeChild(form);
+          document.body.removeChild(iframe);
+        }, 500);
+      }
+      
+      // Submit the form
+      console.log("Submitting to Google Sheets via iframe form");
+      form.submit();
     });
     
-    // Log for debugging
-    console.log("Google Sheets submission attempt completed");
-    
-    // Google Apps Script typically returns success with a 302 redirect or 200 OK
-    // We'll consider anything not throwing an error as success
-    return { success: true };
   } catch (error) {
     console.error("Error submitting to Google Sheets:", error);
     return { 

@@ -29,7 +29,9 @@ export default function FooterSubscribeSection() {
     setStatus("loading");
     
     try {
+      console.log("Submitting to Google Sheets footer form:", email);
       const result = await submitToGoogleSheets(email, 'footer');
+      console.log("Google Sheets result (footer):", result);
       
       if (result.success) {
         setStatus("success");
@@ -50,6 +52,7 @@ export default function FooterSubscribeSection() {
         });
       }
     } catch (err) {
+      console.error("Error in footer handleSubmit:", err);
       setStatus("error");
       setError("Something went wrong. Please try again.");
       
