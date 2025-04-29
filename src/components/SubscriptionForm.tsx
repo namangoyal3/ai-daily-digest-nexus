@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Lock, Send } from "lucide-react";
-import { addSubscriber } from "@/lib/postgres";
+import { submitToGoogleSheets } from "@/lib/googleSheets";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function SubscriptionForm() {
@@ -31,7 +31,7 @@ export default function SubscriptionForm() {
     setIsSubmitting(true);
 
     try {
-      const result = await addSubscriber(email, 'subscription-form');
+      const result = await submitToGoogleSheets(email, 'subscription-form');
       
       if (result.success) {
         setSubmitted(true);
@@ -40,12 +40,7 @@ export default function SubscriptionForm() {
           description: "You've been added to our newsletter list.",
         });
       } else {
-        // Check if it's a duplicate email error
-        if (result.error && result.error.code === '23505') {
-          setErrors({ email: "This email is already subscribed to our newsletter." });
-        } else {
-          setErrors({ email: "Something went wrong. Please try again." });
-        }
+        setErrors({ email: "Something went wrong. Please try again." });
       }
     } catch (err) {
       setErrors({ email: "Failed to subscribe. Please try again later." });

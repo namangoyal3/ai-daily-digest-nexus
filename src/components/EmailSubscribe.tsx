@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Lottie from "lottie-react";
 import { useToast } from "@/components/ui/use-toast";
-import { addSubscriber } from "@/lib/postgres";
+import { submitToGoogleSheets } from "@/lib/googleSheets";
 
 /**
  * Props:
@@ -50,8 +50,8 @@ export default function EmailSubscribe({
     setSubmitting(true);
     
     try {
-      // Use our postgres utility function to add the subscriber
-      const result = await addSubscriber(email, source);
+      // Use our Google Sheets utility function to add the subscriber
+      const result = await submitToGoogleSheets(email, source);
       
       if (result.success) {
         setModalOpen(true);
@@ -62,11 +62,7 @@ export default function EmailSubscribe({
           description: "You've been added to our newsletter list.",
         });
       } else {
-        if (result.error && result.error.code === '23505') {
-          setError("This email is already subscribed to our newsletter.");
-        } else {
-          setError("Failed to subscribe. Please try again!");
-        }
+        setError("Failed to subscribe. Please try again!");
         toast({
           title: "Subscription Failed",
           description: "There was a problem signing you up. Please try again.",
