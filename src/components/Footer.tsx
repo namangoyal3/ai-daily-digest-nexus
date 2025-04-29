@@ -22,10 +22,7 @@ export default function Footer() {
       <Link 
         to={to} 
         className={className} 
-        onClick={() => {
-          // Simplified navigation - just scroll to top and let React Router handle the navigation
-          scrollToTop();
-        }}
+        onClick={scrollToTop}
       >
         {children}
       </Link>
@@ -113,9 +110,9 @@ export default function Footer() {
         <div className="border-t border-gray-800 py-8 text-sm flex flex-col md:flex-row justify-between items-center">
           <p>&copy; {currentYear} NeuralNextGen. All rights reserved.</p>
           <div className="mt-4 md:mt-0 flex gap-4">
-            <Link to="/privacy-policy" className="text-white hover:opacity-80 transition-opacity">Privacy Policy</Link>
-            <Link to="/terms-of-service" className="text-white hover:opacity-80 transition-opacity">Terms of Service</Link>
-            <Link to="/cookie-policy" className="text-white hover:opacity-80 transition-opacity">Cookie Policy</Link>
+            <ScrollToTopLink to="/privacy-policy" className="text-white hover:opacity-80 transition-opacity">Privacy Policy</ScrollToTopLink>
+            <ScrollToTopLink to="/terms-of-service" className="text-white hover:opacity-80 transition-opacity">Terms of Service</ScrollToTopLink>
+            <ScrollToTopLink to="/cookie-policy" className="text-white hover:opacity-80 transition-opacity">Cookie Policy</ScrollToTopLink>
           </div>
         </div>
       </div>
