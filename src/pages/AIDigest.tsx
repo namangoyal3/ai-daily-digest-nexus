@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
@@ -5,11 +6,11 @@ import Hero from "@/components/Hero";
 import Benefits from "@/components/Benefits";
 import ContentPreview from "@/components/ContentPreview";
 import SubscriptionForm from "@/components/SubscriptionForm";
-import Pricing from "@/components/Pricing";
 import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import FloatingSubscribeButton from "@/components/FloatingSubscribeButton";
 import RecentBlogs from "@/components/RecentBlogs";
+import EarlySubscribeSection from "@/components/EarlySubscribeSection";
 import { motion } from "framer-motion";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
@@ -104,6 +105,15 @@ export default function AIDigest() {
                 initial="hidden"
                 whileInView="visible"
               >
+                <EarlySubscribeSection />
+              </motion.section>
+              
+              <motion.section 
+                variants={fadeIn}
+                viewport={{ once: true, amount: 0.2 }}
+                initial="hidden"
+                whileInView="visible"
+              >
                 <Benefits />
               </motion.section>
               
@@ -123,15 +133,6 @@ export default function AIDigest() {
                 whileInView="visible"
               >
                 <RecentBlogs />
-              </motion.section>
-              
-              <motion.section 
-                variants={fadeIn}
-                viewport={{ once: true, amount: 0.2 }}
-                initial="hidden"
-                whileInView="visible"
-              >
-                <Pricing />
               </motion.section>
               
               <motion.section 
