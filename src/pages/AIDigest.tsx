@@ -68,34 +68,41 @@ export default function AIDigest() {
   return (
     <>
       <Helmet>
-        <title>AI Daily Digest - Stay Ahead with AI Insights</title>
-        <meta name="description" content="Get curated AI news, breakthroughs, and analysis in a 5-minute daily read. Join 25,000+ professionals staying ahead with AI Daily Digest." />
+        <title>AI Digest by NeuralNextGen: Curated AI News & Trends</title>
+        <meta name="description" content="Get the latest AI news, breakthroughs, and trends with AI Digest. Curated by NeuralNextGen for enthusiasts, professionals, and innovators." />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
         <meta name="keywords" content="AI news, artificial intelligence digest, AI insights, tech newsletter, AI updates, daily AI news" />
-        <meta property="og:title" content="AI Daily Digest - Daily AI Insights Newsletter" />
-        <meta property="og:description" content="Stay informed with curated AI news and insights delivered daily to your inbox." />
+        
+        <meta property="og:title" content="AI Digest: Curated AI News & Trends" />
+        <meta property="og:description" content="Stay informed with AI Digest – your source for curated artificial intelligence news, expert analysis, and industry updates." />
+        <meta property="og:url" content="https://neuralnextgen.com/ai-digest" />
+        <meta property="og:image" content="https://neuralnextgen.com/images/ai-digest-og.jpg" />
+        <meta property="og:site_name" content="NeuralNextGen" />
         <meta property="og:type" content="website" />
+        <meta property="og:locale" content="en_US" />
+        
         <meta name="twitter:card" content="summary_large_image" />
-        <link rel="canonical" href="https://aidailydigest.com" />
+        <meta name="twitter:title" content="AI Digest by NeuralNextGen: Curated AI News & Trends" />
+        <meta name="twitter:description" content="Explore the latest in AI with AI Digest – curated news, expert insights, and trends from NeuralNextGen." />
+        <meta name="twitter:image" content="https://neuralnextgen.com/images/ai-digest-og.jpg" />
+        
+        <link rel="canonical" href="https://neuralnextgen.com/ai-digest" />
         <script type="application/ld+json">
           {`
             {
               "@context": "https://schema.org",
               "@type": "Organization",
-              "name": "AI Daily Digest",
-              "url": "https://aidailydigest.com",
-              "logo": "https://aidailydigest.com/logo.png",
+              "name": "AI Digest by NeuralNextGen",
+              "url": "https://neuralnextgen.com/ai-digest",
+              "logo": "https://neuralnextgen.com/images/logo.png",
               "sameAs": [
-                "https://twitter.com/AIDailyDigest",
-                "https://linkedin.com/company/ai-daily-digest"
+                "https://twitter.com/NeuralNextGen",
+                "https://linkedin.com/company/neural-next-gen"
               ],
-              "description": "Curated AI news, breakthroughs, and analysis in a 5-minute daily read."
+              "description": "Get the latest AI news, breakthroughs, and trends with AI Digest. Curated by NeuralNextGen for enthusiasts, professionals, and innovators."
             }
           `}
         </script>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
       </Helmet>
       
       <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">

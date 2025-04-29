@@ -1,10 +1,11 @@
+
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { 
   Newspaper, Bot, ArrowRight, Brain, Zap, 
   Users, Code, BarChart, LineChart, CheckCircle, Award,
   Briefcase, Building, Lightbulb, Sparkles, Share2, Star,
-  GraduationCap // Added GraduationCap import
+  GraduationCap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,8 +24,8 @@ export default function ParentLanding() {
   return (
     <>
       <Helmet>
-        <title>NeuralNextGen - Your AI Technology Partner</title>
-        <meta name="description" content="Bridging AI gaps with comprehensive solutions: AI Agents Marketplace, Daily AI Newsletter, and AI Daily Digest. Making artificial intelligence accessible and practical." />
+        <title>NeuralNextGen: AI Tools, News & Insights for the Next Generation</title>
+        <meta name="description" content="Explore the future of artificial intelligence with NeuralNextGen. Discover AI tools, industry news, expert insights, and resources to empower your AI journey." />
         <script type="application/ld+json">
           {`
             {
@@ -32,7 +33,7 @@ export default function ParentLanding() {
               "@type": "WebSite",
               "name": "NeuralNextGen",
               "url": "https://neuralnextgen.com/",
-              "description": "Your gateway to AI knowledge, tools, and skills development.",
+              "description": "Explore the future of artificial intelligence with NeuralNextGen. Discover AI tools, industry news, expert insights, and resources to empower your AI journey.",
               "potentialAction": {
                 "@type": "SearchAction",
                 "target": "https://neuralnextgen.com/search?q={search_term_string}",
@@ -41,6 +42,18 @@ export default function ParentLanding() {
             }
           `}
         </script>
+        <meta property="og:title" content="NeuralNextGen: AI Tools, News & Insights" />
+        <meta property="og:description" content="Stay ahead in AI innovation with NeuralNextGen – your hub for the latest tools, news, and expert perspectives." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://neuralnextgen.com" />
+        <meta property="og:site_name" content="NeuralNextGen" />
+        <meta property="og:image" content="https://neuralnextgen.com/images/og-home.jpg" />
+        <meta property="og:locale" content="en_US" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="NeuralNextGen: AI Tools, News & Insights" />
+        <meta name="twitter:description" content="Discover the latest in AI with NeuralNextGen: tools, news, and expert insights for the next generation." />
+        <meta name="twitter:image" content="https://neuralnextgen.com/images/og-home.jpg" />
       </Helmet>
       
       <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-blue-50/30">

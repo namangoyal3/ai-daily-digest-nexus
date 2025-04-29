@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://aidailydigest.com/sitemap.xml
+Sitemap: https://neuralnextgen.com/sitemap.xml
