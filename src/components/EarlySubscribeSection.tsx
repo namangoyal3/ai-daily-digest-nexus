@@ -39,7 +39,7 @@ export default function EarlySubscribeSection() {
         
         toast({
           title: "Successfully subscribed!",
-          description: "Thank you for subscribing to our AI learning newsletter.",
+          description: "Thank you for subscribing to our AI Daily Insights newsletter.",
         });
       } else {
         setError(result.error || "Something went wrong. Please try again.");
