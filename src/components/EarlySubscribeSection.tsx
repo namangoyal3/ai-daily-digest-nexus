@@ -1,10 +1,10 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Mail, Check, AlertCircle } from "lucide-react";
 import { submitToGoogleSheets } from "@/lib/googleSheets";
 import { useToast } from "@/components/ui/use-toast";
+import { motion } from "framer-motion";
 
 export default function EarlySubscribeSection() {
   const [email, setEmail] = useState("");
@@ -65,73 +65,59 @@ export default function EarlySubscribeSection() {
   }
 
   return (
-    <section className="py-12 bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md border border-gray-100 p-6 md:p-8">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl md:text-3xl font-bold text-aiblue mb-2">
-              Subscribe Now to AI Daily Digest
-            </h2>
-            <p className="text-gray-600">
-              Join 25,000+ professionals getting AI insights every morning.
-            </p>
-          </div>
-          
-          <form
-            className="max-w-lg mx-auto flex flex-col sm:flex-row gap-3"
-            onSubmit={handleSubmit}
+    <section className="w-full bg-gradient-to-r from-[#9b87f5] to-[#7c3aed] py-12 px-2">
+      <div className="max-w-2xl mx-auto text-center">
+        <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
+          Stay Updated with AI Trends
+        </h3>
+        <p className="text-gray-200 mb-6">
+          Join 25,000+ subscribers receiving our weekly AI insights newsletter.<br />
+          No spam, just the latest in AI.
+        </p>
+        <form
+          className="flex flex-col sm:flex-row items-center gap-3 justify-center"
+          onSubmit={handleSubmit}
+        >
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="Enter your email"
+            className="w-full sm:w-96 h-12 px-4 rounded-lg bg-white/10 border border-white/30 text-white placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-[#fff] text-base"
+            disabled={status === "loading" || status === "success"}
+            autoComplete="email"
+          />
+          <Button
+            type="submit"
+            className="h-12 min-w-[120px] font-semibold px-6 rounded-lg bg-[#fff] text-[#622cd2] hover:bg-[#9b87f5] hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={status === "loading" || status === "success"}
           >
-            <div className="flex-1 relative">
-              <Input
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                className={`h-12 text-base ${error ? "border-red-300" : ""}`}
-                onChange={e => setEmail(e.target.value)}
-                disabled={status === "loading" || status === "success"}
-                autoComplete="email"
-                aria-label="Email address"
-                required
-              />
+            {status === "loading" ? (
+              <span className="flex items-center gap-1">
+                <Mail className="animate-spin h-5 w-5" /> Subscribing...
+              </span>
+            ) : status === "success" ? (
+              <span className="flex items-center gap-1">
+                <Check className="h-5 w-5" /> Subscribed!
+              </span>
+            ) : (
+              <span className="flex items-center gap-1">
+                <Mail className="h-5 w-5" /> Subscribe
+              </span>
+            )}
+          </Button>
+        </form>
+        <div className="h-5 mt-2 text-center">
+          {status === "error" && error && (
+            <div className="flex items-center justify-center text-red-200 text-sm">
+              <AlertCircle className="h-4 w-4 mr-1" /> {error}
             </div>
-            
-            <Button
-              type="submit"
-              className="h-12 px-6 text-base font-semibold bg-gradient-to-r from-aiblue to-aipurple hover:from-aiblue-dark hover:to-aipurple-dark text-white shadow-sm"
-              disabled={status === "loading" || status === "success"}
-            >
-              {status === "loading" ? (
-                <span className="flex items-center gap-1">
-                  <Mail className="animate-spin h-5 w-5" /> Subscribing...
-                </span>
-              ) : status === "success" ? (
-                <span className="flex items-center gap-1">
-                  <Check className="h-5 w-5" /> Subscribed!
-                </span>
-              ) : (
-                <span className="flex items-center gap-1">
-                  <Mail className="h-5 w-5" /> Subscribe
-                </span>
-              )}
-            </Button>
-          </form>
-          
-          <div className="h-5 mt-2 text-center">
-            {status === "error" && error && (
-              <div className="flex items-center justify-center text-red-500 text-sm">
-                <AlertCircle className="h-4 w-4 mr-1" /> {error}
-              </div>
-            )}
-            {status === "success" && (
-              <div className="flex items-center justify-center text-green-600 text-sm">
-                <Check className="h-4 w-4 mr-1" /> Thank you! Check your inbox to confirm.
-              </div>
-            )}
-          </div>
-          
-          <div className="mt-3 text-center text-xs text-gray-500">
-            No spam, just daily AI insights. Unsubscribe anytime.
-          </div>
+          )}
+          {status === "success" && (
+            <div className="flex items-center justify-center text-green-200 text-sm">
+              <Check className="h-4 w-4 mr-1" /> Thank you! Check your inbox to confirm.
+            </div>
+          )}
         </div>
       </div>
     </section>

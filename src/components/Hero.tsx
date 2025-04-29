@@ -17,6 +17,15 @@ export default function Hero() {
       {/* Decorative Blur Circles */}
       <div className="absolute top-12 right-10 w-80 h-80 bg-aipurple/20 rounded-full blur-3xl opacity-30 animate-pulse-slow" />
       <div className="absolute bottom-0 left-5 w-60 h-60 bg-aiblue/20 rounded-full blur-3xl opacity-20 animate-pulse-slow" />
+      
+      {/* Background Decorative Elements */}
+      <div className="absolute inset-0 z-0 opacity-10">
+        <div className="absolute top-20 left-10 w-24 h-24 bg-aipurple rounded-full blur-xl" />
+        <div className="absolute bottom-20 right-20 w-32 h-32 bg-aiblue rounded-full blur-xl" />
+        <div className="absolute top-1/3 right-1/4 w-16 h-16 bg-aiteal rounded-full blur-lg" />
+        <div className="absolute bottom-1/4 left-1/3 w-20 h-20 bg-aipurple rounded-full blur-lg" />
+      </div>
+      
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col md:flex-row items-center">
           {/* Left Text Area */}
@@ -112,26 +121,73 @@ export default function Hero() {
               </div>
               <span className="ml-4 text-sm text-gray-500">
                 <Users className="inline h-4 w-4 mr-1 text-aiblue" />
-                <span className="font-semibold text-aiblue">2,000+</span> AI pros already subscribed
+                <span className="font-semibold text-aiblue">25,000+</span> AI pros already subscribed
               </span>
             </div>
           </div>
-          {/* Right Featured Card Area */}
+          
+          {/* Right Featured Card Area with enhanced visuals */}
           <div className="w-full md:w-1/2 flex justify-center">
-            <div className="bg-white/95 rounded-2xl shadow-xl border border-aiblue/10 p-7 md:p-10 flex flex-col max-w-[440px]">
-              <div className="bg-gradient-to-r from-aiblue-light to-aipurple rounded-lg px-3 py-2 text-white text-xs md:text-sm font-bold mb-4 inline-block">
-                Today's AI Highlight
-              </div>
-              <h3 className="font-heading text-xl md:text-2xl font-bold mb-2 text-aiblue">
-                Google DeepMind’s new breakthrough in protein folding
-              </h3>
-              <p className="text-gray-600 mb-4 text-base">
-                DeepMind’s latest algorithm now predicts protein structures with atomic-level accuracy, opening doors for revolutionary drug discovery.
-              </p>
-              <div className="flex items-center text-sm text-gray-500">
-                <span className="font-medium">Read time:</span>
-                <span className="ml-1">5 min</span>
-              </div>
+            <div className="relative">
+              {/* Main card */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.3 }}
+                className="bg-white/95 rounded-2xl shadow-xl border border-aiblue/10 p-7 md:p-10 flex flex-col max-w-[440px] relative z-10"
+              >
+                <div className="bg-gradient-to-r from-aiblue-light to-aipurple rounded-lg px-3 py-2 text-white text-xs md:text-sm font-bold mb-4 inline-block">
+                  Today's AI Highlight
+                </div>
+                <h3 className="font-heading text-xl md:text-2xl font-bold mb-2 text-aiblue">
+                  Google DeepMind's new breakthrough in protein folding
+                </h3>
+                <p className="text-gray-600 mb-4 text-base">
+                  DeepMind's latest algorithm now predicts protein structures with atomic-level accuracy, opening doors for revolutionary drug discovery.
+                </p>
+                <div className="flex items-center text-sm text-gray-500">
+                  <span className="font-medium">Read time:</span>
+                  <span className="ml-1">5 min</span>
+                </div>
+                
+                {/* Decorative image elements */}
+                <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-blue-100 rounded-lg rotate-6 shadow-sm z-0">
+                  <img 
+                    src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=150&h=150&fit=crop" 
+                    alt="AI visualization"
+                    className="w-full h-full object-cover rounded-lg opacity-80"
+                  />
+                </div>
+              </motion.div>
+              
+              {/* Decorative floating elements */}
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                className="absolute -top-10 -right-8 w-40 h-40 rounded-xl overflow-hidden shadow-lg"
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=300&h=300&fit=crop" 
+                  alt="AI code visualization"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-aipurple/20 backdrop-blur-sm"></div>
+              </motion.div>
+              
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 0.9, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.8 }}
+                className="absolute -bottom-8 -left-6 w-32 h-32 rounded-lg overflow-hidden shadow-md"
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=200&h=200&fit=crop" 
+                  alt="AI technology"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-aiblue/10 backdrop-blur-[1px]"></div>
+              </motion.div>
             </div>
           </div>
         </div>
