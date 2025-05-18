@@ -29,10 +29,10 @@ serve(async (req) => {
     }
     
     // Check if this key exists
-    // Note: This is a simple check - we don't return the actual value
-    // We just check if it's defined
     const keyValue = Deno.env.get(key_name);
     const isConfigured = !!keyValue;
+    
+    console.log(`Checking key ${key_name}: ${isConfigured ? "Configured" : "Not configured"}`);
     
     return new Response(
       JSON.stringify({
@@ -40,7 +40,12 @@ serve(async (req) => {
         message: isConfigured ? "API key is configured" : "API key is not configured",
         configured: isConfigured
       }),
-      { headers: { "Content-Type": "application/json" } }
+      { 
+        headers: { 
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        }
+      }
     );
   } catch (error) {
     console.error("Error checking API key status:", error);
@@ -52,7 +57,10 @@ serve(async (req) => {
         configured: false
       }),
       { 
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*" 
+        },
         status: 500
       }
     );

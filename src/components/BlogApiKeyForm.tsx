@@ -3,8 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ExternalLink, Key, CheckCircle, AlertCircle } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ExternalLink, Key, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
@@ -14,11 +13,17 @@ export default function BlogApiKeyForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
+  const [connectionError, setConnectionError] = useState<string | null>(null);
 
   // Check if API key is already set in Supabase
   useEffect(() => {
     const checkApiKeyStatus = async () => {
       try {
+        setChecking(true);
+        setConnectionError(null);
+        
+        console.log("Checking Perplexity API key status...");
+        
         // Call a function to check if the API key is configured
         const { data, error } = await supabase.functions.invoke('check-api-key-status', { 
           body: { key_name: 'PERPLEXITY_API_KEY' } 
@@ -26,13 +31,30 @@ export default function BlogApiKeyForm() {
         
         if (error) {
           console.error('Error checking API key status:', error);
+          setConnectionError(`Connection error: ${error.message}`);
+          toast.error("Failed to check API key status", {
+            description: error.message
+          });
         } else if (data && data.configured) {
+          console.log("API key is configured in Supabase secrets");
           // API key is configured in Supabase secrets
-          setApiKey("•".repeat(20) + "CONFIGURED");
+          setApiKey("•".repeat(20) + " (CONFIGURED)");
           setSaved(true);
+          toast.success("Perplexity API key is configured", {
+            description: "Your API key is properly set up"
+          });
+        } else {
+          console.log("API key is not configured in Supabase secrets");
+          setApiKey("");
+          setSaved(false);
         }
       } catch (err) {
         console.error('Error checking key status:', err);
+        const message = err instanceof Error ? err.message : "Unknown error";
+        setConnectionError(`Error checking key status: ${message}`);
+        toast.error("Connection error", {
+          description: message
+        });
       } finally {
         setChecking(false);
       }
@@ -53,6 +75,8 @@ export default function BlogApiKeyForm() {
     setError(null);
     
     try {
+      console.log("Testing Perplexity API key...");
+      
       // Test the API key with a simple request
       const response = await fetch('https://api.perplexity.ai/chat/completions', {
         method: 'POST',
@@ -73,8 +97,12 @@ export default function BlogApiKeyForm() {
         }),
       });
       
+      const responseData = await response.json();
+      
       if (!response.ok) {
-        throw new Error(`API key validation failed: ${response.status}`);
+        const errorMsg = responseData.error?.message || `API key validation failed: ${response.status}`;
+        console.error("API validation error:", errorMsg);
+        throw new Error(errorMsg);
       }
       
       // If valid, inform user to add it to Supabase secrets
@@ -88,7 +116,10 @@ export default function BlogApiKeyForm() {
       
     } catch (err) {
       console.error("API key validation error:", err);
-      setError("Invalid API key. Please check and try again.");
+      setError(err instanceof Error ? err.message : "Invalid API key. Please check and try again.");
+      toast.error("API Key Validation Error", {
+        description: err instanceof Error ? err.message : "Please check your key and try again",
+      });
     } finally {
       setLoading(false);
     }
@@ -105,7 +136,7 @@ export default function BlogApiKeyForm() {
       <Card className="w-full max-w-md mx-auto">
         <CardContent className="pt-6">
           <div className="flex justify-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-aiblue"></div>
+            <Loader2 className="h-8 w-8 animate-spin text-aiblue" />
           </div>
           <p className="text-center text-gray-500">Checking API key configuration...</p>
         </CardContent>
@@ -149,6 +180,13 @@ export default function BlogApiKeyForm() {
               <div className="bg-red-50 text-red-700 p-2 rounded-md text-sm flex items-center gap-2">
                 <AlertCircle className="h-4 w-4 flex-shrink-0" />
                 <span>{error}</span>
+              </div>
+            )}
+            
+            {connectionError && (
+              <div className="bg-orange-50 text-orange-700 p-2 rounded-md text-sm flex items-center gap-2">
+                <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                <span>{connectionError}</span>
               </div>
             )}
             
@@ -199,7 +237,12 @@ export default function BlogApiKeyForm() {
             type="submit" 
             disabled={loading || (saved && apiKey.includes("•"))}
           >
-            {loading ? "Validating..." : saved ? "Validated" : "Validate Key"}
+            {loading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Validating...
+              </>
+            ) : saved ? "Validated" : "Validate Key"}
           </Button>
         </CardFooter>
       </form>

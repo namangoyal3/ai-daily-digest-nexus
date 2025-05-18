@@ -23,7 +23,42 @@ export async function generateBlogPost({
   title
 }: GenerateBlogParams): Promise<GenerateBlogResponse> {
   try {
+    console.log(`Generating blog post for category: ${category}${title ? `, title: ${title}` : ''}`);
+    
+    // Check if the API key is configured before proceeding
+    const { data: keyData, error: keyError } = await supabase.functions.invoke('check-api-key-status', {
+      body: { key_name: 'PERPLEXITY_API_KEY' }
+    });
+    
+    if (keyError) {
+      console.error('Error checking API key status:', keyError);
+      toast.error('API key configuration error', {
+        description: keyError.message || 'Failed to check API key configuration'
+      });
+      
+      return {
+        success: false,
+        message: 'Failed to verify API key configuration: ' + keyError.message
+      };
+    }
+    
+    if (!keyData.configured) {
+      toast.error('Perplexity API key not configured', {
+        description: 'Please add your API key in the settings',
+        action: {
+          label: 'Settings',
+          onClick: () => window.location.href = '/blog-settings'
+        }
+      });
+      
+      return {
+        success: false,
+        message: 'Perplexity API key is not configured in Supabase secrets'
+      };
+    }
+
     // Call the Supabase Edge Function
+    console.log('Invoking generate-blog edge function...');
     const { data, error } = await supabase.functions.invoke('generate-blog', {
       body: {
         category,
@@ -42,6 +77,8 @@ export async function generateBlogPost({
         message: error.message || 'Failed to generate blog post'
       };
     }
+
+    console.log('Edge function response:', data);
 
     if (data.duplicate) {
       toast.error('Duplicate blog post', {
@@ -82,7 +119,7 @@ export async function generateBlogPost({
     console.error('Error generating blog post:', errorMessage);
     
     toast.error('Failed to generate blog post', {
-      description: 'An unexpected error occurred'
+      description: 'An unexpected error occurred: ' + errorMessage
     });
     
     return {
@@ -105,24 +142,31 @@ export async function generateBlogPostsForCategories(categories: string[]): Prom
   const failed = [];
   let successCount = 0;
 
+  console.log(`Starting generation for ${categories.length} categories:`, categories);
+
   for (const category of categories) {
     try {
+      console.log(`Generating blog for category: ${category}...`);
       const result = await generateBlogPost({ category });
       results.push(result);
       
       if (result.success) {
+        console.log(`Successfully generated blog for ${category}`);
         successCount++;
       } else {
+        console.error(`Failed to generate blog for ${category}:`, result.message);
         failed.push(category);
       }
       
       // Add a small delay between generations to avoid rate limiting
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1500));
     } catch (error) {
       console.error(`Error generating blog for category ${category}:`, error);
       failed.push(category);
     }
   }
+
+  console.log(`Generation complete. Success: ${successCount}, Failed: ${failed.length}`);
 
   if (successCount === 0) {
     toast.error('Blog generation failed', {

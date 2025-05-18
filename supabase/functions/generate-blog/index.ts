@@ -26,20 +26,31 @@ interface ResponseData {
 // Main handler function for the edge function
 serve(async (req) => {
   try {
+    console.log("Generate blog function called");
+    
     // Initialize Supabase client
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    
+    if (!supabaseUrl || !supabaseKey) {
+      console.error("Supabase credentials not found in environment");
+      return createErrorResponse("Supabase configuration is missing", 500);
+    }
+    
+    const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
     // Get API key from environment variables
     const PERPLEXITY_API_KEY = Deno.env.get("PERPLEXITY_API_KEY");
     if (!PERPLEXITY_API_KEY) {
-      return createErrorResponse("Perplexity API key not configured", 500);
+      console.error("Perplexity API key not found in environment");
+      return createErrorResponse("Perplexity API key not configured. Please add it to your Supabase Edge Function secrets.", 500);
     }
 
     // Parse request data
-    const { category, title } = await req.json() as RequestData;
+    const requestData = await req.json();
+    const { category, title } = requestData as RequestData;
+    
+    console.log(`Processing request for category: ${category}${title ? `, title: ${title}` : ''}`);
     
     if (!category) {
       return createErrorResponse("Category is required", 400);
@@ -50,17 +61,24 @@ serve(async (req) => {
     if (existingBlog.duplicate) {
       return new Response(
         JSON.stringify(existingBlog),
-        { headers: { "Content-Type": "application/json" } }
+        { 
+          headers: { 
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          } 
+        }
       );
     }
 
     // Generate blog content
+    console.log("Generating blog content...");
     const blogContent = await generateBlogContent(PERPLEXITY_API_KEY, category);
     if (!blogContent.content) {
       return createErrorResponse("Failed to generate blog content", 500);
     }
 
     // Generate image
+    console.log("Generating blog image...");
     const imageUrl = await generateBlogImage(category, blogContent.title);
 
     // Create blog object
@@ -73,12 +91,14 @@ serve(async (req) => {
     };
 
     // Insert blog into database
+    console.log("Inserting blog into database...");
     const insertResult = await insertBlogToDatabase(supabaseClient, blog);
     
     if (!insertResult.success) {
       return createErrorResponse(insertResult.message, 500);
     }
 
+    console.log("Blog successfully generated and inserted!");
     return new Response(
       JSON.stringify({
         success: true,
@@ -86,7 +106,12 @@ serve(async (req) => {
         blog_id: insertResult.blog_id,
         image_url: imageUrl
       }),
-      { headers: { "Content-Type": "application/json" } }
+      { 
+        headers: { 
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        } 
+      }
     );
 
   } catch (error) {
@@ -106,6 +131,7 @@ async function checkForDuplicateBlog(
   }
 
   try {
+    console.log(`Checking for duplicate blog: ${title} in ${category}`);
     const { data: existingBlogs, error } = await supabaseClient
       .from('blogs')
       .select('id, title')
@@ -119,6 +145,7 @@ async function checkForDuplicateBlog(
     }
 
     if (existingBlogs && existingBlogs.length > 0) {
+      console.log(`Duplicate found: "${title}"`);
       return {
         duplicate: true,
         message: `A blog titled "${title}" already exists in category "${category}".`,
@@ -138,6 +165,7 @@ async function generateBlogContent(
   apiKey: string,
   category: string
 ): Promise<{ title: string; content: string; excerpt: string }> {
+  console.log(`Generating content for category: ${category}`);
   const generationPrompt = `
 You are an expert AI content generator tasked with writing high-quality, unique blog posts for a professional AI-focused website. Each time you generate a blog post, ensure that the content is entirely original — no repeated phrasing, titles, quotes, examples, or bullets from any previous output. The blog must be fully dedicated to the specific category provided and should not drift into general AI trends unless they relate directly to the category.
 
@@ -160,6 +188,7 @@ Now, generate the blog post for the category: ${category}
 `;
 
   try {
+    console.log("Sending request to Perplexity API...");
     const perplexityResponse = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
@@ -178,12 +207,22 @@ Now, generate the blog post for the category: ${category}
     });
 
     if (!perplexityResponse.ok) {
-      const error = await perplexityResponse.text();
-      console.error("Perplexity API error:", error);
-      throw new Error(`Failed to generate content from Perplexity: ${error}`);
+      const responseText = await perplexityResponse.text();
+      console.error("Perplexity API error status:", perplexityResponse.status);
+      console.error("Perplexity API error response:", responseText);
+      
+      if (perplexityResponse.status === 401) {
+        throw new Error("Perplexity API key is invalid. Check your API key configuration.");
+      } else if (perplexityResponse.status === 429) {
+        throw new Error("Perplexity API rate limit exceeded. Please try again later.");
+      } else {
+        throw new Error(`Failed to generate content from Perplexity: ${responseText}`);
+      }
     }
 
     const perplexityData = await perplexityResponse.json();
+    console.log("Perplexity API response received");
+    
     const htmlContent = perplexityData?.choices?.[0]?.message?.content;
 
     if (!htmlContent) {
@@ -216,6 +255,7 @@ Now, generate the blog post for the category: ${category}
 // Generate an image for the blog using Pollinations AI
 async function generateBlogImage(category: string, title?: string): Promise<string> {
   try {
+    console.log(`Generating image for: ${title || category}`);
     // Create an image prompt based on the category and title
     const imagePrompt = title 
       ? `Professional high-quality digital illustration related to: ${title}`
@@ -272,6 +312,8 @@ async function insertBlogToDatabase(
     const words = plainText.split(/\s+/).length;
     const readTime = `${Math.ceil(words / 200)} min read`;
 
+    console.log(`Inserting blog "${blog.title}" into database...`);
+    
     // Insert into Supabase
     const { data: insertedBlog, error: insertError } = await supabaseClient
       .from('blogs')
@@ -297,6 +339,7 @@ async function insertBlogToDatabase(
       };
     }
 
+    console.log(`Blog inserted with ID: ${insertedBlog.id}`);
     return {
       success: true,
       message: 'Blog inserted successfully.',
@@ -318,6 +361,12 @@ function createErrorResponse(message: string, status: number = 500): Response {
       success: false,
       message: message,
     }),
-    { headers: { "Content-Type": "application/json" }, status }
+    { 
+      headers: { 
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*" 
+      }, 
+      status 
+    }
   );
 }
