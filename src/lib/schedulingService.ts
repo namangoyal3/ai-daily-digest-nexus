@@ -20,14 +20,22 @@ export const defaultScheduleConfig: ScheduleConfig = {
 
 // Get the schedule config from localStorage
 export function getScheduleConfig(): ScheduleConfig {
-  const storedConfig = localStorage.getItem('blog_schedule_config');
-  return storedConfig ? JSON.parse(storedConfig) : defaultScheduleConfig;
+  try {
+    const storedConfig = localStorage.getItem('blog_schedule_config');
+    return storedConfig ? JSON.parse(storedConfig) : defaultScheduleConfig;
+  } catch (error) {
+    console.error("Error getting schedule config:", error);
+    return defaultScheduleConfig;
+  }
 }
 
 // Save the schedule config to localStorage
-// Renamed from saveScheduleConfig to setScheduleConfig to match import in BlogScheduleModal
 export function setScheduleConfig(config: ScheduleConfig): void {
-  localStorage.setItem('blog_schedule_config', JSON.stringify(config));
+  try {
+    localStorage.setItem('blog_schedule_config', JSON.stringify(config));
+  } catch (error) {
+    console.error("Error saving schedule config:", error);
+  }
 }
 
 // Check if it's time to run the scheduled task
@@ -166,57 +174,65 @@ export function initializeScheduling(onGenerate: () => Promise<void>): () => voi
   let checkIntervalId: number | undefined;
   
   const scheduleNext = () => {
-    const config = getScheduleConfig();
-    
-    // Clear any existing timeout
-    if (timeoutId) {
-      window.clearTimeout(timeoutId);
-    }
-    
-    // If scheduling is not active, don't schedule anything
-    if (!config.isActive) {
-      return;
-    }
-    
-    const nextTime = getNextScheduledTime(config);
-    const timeUntilNext = nextTime.getTime() - Date.now();
-    
-    // Schedule the next run
-    timeoutId = window.setTimeout(async () => {
-      try {
-        // Generate the blog
-        await onGenerate();
-        
-        // Update last executed time
-        updateLastExecutedTime(config);
-      } catch (error) {
-        console.error("Failed to generate scheduled blog:", error);
-      } finally {
-        // Schedule the next one
-        scheduleNext();
+    try {
+      const config = getScheduleConfig();
+      
+      // Clear any existing timeout
+      if (timeoutId) {
+        window.clearTimeout(timeoutId);
       }
-    }, timeUntilNext);
-    
-    console.log(`Blog generation scheduled for ${nextTime.toLocaleString()}`);
+      
+      // If scheduling is not active, don't schedule anything
+      if (!config.isActive) {
+        return;
+      }
+      
+      const nextTime = getNextScheduledTime(config);
+      const timeUntilNext = nextTime.getTime() - Date.now();
+      
+      // Schedule the next run
+      timeoutId = window.setTimeout(async () => {
+        try {
+          // Generate the blog
+          await onGenerate();
+          
+          // Update last executed time
+          updateLastExecutedTime(config);
+        } catch (error) {
+          console.error("Failed to generate scheduled blog:", error);
+        } finally {
+          // Schedule the next one
+          scheduleNext();
+        }
+      }, timeUntilNext);
+      
+      console.log(`Blog generation scheduled for ${nextTime.toLocaleString()}`);
+    } catch (error) {
+      console.error("Error scheduling next blog generation:", error);
+    }
   };
   
   // Set up an interval to check every minute if we need to run the schedule
   // This acts as a backup in case the timeout is missed (e.g., if the browser was closed)
   const checkSchedule = () => {
-    const config = getScheduleConfig();
-    
-    if (config.isActive && isTimeToRun(config)) {
-      onGenerate()
-        .then(() => {
-          updateLastExecutedTime(config);
-          console.log("Scheduled blog generation completed");
-          
-          // Reschedule for next time
-          scheduleNext();
-        })
-        .catch(err => {
-          console.error("Failed to generate scheduled blog:", err);
-        });
+    try {
+      const config = getScheduleConfig();
+      
+      if (config.isActive && isTimeToRun(config)) {
+        onGenerate()
+          .then(() => {
+            updateLastExecutedTime(config);
+            console.log("Scheduled blog generation completed");
+            
+            // Reschedule for next time
+            scheduleNext();
+          })
+          .catch(err => {
+            console.error("Failed to generate scheduled blog:", err);
+          });
+      }
+    } catch (error) {
+      console.error("Error checking schedule:", error);
     }
   };
   
