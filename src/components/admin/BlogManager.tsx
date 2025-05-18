@@ -82,6 +82,10 @@ export default function BlogManager() {
     }
   };
 
+  const openScheduleModal = () => {
+    setScheduleModalOpen(true);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
@@ -98,7 +102,10 @@ export default function BlogManager() {
               View Blog
             </Link>
           </Button>
-          <Button variant="outline">
+          <Button 
+            variant="outline"
+            onClick={openScheduleModal}
+          >
             <Plus className="mr-2 h-4 w-4" />
             New Post
           </Button>
@@ -169,7 +176,7 @@ export default function BlogManager() {
             className="w-full"
             onClick={() => setScheduleModalOpen(true)}
           >
-            View Publication Schedule
+            Manage Publication Schedule
           </Button>
         </CardFooter>
       </Card>

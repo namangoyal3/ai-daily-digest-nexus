@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScheduleConfig, saveScheduleConfig, getScheduleConfig } from "@/lib/schedulingService";
 import { toast } from "sonner";
+import { generateDailyBlog } from "@/lib/blogService";
 
 interface BlogScheduleModalProps {
   open: boolean;
@@ -29,6 +30,7 @@ const CATEGORIES = ["AI Trends", "Deep Learning", "AI Ethics", "Machine Learning
 
 export default function BlogScheduleModal({ open, onOpenChange }: BlogScheduleModalProps) {
   const [config, setConfig] = useState<ScheduleConfig>(getScheduleConfig());
+  const [isGenerating, setIsGenerating] = useState(false);
 
   // Reset to saved config when modal opens
   useEffect(() => {
@@ -95,6 +97,36 @@ export default function BlogScheduleModal({ open, onOpenChange }: BlogScheduleMo
     onOpenChange(false);
   };
 
+  const handlePublishNow = async () => {
+    setIsGenerating(true);
+    try {
+      const apiKey = localStorage.getItem('perplexity_api_key');
+      if (!apiKey) {
+        toast.error("API key is missing", {
+          description: "Please add your Perplexity API key in the API Keys section",
+        });
+        setIsGenerating(false);
+        return;
+      }
+      
+      // Use one of the selected categories for immediate publishing
+      const newBlog = await generateDailyBlog();
+      
+      toast.success("New blog post generated and published", {
+        description: `"${newBlog.title}" has been added to your blog.`,
+      });
+      
+      onOpenChange(false);
+    } catch (error) {
+      console.error("Blog generation error:", error);
+      toast.error("Failed to generate blog post", {
+        description: "Please check your API key in the API Keys section",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
@@ -113,6 +145,16 @@ export default function BlogScheduleModal({ open, onOpenChange }: BlogScheduleMo
               checked={config.isActive}
               onCheckedChange={(checked) => setConfig({ ...config, isActive: checked })}
             />
+          </div>
+
+          <div className="bg-blue-50 p-3 rounded-md border border-blue-100 mb-2">
+            <Button 
+              className="w-full bg-gradient-to-r from-aiblue to-aipurple hover:from-aipurple hover:to-aiblue"
+              onClick={handlePublishNow}
+              disabled={isGenerating}
+            >
+              {isGenerating ? "Publishing..." : "Publish New Blog Now"}
+            </Button>
           </div>
           
           <div className="grid grid-cols-2 gap-4">

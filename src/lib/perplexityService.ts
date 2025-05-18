@@ -6,13 +6,6 @@ interface BlogGenerationResponse {
   category: string;
 }
 
-// Initialize API key if not already set
-(function initializeApiKey() {
-  if (!localStorage.getItem('perplexity_api_key')) {
-    localStorage.setItem('perplexity_api_key', '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');
-  }
-})();
-
 export async function generateBlogContent(category?: string): Promise<BlogGenerationResponse> {
   const apiKey = localStorage.getItem('perplexity_api_key');
   
@@ -46,6 +39,7 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
   `;
   
   try {
+    console.log("Calling Perplexity API...");
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
@@ -72,21 +66,41 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     
     if (!response.ok) {
       const errorText = await response.text();
+      console.error("API response error:", response.status, errorText);
       throw new Error(`Perplexity API error: ${response.status} ${errorText}`);
     }
     
     const data = await response.json();
+    console.log("API response received:", data);
     
     // Handle potential formatting issues with JSON response
     let contentJson;
     try {
       const rawContent = data.choices[0].message.content;
       // Clean the content - remove any markdown code blocks or extra formatting
-      const cleanedContent = rawContent
+      let cleanedContent = rawContent
         .replace(/```json\s*/g, '')
         .replace(/```\s*$/g, '')
+        .replace(/^```/, '')  // Remove opening code block if present without json specifier
         .trim();
         
+      // Check if the content has proper JSON structure
+      if (!cleanedContent.startsWith('{')) {
+        console.warn("API response doesn't start with an object", cleanedContent);
+        // Try to find the first opening curly brace
+        const jsonStart = cleanedContent.indexOf('{');
+        if (jsonStart >= 0) {
+          cleanedContent = cleanedContent.substring(jsonStart);
+        }
+      }
+      
+      // Check if there's any trailing content after the JSON
+      const lastClosingBrace = cleanedContent.lastIndexOf('}');
+      if (lastClosingBrace > 0 && lastClosingBrace < cleanedContent.length - 1) {
+        cleanedContent = cleanedContent.substring(0, lastClosingBrace + 1);
+      }
+      
+      console.log("Cleaned content:", cleanedContent);
       contentJson = JSON.parse(cleanedContent);
     } catch (parseError) {
       console.error("Error parsing JSON from Perplexity:", parseError);
@@ -102,6 +116,6 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     };
   } catch (error) {
     console.error("Error calling Perplexity API:", error);
-    throw new Error("Failed to generate blog content");
+    throw new Error("Failed to generate blog content. Please check your API key and try again.");
   }
 }

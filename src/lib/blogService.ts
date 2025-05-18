@@ -1,3 +1,4 @@
+
 import { Blog } from "@/types/blog";
 import { generateBlogContent } from "./perplexityService";
 import { fetchRandomImage } from "./pollinationsService";
@@ -281,32 +282,40 @@ export async function getRelatedBlogs(currentBlogId: string, category?: string):
 // Generate a new blog using Perplexity API
 export async function generateDailyBlog(): Promise<Blog> {
   try {
+    console.log("Starting blog generation process");
+    
     // Get scheduled categories if available
     const scheduleConfig = getScheduleConfig();
     const categories = scheduleConfig.categories;
     
     // Randomly select one of the configured categories
     const selectedCategory = categories[Math.floor(Math.random() * categories.length)];
+    console.log(`Selected category: ${selectedCategory}`);
     
     // Generate blog content using Perplexity
+    console.log("Generating blog content...");
     const { title, content, excerpt, category } = await generateBlogContent(selectedCategory);
+    console.log("Content generated successfully");
     
     // Fetch a relevant image from Pollinations
-    const imageUrl = await fetchRandomImage(category || title);
+    console.log("Fetching image...");
+    const imageQuery = `${category || selectedCategory} ${title.split(' ').slice(0, 3).join(' ')}`;
+    const imageUrl = await fetchRandomImage(imageQuery);
+    console.log("Image URL generated:", imageUrl);
     
     // Calculate approximate read time (1 min per 200 words)
     const wordCount = content.split(/\s+/).length;
     const readTime = `${Math.max(1, Math.ceil(wordCount / 200))} min read`;
     
-    // Create new blog entry
+    // Create new blog entry with a numeric ID
     const newBlog: Blog = {
-      id: Date.now().toString(), // Use timestamp as unique ID
+      id: blogs.length > 0 ? Math.max(...blogs.map(b => typeof b.id === 'number' ? b.id : 0)) + 1 : 1,
       title,
       excerpt,
       content,
       date: formatDate(new Date()),
       readTime,
-      category: category || "AI Insights",
+      category: category || selectedCategory,
       image: imageUrl,
       author: {
         name: "AI Content Generator",
@@ -314,9 +323,12 @@ export async function generateDailyBlog(): Promise<Blog> {
       },
       tags: title.split(" ")
         .filter(word => word.length > 4)
-        .map(word => word.toLowerCase())
+        .map(word => word.toLowerCase().replace(/[^a-z]/g, ''))
+        .filter(Boolean)
         .slice(0, 5)
     };
+    
+    console.log("New blog created:", newBlog.title);
     
     // In a real app, we would save this to a database
     blogs.push(newBlog);
