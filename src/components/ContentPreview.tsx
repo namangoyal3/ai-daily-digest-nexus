@@ -7,7 +7,7 @@ export default function ContentPreview() {
   
   return (
     <section id="preview" className="w-full py-12 md:py-16 lg:py-24 px-0 overflow-x-hidden">
-      <style jsx global>{`
+      <style>{`
         html, body {
           margin: 0;
           padding: 0;
