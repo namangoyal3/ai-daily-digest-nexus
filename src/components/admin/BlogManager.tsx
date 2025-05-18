@@ -15,7 +15,16 @@ export default function BlogManager() {
   const handleGenerateDaily = async () => {
     setIsGenerating(true);
     try {
+      const apiKey = localStorage.getItem('perplexity_api_key');
+      if (!apiKey) {
+        toast.error("API key is missing", {
+          description: "Please add your Perplexity API key in the API Keys section",
+        });
+        return;
+      }
+      
       const newBlog = await generateDailyBlog();
+      
       toast.success("New blog post generated successfully", {
         description: `"${newBlog.title}" has been added to your blog.`,
         action: {
@@ -26,11 +35,7 @@ export default function BlogManager() {
     } catch (error) {
       console.error("Blog generation error:", error);
       toast.error("Failed to generate blog post", {
-        description: "Please check your API key in blog settings.",
-        action: {
-          label: "Settings",
-          onClick: () => navigate("/blog-settings"),
-        },
+        description: "Please check your API key in the API Keys section",
       });
     } finally {
       setIsGenerating(false);

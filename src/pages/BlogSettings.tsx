@@ -3,6 +3,9 @@ import { Helmet } from "react-helmet";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BlogApiKeyForm from "@/components/BlogApiKeyForm";
+import BlogManager from "@/components/admin/BlogManager";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
 
 export default function BlogSettings() {
   return (
@@ -21,12 +24,30 @@ export default function BlogSettings() {
               Blog Settings
             </h1>
             <p className="text-gray-600 text-base md:text-lg lg:text-xl px-4">
-              Configure your API connections for automatic blog content generation
+              Configure your API connections and manage blog content generation
             </p>
           </div>
 
-          <div className="max-w-4xl mx-auto">
-            <BlogApiKeyForm />
+          <div className="max-w-5xl mx-auto">
+            <Tabs defaultValue="api-keys" className="space-y-8">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="api-keys">API Keys</TabsTrigger>
+                <TabsTrigger value="blog-manager">Blog Manager</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="api-keys" className="space-y-4">
+                <h2 className="text-xl font-bold">API Key Configuration</h2>
+                <p className="text-gray-600">
+                  Set up your API keys for AI-powered content generation
+                </p>
+                <Separator className="my-4" />
+                <BlogApiKeyForm />
+              </TabsContent>
+              
+              <TabsContent value="blog-manager">
+                <BlogManager />
+              </TabsContent>
+            </Tabs>
           </div>
         </main>
 

@@ -3,12 +3,12 @@ import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Settings, RefreshCcw } from "lucide-react";
+import { FileText, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BlogCardSkeleton from "@/components/skeletons/BlogCardSkeleton";
-import { getBlogs, getBlogsByCategory, generateDailyBlog } from "@/lib/blogService";
+import { getBlogs, getBlogsByCategory } from "@/lib/blogService";
 import { Blog } from "@/types/blog";
 import { toast } from "sonner";
 
@@ -18,7 +18,6 @@ export default function AIBlogs() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
   const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [isGenerating, setIsGenerating] = useState(false);
   
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -36,45 +35,6 @@ export default function AIBlogs() {
 
     fetchBlogs();
   }, [selectedCategory]);
-
-  const handleGeneratePost = async () => {
-    setIsGenerating(true);
-    try {
-      const apiKey = localStorage.getItem('perplexity_api_key');
-      if (!apiKey) {
-        toast.error("API key is missing", {
-          description: "Please add your Perplexity API key in settings",
-          action: {
-            label: "Settings",
-            onClick: () => window.location.href = "/blog-settings",
-          },
-        });
-        return;
-      }
-      
-      const newBlog = await generateDailyBlog();
-      
-      // Refresh the blog list with the new post
-      if (selectedCategory === "All" || selectedCategory === newBlog.category) {
-        setBlogs(prevBlogs => [newBlog, ...prevBlogs]);
-      }
-      
-      toast.success("New blog post generated", {
-        description: `"${newBlog.title}" has been created`,
-        action: {
-          label: "View",
-          onClick: () => window.location.href = `/ai-blogs/${newBlog.id}`,
-        },
-      });
-    } catch (error) {
-      console.error("Error generating blog:", error);
-      toast.error("Failed to generate blog post", {
-        description: "Please check your API key in settings",
-      });
-    } finally {
-      setIsGenerating(false);
-    }
-  };
 
   return (
     <>
@@ -100,15 +60,6 @@ export default function AIBlogs() {
               </p>
             </div>
             <div className="flex gap-2">
-              <Button 
-                variant="outline" 
-                onClick={handleGeneratePost}
-                disabled={isGenerating}
-                className="whitespace-nowrap"
-              >
-                <RefreshCcw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
-                {isGenerating ? "Generating..." : "Generate Post"}
-              </Button>
               <Button variant="outline" asChild>
                 <Link to="/blog-settings" className="flex items-center">
                   <Settings className="mr-2 h-4 w-4" />
@@ -172,11 +123,7 @@ export default function AIBlogs() {
             ) : (
               <div className="col-span-1 md:col-span-3 text-center py-12">
                 <h3 className="text-xl font-medium text-gray-700 mb-2">No articles found</h3>
-                <p className="text-gray-500 mb-6">There are no articles available in this category yet.</p>
-                <Button onClick={handleGeneratePost} disabled={isGenerating}>
-                  <RefreshCcw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
-                  {isGenerating ? "Generating..." : "Generate First Post"}
-                </Button>
+                <p className="text-gray-500">There are no articles available in this category yet.</p>
               </div>
             )}
           </div>
