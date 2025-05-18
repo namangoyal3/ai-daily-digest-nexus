@@ -2,10 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github.css';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { Lightbulb, Code, BookOpen, CheckCircle } from "lucide-react";
+import { CheckCircle, BookOpen } from "lucide-react";
 
 interface BlogContentProps {
   content: string;
@@ -20,7 +17,7 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
   // Add syntax highlighting for code blocks and prepare anchor links
   useEffect(() => {
     if (contentRef.current) {
-      // Apply code syntax highlighting
+      // Apply code syntax highlighting for any remaining code blocks
       const codeBlocks = contentRef.current.querySelectorAll('pre code');
       codeBlocks.forEach((block) => {
         hljs.highlightElement(block as HTMLElement);
@@ -56,18 +53,24 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
     <>
       <style>
         {`
+        .blog-content {
+          font-family: var(--font-sans);
+          line-height: 1.8;
+          color: #1A1F2C;
+        }
+        
         .blog-content h1 {
-          font-size: 2.25rem;
+          font-size: 2rem;
           font-weight: 700;
           margin-top: 2rem;
-          margin-bottom: 1rem;
+          margin-bottom: 1.5rem;
           color: #1A1F2C;
           font-family: var(--font-heading);
-          line-height: 1.2;
+          line-height: 1.3;
         }
         
         .blog-content h2 {
-          font-size: 1.75rem;
+          font-size: 1.5rem;
           font-weight: 600;
           margin-top: 2.5rem;
           margin-bottom: 1rem;
@@ -78,16 +81,18 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
         }
         
         .blog-content h3 {
-          font-size: 1.5rem;
+          font-size: 1.25rem;
           font-weight: 600;
           margin-top: 1.5rem;
           margin-bottom: 1rem;
           color: #1A1F2C;
+          font-family: var(--font-heading);
         }
         
         .blog-content p {
           margin-bottom: 1.5rem;
-          line-height: 1.7;
+          line-height: 1.8;
+          font-size: 1.05rem;
         }
         
         .blog-content ul, .blog-content ol {
@@ -96,14 +101,16 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
         }
         
         .blog-content li {
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.75rem;
+          line-height: 1.7;
         }
         
         .blog-content .toc {
-          background-color: #F6F7F8;
+          background-color: #F8F9FA;
           border-radius: 0.5rem;
           padding: 1.5rem;
           margin: 2rem 0;
+          border: 1px solid #E9ECEF;
         }
         
         .blog-content .toc-title {
@@ -112,13 +119,15 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
           display: flex;
           align-items: center;
           gap: 0.5rem;
+          font-family: var(--font-heading);
+          color: #4361EE;
         }
         
         .blog-content .toc-link {
           color: #4361EE;
           text-decoration: none;
           display: block;
-          padding: 0.25rem 0;
+          padding: 0.4rem 0;
           transition: all 0.2s;
         }
         
@@ -145,29 +154,6 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
           align-items: center;
           gap: 0.5rem;
           color: #1A1F2C;
-        }
-        
-        .blog-content code {
-          background-color: #F1F5F9;
-          padding: 0.2rem 0.4rem;
-          border-radius: 0.25rem;
-          font-size: 0.875rem;
-          color: #334155;
-        }
-        
-        .blog-content pre {
-          background-color: #1E293B;
-          color: #E2E8F0;
-          padding: 1rem;
-          border-radius: 0.5rem;
-          overflow-x: auto;
-          margin-bottom: 1.5rem;
-        }
-        
-        .blog-content pre code {
-          background-color: transparent;
-          padding: 0;
-          color: #E2E8F0;
         }
         
         .blog-content strong {
@@ -203,6 +189,7 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
           font-weight: 600;
           margin-bottom: 1rem;
           color: #0369A1;
+          font-family: var(--font-heading);
         }
         
         .blog-content .key-takeaways ul {
@@ -214,13 +201,26 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
           overflow-x: auto;
         }
         
-        .blog-content .json-example {
-          margin: 1.5rem 0;
+        .blog-content .comparison-table table {
+          width: 100%;
+          border-collapse: collapse;
         }
         
-        .blog-content .json-title {
+        .blog-content .comparison-table th {
+          background-color: #F8F9FA;
+          padding: 0.75rem 1rem;
+          text-align: left;
           font-weight: 600;
-          margin-bottom: 0.5rem;
+          border-bottom: 2px solid #E9ECEF;
+        }
+        
+        .blog-content .comparison-table td {
+          padding: 0.75rem 1rem;
+          border-bottom: 1px solid #E9ECEF;
+        }
+        
+        .blog-content .comparison-table tr:hover {
+          background-color: #F8F9FA;
         }
         
         .blog-content .section-icon {
@@ -246,11 +246,15 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
           }
           
           .blog-content h2 {
-            font-size: 1.5rem;
+            font-size: 1.35rem;
           }
           
           .blog-content h3 {
-            font-size: 1.25rem;
+            font-size: 1.15rem;
+          }
+          
+          .blog-content p {
+            font-size: 1rem;
           }
           
           .blog-content .comparison-table {
@@ -274,101 +278,150 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
 function processContent(content: string): string {
   if (!content) return '';
   
-  // Step 1: Deduplicate content
-  let processedContent = deduplicateContent(content);
+  // Step 1: Remove JSON code blocks and technical content
+  let processedContent = removeCodeBlocks(content);
   
-  // Step 2: Structure the content into logical sections
+  // Step 2: Deduplicate content - remove repeated paragraphs and sentences
+  processedContent = deduplicateContent(processedContent);
+  
+  // Step 3: Structure the content into logical sections
   processedContent = structureContent(processedContent);
   
-  // Step 3: Add table of contents
+  // Step 4: Add table of contents
   processedContent = addTableOfContents(processedContent);
   
-  // Step 4: Format headings with icons
+  // Step 5: Format headings with icons
   processedContent = formatHeadings(processedContent);
   
-  // Step 5: Enhance paragraph readability
+  // Step 6: Enhance paragraph readability
   processedContent = enhanceParagraphReadability(processedContent);
   
-  // Step 6: Add callout boxes for important information
+  // Step 7: Add callout boxes for important information
   processedContent = addCalloutBoxes(processedContent);
-  
-  // Step 7: Process JSON content
-  processedContent = processJsonContent(processedContent);
   
   // Step 8: Add key takeaways sections
   processedContent = addKeyTakeaways(processedContent);
   
-  // Step 9: Add comparison tables
-  processedContent = addComparisonTables(processedContent);
+  // Step 9: Fix any content alignment issues
+  processedContent = fixContentAlignment(processedContent);
+  
+  // Step 10: Remove empty sections or placeholders
+  processedContent = removeEmptySections(processedContent);
   
   return processedContent;
+}
+
+/**
+ * Remove code blocks and technical content
+ */
+function removeCodeBlocks(content: string): string {
+  // Remove code blocks with triple backticks (markdown style)
+  let cleanedContent = content.replace(/```[\s\S]*?```/g, '');
+  
+  // Remove inline code
+  cleanedContent = cleanedContent.replace(/`[^`]*`/g, '');
+  
+  // Remove JSON blocks
+  cleanedContent = cleanedContent.replace(/<pre><code class="language-json">[\s\S]*?<\/code><\/pre>/g, '');
+  
+  // Remove any code examples or code blocks
+  cleanedContent = cleanedContent.replace(/<div class="json-example">[\s\S]*?<\/div>/g, '');
+  
+  // Remove any remaining technical jargon indicators
+  cleanedContent = cleanedContent.replace(/\bJSON\b|\bAPI\b|\bfunction\b|\bparameter\b|\bobject\b|\barray\b|\bstring\b|\bboolean\b|\bnumber\b|\bundefined\b|\bnull\b|\bconsole\.log\b/g, '');
+  
+  return cleanedContent;
 }
 
 /**
  * Deduplicate content by removing repeated paragraphs and information
  */
 function deduplicateContent(content: string): string {
-  // Simple deduplication: remove exact duplicate paragraphs
-  const paragraphs = content.split(/\n\n+/);
-  const uniqueParagraphs = [...new Set(paragraphs)];
+  // Parse the HTML content
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(content, 'text/html');
   
-  // Further deduplication based on similarity could be implemented here
-  // This would require more complex text analysis
+  // Extract paragraphs
+  const paragraphs = Array.from(doc.querySelectorAll('p')).map(p => p.textContent?.trim());
   
-  return uniqueParagraphs.join('\n\n');
+  // Identify duplicates
+  const uniqueParagraphs = new Set();
+  const duplicateIndices = [];
+  
+  paragraphs.forEach((paragraph, index) => {
+    if (paragraph && paragraph.length > 20) { // Only consider substantial paragraphs
+      if (uniqueParagraphs.has(paragraph)) {
+        duplicateIndices.push(index);
+      } else {
+        uniqueParagraphs.add(paragraph);
+      }
+    }
+  });
+  
+  // Remove duplicate paragraphs
+  let processedContent = content;
+  const paragraphTags = processedContent.match(/<p>.*?<\/p>/gs) || [];
+  
+  duplicateIndices.forEach(index => {
+    if (paragraphTags[index]) {
+      processedContent = processedContent.replace(paragraphTags[index], '');
+    }
+  });
+  
+  // Further deduplication - check for similar sentences
+  const sentences = processedContent.match(/[^.!?]+[.!?]+/g) || [];
+  const uniqueSentences = new Set();
+  let deduplicatedContent = processedContent;
+  
+  sentences.forEach(sentence => {
+    const normalized = sentence.trim().toLowerCase();
+    if (normalized.length > 30) { // Only consider substantial sentences
+      if (uniqueSentences.has(normalized)) {
+        deduplicatedContent = deduplicatedContent.replace(sentence, '');
+      } else {
+        uniqueSentences.add(normalized);
+      }
+    }
+  });
+  
+  return deduplicatedContent;
 }
 
 /**
- * Structure content into logical sections with proper heading hierarchy
+ * Structure content into logical sections
  */
 function structureContent(content: string): string {
-  // Identify if the content already has a clear structure
+  // Check if content already has a clear structure
   const hasH1 = /<h1>.*?<\/h1>/i.test(content);
   const hasIntro = /introduction|overview|summary/i.test(content);
   const hasConclusion = /conclusion|summary|final thoughts/i.test(content);
   
-  // If the content doesn't have a clear structure, add one
+  let structuredContent = content;
+  
+  // If no H1 heading, extract a title from the first paragraph
   if (!hasH1) {
-    // Extract title from the first paragraph if available
     const firstParagraph = content.match(/<p>(.*?)<\/p>/);
-    const title = firstParagraph ? firstParagraph[1] : 'AI Applications';
+    const title = firstParagraph ? firstParagraph[1].replace(/<.*?>/g, '') : 'AI Applications';
+    
+    // Create a title that's not too long
+    const shortenedTitle = title.split(' ').slice(0, 8).join(' ') + (title.split(' ').length > 8 ? '...' : '');
     
     // Replace the first paragraph with an H1 heading
-    content = content.replace(/<p>(.*?)<\/p>/, `<h1>${title}</h1>`);
+    structuredContent = structuredContent.replace(/<p>(.*?)<\/p>/, `<h1>${shortenedTitle}</h1>`);
   }
   
-  // If no introduction section exists, identify the first paragraph and mark it as introduction
+  // If no introduction section exists, add one
   if (!hasIntro) {
-    const introMatch = content.match(/<p>(.*?)<\/p>/);
+    const introMatch = structuredContent.match(/<p>(.*?)<\/p>/);
     if (introMatch) {
       const introContent = introMatch[0];
-      content = content.replace(introMatch[0], `<h2>Introduction</h2>\n${introContent}`);
+      structuredContent = structuredContent.replace(introMatch[0], `<h2>Introduction</h2>\n${introContent}`);
     }
   }
   
   // If no conclusion exists, add one at the end
   if (!hasConclusion) {
-    content += `\n\n<h2>Conclusion</h2>\n<p>As AI technology continues to evolve, its applications across various industries will only expand, bringing new opportunities and challenges. The tools and innovations discussed in this article represent just the beginning of what's possible with artificial intelligence.</p>`;
-  }
-  
-  // Ensure proper section structure for AI applications
-  const hasProductivitySection = /productivity|tools|efficiency|automation/i.test(content);
-  const hasContentCreationSection = /content creation|generation|creative/i.test(content);
-  const hasIndustrySection = /industry|business|enterprise|commercial/i.test(content);
-  
-  let structuredContent = content;
-  
-  // Add missing sections if needed
-  if (!hasProductivitySection) {
-    structuredContent += `\n\n<h2>AI in Productivity Tools</h2>\n<p>AI-powered productivity tools are revolutionizing how we work, automate routine tasks, and optimize efficiency across various domains.</p>`;
-  }
-  
-  if (!hasContentCreationSection) {
-    structuredContent += `\n\n<h2>AI in Content Creation</h2>\n<p>Content creation has been transformed by AI tools that can generate text, images, and even code, enabling creators to work more efficiently.</p>`;
-  }
-  
-  if (!hasIndustrySection) {
-    structuredContent += `\n\n<h2>AI in Industry Innovation</h2>\n<p>Industries across the board are implementing AI solutions to solve complex problems, improve processes, and drive innovation.</p>`;
+    structuredContent += `\n\n<h2>Conclusion</h2>\n<p>As AI technology continues to evolve, its applications across various industries will only expand, bringing new opportunities and challenges. The innovations discussed in this article represent just the beginning of what's possible with artificial intelligence.</p>`;
   }
   
   return structuredContent;
@@ -390,11 +443,13 @@ function addTableOfContents(content: string): string {
     const level = match[1];
     const title = match[2].replace(/<.*?>/g, '').trim(); // Remove any HTML tags inside headings
     
-    headings.push({
-      level,
-      title,
-      id: title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-')
-    });
+    if (title && title.length > 0) {
+      headings.push({
+        level,
+        title,
+        id: title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-')
+      });
+    }
   }
   
   // Generate table of contents HTML
@@ -402,7 +457,7 @@ function addTableOfContents(content: string): string {
     let tocHtml = `
       <div class="toc">
         <div class="toc-title">
-          <BookOpen class="w-5 h-5" /> Table of Contents
+          <BookOpen size={18} /> Table of Contents
         </div>
         <nav>
           <ul>
@@ -421,8 +476,8 @@ function addTableOfContents(content: string): string {
     
     // Insert after the first h1 or at the beginning if no h1
     const h1Match = content.match(/<\/h1>/i);
-    if (h1Match) {
-      const insertPosition = h1Match.index! + h1Match[0].length;
+    if (h1Match && h1Match.index) {
+      const insertPosition = h1Match.index + h1Match[0].length;
       content = content.slice(0, insertPosition) + '\n' + tocHtml + content.slice(insertPosition);
     } else {
       content = tocHtml + content;
@@ -438,24 +493,29 @@ function addTableOfContents(content: string): string {
 function formatHeadings(content: string): string {
   // Add icons to h2 headings based on content
   content = content.replace(/<h2>(.*?)<\/h2>/g, (match, headingText) => {
-    let icon = '<span class="section-icon"><Lightbulb /></span>';
+    // Create an ID for the heading
+    const id = headingText.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-');
     
-    if (/productivity|tools|efficiency|automation/i.test(headingText)) {
-      icon = '<span class="section-icon"><Code /></span>';
+    // Choose icon based on heading content
+    if (/introduction|overview|summary/i.test(headingText)) {
+      return `<h2 class="section-h2" id="${id}"><span class="section-icon"><BookOpen /></span>${headingText}</h2>`;
+    } else if (/productivity|tools|efficiency|automation/i.test(headingText)) {
+      return `<h2 class="section-h2" id="${id}"><span class="section-icon"><BookOpen /></span>${headingText}</h2>`;
     } else if (/content creation|generation|creative/i.test(headingText)) {
-      icon = '<span class="section-icon"><Code /></span>';
+      return `<h2 class="section-h2" id="${id}"><span class="section-icon"><BookOpen /></span>${headingText}</h2>`;
     } else if (/industry|business|enterprise|commercial/i.test(headingText)) {
-      icon = '<span class="section-icon"><BookOpen /></span>';
+      return `<h2 class="section-h2" id="${id}"><span class="section-icon"><BookOpen /></span>${headingText}</h2>`;
     } else if (/conclusion|summary|final/i.test(headingText)) {
-      icon = '<span class="section-icon"><CheckCircle /></span>';
+      return `<h2 class="section-h2" id="${id}"><span class="section-icon"><CheckCircle /></span>${headingText}</h2>`;
+    } else {
+      return `<h2 class="section-h2" id="${id}"><span class="section-icon"><BookOpen /></span>${headingText}</h2>`;
     }
-    
-    return `<h2 class="section-h2" id="${headingText.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-')}">${icon}${headingText}</h2>`;
   });
   
-  // Add subtle styling to h3 headings
+  // Add proper styling to h3 headings
   content = content.replace(/<h3>(.*?)<\/h3>/g, (match, headingText) => {
-    return `<h3 class="section-h3" id="${headingText.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-')}">${headingText}</h3>`;
+    const id = headingText.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-');
+    return `<h3 class="section-h3" id="${id}">${headingText}</h3>`;
   });
   
   return content;
@@ -476,21 +536,30 @@ function enhanceParagraphReadability(content: string): string {
       let currentParagraph = '';
       let sentenceCount = 0;
       
-      paragraphText.split(/(\.\s+)/).forEach((part, i, parts) => {
-        currentParagraph += part;
+      // Rebuild the text with proper sentence endings
+      let rebuiltText = paragraphText;
+      
+      // Split by sentence endings
+      const sentenceParts = rebuiltText.split(/(\.\s+)/).filter(Boolean);
+      
+      for (let i = 0; i < sentenceParts.length; i += 2) {
+        // Add the sentence
+        currentParagraph += sentenceParts[i];
         
-        // If this part ends a sentence
-        if (part.endsWith('.') && i < parts.length - 1) {
-          sentenceCount++;
-          
-          // After ~3 sentences, create a new paragraph
-          if (sentenceCount >= 3 && i < parts.length - 2) {
-            newParagraphs += `<p>${currentParagraph}</p>\n`;
-            currentParagraph = '';
-            sentenceCount = 0;
-          }
+        // Add the period and space if available
+        if (i + 1 < sentenceParts.length) {
+          currentParagraph += sentenceParts[i + 1];
         }
-      });
+        
+        sentenceCount++;
+        
+        // After ~3 sentences, create a new paragraph
+        if (sentenceCount >= 3 && i < sentenceParts.length - 2) {
+          newParagraphs += `<p>${currentParagraph}</p>\n`;
+          currentParagraph = '';
+          sentenceCount = 0;
+        }
+      }
       
       // Add the last paragraph if there's content
       if (currentParagraph) {
@@ -503,10 +572,6 @@ function enhanceParagraphReadability(content: string): string {
     // Format key terms in paragraphs (terms that should be bold)
     paragraphText = paragraphText.replace(/\b(AI|artificial intelligence|machine learning|deep learning|neural networks|NLP|GPT|LLM|large language model)\b/gi, 
       match => `<strong>${match}</strong>`);
-    
-    // Format definitions in paragraphs (terms that should be italicized)
-    paragraphText = paragraphText.replace(/\b([A-Z][a-z]+ is defined as|refers to|is a|are defined as)\b(.*?)(\.|,)/g, 
-      (match, prefix, definition, punctuation) => `${prefix}<em>${definition}</em>${punctuation}`);
     
     return `<p>${paragraphText}</p>`;
   });
@@ -529,108 +594,6 @@ function addCalloutBoxes(content: string): string {
     (match, prefix, quote, suffix) => {
       return `<div class="callout">${prefix}<strong>${quote}</strong>${suffix}</div>`;
     });
-  
-  return content;
-}
-
-/**
- * Process JSON content to convert it to human-readable format
- */
-function processJsonContent(content: string): string {
-  // Find JSON-like content (enclosed in triple backticks with json label)
-  const jsonRegex = /```json\s*([\s\S]*?)\s*```/g;
-  
-  // Replace with formatted tables
-  content = content.replace(jsonRegex, (match, jsonContent) => {
-    try {
-      // Try to parse the JSON
-      const parsedJson = JSON.parse(jsonContent.trim());
-      
-      // Determine if it's an array or object
-      if (Array.isArray(parsedJson)) {
-        // Create table for array of objects
-        if (parsedJson.length > 0 && typeof parsedJson[0] === 'object') {
-          // Get all unique keys from all objects in the array
-          const keys = Array.from(new Set(
-            parsedJson.flatMap(obj => Object.keys(obj))
-          ));
-          
-          let tableHtml = `
-            <div class="json-example">
-              <p class="json-title">Data Structure:</p>
-              <div class="comparison-table">
-                <table>
-                  <thead>
-                    <tr>
-                      ${keys.map(key => `<th>${key}</th>`).join('')}
-                    </tr>
-                  </thead>
-                  <tbody>
-          `;
-          
-          parsedJson.forEach(item => {
-            tableHtml += '<tr>';
-            keys.forEach(key => {
-              const value = item[key] !== undefined ? item[key] : '';
-              tableHtml += `<td>${typeof value === 'object' ? JSON.stringify(value) : value}</td>`;
-            });
-            tableHtml += '</tr>';
-          });
-          
-          tableHtml += `
-                  </tbody>
-                </table>
-              </div>
-              <p>The table above shows structured data with ${keys.length} properties and ${parsedJson.length} items.</p>
-            </div>
-          `;
-          
-          return tableHtml;
-        } else {
-          // Simple array
-          return `
-            <div class="json-example">
-              <p class="json-title">Data Array:</p>
-              <pre><code class="language-json">${JSON.stringify(parsedJson, null, 2)}</code></pre>
-              <p>This array contains ${parsedJson.length} items of type ${typeof parsedJson[0]}.</p>
-            </div>
-          `;
-        }
-      } else {
-        // Object
-        return `
-          <div class="json-example">
-            <p class="json-title">Configuration Object:</p>
-            <pre><code class="language-json">${JSON.stringify(parsedJson, null, 2)}</code></pre>
-            <p>This object defines ${Object.keys(parsedJson).length} properties that configure the behavior of the system.</p>
-          </div>
-        `;
-      }
-    } catch (e) {
-      // If parsing fails, return the original content with syntax highlighting
-      return `
-        <div class="json-example">
-          <p class="json-title">Code Example:</p>
-          <pre><code class="language-json">${jsonContent}</code></pre>
-        </div>
-      `;
-    }
-  });
-  
-  // Process code blocks for other languages
-  const codeRegex = /```([a-z]*)\s*([\s\S]*?)\s*```/g;
-  content = content.replace(codeRegex, (match, language, codeContent) => {
-    if (language && language !== 'json') {
-      return `
-        <div class="json-example">
-          <p class="json-title">${language.toUpperCase()} Code Example:</p>
-          <pre><code class="language-${language}">${codeContent}</code></pre>
-          <p>The above snippet demonstrates how to implement this functionality in ${language}.</p>
-        </div>
-      `;
-    }
-    return match;  // Return unchanged if it's not a language we're targeting
-  });
   
   return content;
 }
@@ -660,23 +623,58 @@ function addKeyTakeaways(content: string): string {
           // Generate takeaways based on content
           const takeaways = generateKeyTakeaways(sectionContent, heading);
           
-          // Add takeaways before the next heading
-          processedContent += `
-            <div class="key-takeaways">
-              <div class="key-takeaways-title">
-                <CheckCircle class="w-5 h-5" /> Key Takeaways
+          if (takeaways.length > 0) {
+            // Add takeaways before the next heading
+            processedContent += `
+              <div class="key-takeaways">
+                <div class="key-takeaways-title">
+                  <CheckCircle size={18} /> Key Takeaways
+                </div>
+                <ul>
+                  ${takeaways.map(point => `<li>${point}</li>`).join('')}
+                </ul>
               </div>
-              <ul>
-                ${takeaways.map(point => `<li>${point}</li>`).join('')}
-              </ul>
-            </div>
-          `;
+            `;
+          }
         }
       }
     }
   }
   
   return processedContent;
+}
+
+/**
+ * Fix content alignment issues
+ */
+function fixContentAlignment(content: string): string {
+  // Make sure images are centered
+  content = content.replace(/<img/g, '<img style="display: block; margin: 0 auto;"');
+  
+  // Ensure paragraphs are properly aligned
+  content = content.replace(/<p style="text-align: justify;/g, '<p');
+  
+  // Remove any fixed width constraints
+  content = content.replace(/width: \d+px;/g, '');
+  content = content.replace(/max-width: \d+px;/g, '');
+  
+  return content;
+}
+
+/**
+ * Remove empty sections or placeholders
+ */
+function removeEmptySections(content: string): string {
+  // Remove sections with no content
+  content = content.replace(/<h[23]>.*?<\/h[23]>\s*<h[23]/g, '<h2');
+  
+  // Remove empty paragraphs
+  content = content.replace(/<p>\s*<\/p>/g, '');
+  
+  // Remove placeholder text
+  content = content.replace(/<p>(\s*Lorem ipsum.*?|.*?placeholder.*?)<\/p>/gi, '');
+  
+  return content;
 }
 
 /**
@@ -719,203 +717,6 @@ function generateKeyTakeaways(content: string, heading: string): string[] {
   }
   
   return takeaways.slice(0, 4); // Limit to 4 takeaways maximum
-}
-
-/**
- * Add comparison tables for AI tools mentioned in the content
- */
-function addComparisonTables(content: string): string {
-  // Check if content already has comparison tables
-  if (/<table/i.test(content)) {
-    return content;
-  }
-  
-  // Look for sections that mention multiple tools
-  const aiToolRegex = /\b(GPT-4|Claude|DALL-E|Midjourney|Stable Diffusion|Jasper|Copy\.ai|GitHub Copilot|Tabnine|Codeium)\b/gi;
-  const matches = content.match(aiToolRegex);
-  
-  // If we found tool mentions and there are multiple unique tools
-  if (matches && new Set(matches.map(m => m.toLowerCase())).size > 2) {
-    // Create two groups: text generation and image generation tools
-    const textTools = ['GPT-4', 'Claude', 'Jasper', 'Copy.ai'].filter(
-      tool => matches.some(m => m.toLowerCase() === tool.toLowerCase())
-    );
-    
-    const codeTools = ['GitHub Copilot', 'Tabnine', 'Codeium'].filter(
-      tool => matches.some(m => m.toLowerCase() === tool.toLowerCase())
-    );
-    
-    const imageTools = ['DALL-E', 'Midjourney', 'Stable Diffusion'].filter(
-      tool => matches.some(m => m.toLowerCase() === tool.toLowerCase())
-    );
-    
-    // Create tables based on which tools were found
-    let tableHtml = '';
-    
-    if (textTools.length >= 2) {
-      tableHtml += `
-        <div class="comparison-table">
-          <h3>Text Generation AI Tools Comparison</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Tool</th>
-                <th>Strengths</th>
-                <th>Best For</th>
-                <th>Limitations</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${textTools.includes('GPT-4') ? `
-              <tr>
-                <td>GPT-4</td>
-                <td>Advanced reasoning, broad knowledge, versatile</td>
-                <td>Complex writing, creative content, research assistance</td>
-                <td>May hallucinate facts, high cost, limited context window</td>
-              </tr>
-              ` : ''}
-              ${textTools.includes('Claude') ? `
-              <tr>
-                <td>Claude</td>
-                <td>Nuanced understanding, long context window, detailed responses</td>
-                <td>Document analysis, conversational AI, content summarization</td>
-                <td>Less widespread adoption, more limited API access</td>
-              </tr>
-              ` : ''}
-              ${textTools.includes('Jasper') ? `
-              <tr>
-                <td>Jasper</td>
-                <td>Marketing-focused, templates, team collaboration</td>
-                <td>SEO content, email campaigns, social media posts</td>
-                <td>Higher price point, learning curve for templates</td>
-              </tr>
-              ` : ''}
-              ${textTools.includes('Copy.ai') ? `
-              <tr>
-                <td>Copy.ai</td>
-                <td>User-friendly interface, good for short-form content</td>
-                <td>Ad copy, product descriptions, social media captions</td>
-                <td>Less effective for long-form content, limited customization</td>
-              </tr>
-              ` : ''}
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-    
-    if (codeTools.length >= 2) {
-      tableHtml += `
-        <div class="comparison-table">
-          <h3>AI Coding Assistants Comparison</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Tool</th>
-                <th>Strengths</th>
-                <th>Best For</th>
-                <th>Limitations</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${codeTools.includes('GitHub Copilot') ? `
-              <tr>
-                <td>GitHub Copilot</td>
-                <td>Deep GitHub integration, whole-function suggestions</td>
-                <td>General programming, multiple languages, project context</td>
-                <td>Subscription cost, occasional inaccurate suggestions</td>
-              </tr>
-              ` : ''}
-              ${codeTools.includes('Tabnine') ? `
-              <tr>
-                <td>Tabnine</td>
-                <td>Lightweight, privacy-focused, local models available</td>
-                <td>Code completion, function suggestions, varied environments</td>
-                <td>Less powerful than larger models, shorter completions</td>
-              </tr>
-              ` : ''}
-              ${codeTools.includes('Codeium') ? `
-              <tr>
-                <td>Codeium</td>
-                <td>Free tier available, multi-editor support</td>
-                <td>Quick code snippets, learning programming concepts</td>
-                <td>Newer platform, smaller community, fewer integrations</td>
-              </tr>
-              ` : ''}
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-    
-    if (imageTools.length >= 2) {
-      tableHtml += `
-        <div class="comparison-table">
-          <h3>AI Image Generation Tools Comparison</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Tool</th>
-                <th>Strengths</th>
-                <th>Best For</th>
-                <th>Limitations</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${imageTools.includes('DALL-E') ? `
-              <tr>
-                <td>DALL-E</td>
-                <td>Photorealistic outputs, intuitive prompt understanding</td>
-                <td>Product visualization, concept art, marketing images</td>
-                <td>Usage limits, less artistic stylization than competitors</td>
-              </tr>
-              ` : ''}
-              ${imageTools.includes('Midjourney') ? `
-              <tr>
-                <td>Midjourney</td>
-                <td>Artistic quality, stunning visuals, strong community</td>
-                <td>Digital art, illustration, creative concepts</td>
-                <td>Discord-only interface, less photorealism in some cases</td>
-              </tr>
-              ` : ''}
-              ${imageTools.includes('Stable Diffusion') ? `
-              <tr>
-                <td>Stable Diffusion</td>
-                <td>Open source, customizable, local installation option</td>
-                <td>Custom models, experimental projects, unlimited generation</td>
-                <td>Technical setup required, more prompt engineering needed</td>
-              </tr>
-              ` : ''}
-            </tbody>
-          </table>
-        </div>
-      `;
-    }
-    
-    if (tableHtml) {
-      // Find a good insertion point after the first mention of these tools
-      const toolMentionRegex = new RegExp(`\\b(${textTools.concat(codeTools, imageTools).join('|')})\\b`, 'i');
-      const match = content.match(toolMentionRegex);
-      
-      if (match && match.index) {
-        // Find the end of the paragraph containing this mention
-        const paragraphEndMatch = content.slice(match.index).match(/<\/p>/);
-        
-        if (paragraphEndMatch && paragraphEndMatch.index) {
-          const insertPosition = match.index + paragraphEndMatch.index + paragraphEndMatch[0].length;
-          content = content.slice(0, insertPosition) + tableHtml + content.slice(insertPosition);
-        } else {
-          // If we can't find the paragraph end, append to the content
-          content += tableHtml;
-        }
-      } else {
-        // Append to the content if no good insertion point
-        content += tableHtml;
-      }
-    }
-  }
-  
-  return content;
 }
 
 export default BlogContent;
