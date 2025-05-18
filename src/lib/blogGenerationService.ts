@@ -1,5 +1,5 @@
 
-import { supabaseClient } from './supabase';
+import { supabase } from './supabase';
 import { toast } from 'sonner';
 
 interface GenerateBlogParams {
@@ -24,7 +24,7 @@ export async function generateBlogPost({
 }: GenerateBlogParams): Promise<GenerateBlogResponse> {
   try {
     // Call the Supabase Edge Function
-    const { data, error } = await supabaseClient.functions.invoke('generate-blog', {
+    const { data, error } = await supabase.functions.invoke('generate-blog', {
       body: {
         category,
         title
