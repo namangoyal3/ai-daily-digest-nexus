@@ -5,20 +5,40 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ExternalLink, Key, CheckCircle, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 export default function BlogApiKeyForm() {
   const [apiKey, setApiKey] = useState("");
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [checking, setChecking] = useState(true);
 
+  // Check if API key is already set in Supabase
   useEffect(() => {
-    const storedKey = localStorage.getItem("perplexity_api_key");
-    if (storedKey) {
-      // Mask the key for display
-      setApiKey("•".repeat(20) + storedKey.slice(-5));
-      setSaved(true);
-    }
+    const checkApiKeyStatus = async () => {
+      try {
+        // Call a function to check if the API key is configured
+        const { data, error } = await supabase.functions.invoke('check-api-key-status', { 
+          body: { key_name: 'PERPLEXITY_API_KEY' } 
+        });
+        
+        if (error) {
+          console.error('Error checking API key status:', error);
+        } else if (data && data.configured) {
+          // API key is configured in Supabase secrets
+          setApiKey("•".repeat(20) + "CONFIGURED");
+          setSaved(true);
+        }
+      } catch (err) {
+        console.error('Error checking key status:', err);
+      } finally {
+        setChecking(false);
+      }
+    };
+
+    checkApiKeyStatus();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,12 +77,14 @@ export default function BlogApiKeyForm() {
         throw new Error(`API key validation failed: ${response.status}`);
       }
       
-      // Save to localStorage if valid
-      localStorage.setItem("perplexity_api_key", apiKey);
-      setSaved(true);
+      // If valid, inform user to add it to Supabase secrets
+      toast.success("API key is valid!", {
+        description: "Please add this key to your Supabase Edge Function secrets with name PERPLEXITY_API_KEY"
+      });
       
-      // Reset form state after successful save
+      // Store masked key for display
       setApiKey("•".repeat(20) + apiKey.slice(-5));
+      setSaved(true);
       
     } catch (err) {
       console.error("API key validation error:", err);
@@ -73,11 +95,23 @@ export default function BlogApiKeyForm() {
   };
 
   const handleReset = () => {
-    localStorage.removeItem("perplexity_api_key");
     setApiKey("");
     setSaved(false);
     setError(null);
   };
+
+  if (checking) {
+    return (
+      <Card className="w-full max-w-md mx-auto">
+        <CardContent className="pt-6">
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-aiblue"></div>
+          </div>
+          <p className="text-center text-gray-500">Checking API key configuration...</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -87,7 +121,7 @@ export default function BlogApiKeyForm() {
           Perplexity API Setup
         </CardTitle>
         <CardDescription>
-          Configure your Perplexity API key to enable AI-generated blog content
+          Configure your Perplexity API key for AI-generated blog content
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
@@ -121,7 +155,7 @@ export default function BlogApiKeyForm() {
             {saved && !error && (
               <div className="bg-green-50 text-green-700 p-2 rounded-md text-sm flex items-center gap-2">
                 <CheckCircle className="h-4 w-4 flex-shrink-0" />
-                <span>API key saved successfully</span>
+                <span>API key validated</span>
               </div>
             )}
             
@@ -139,6 +173,17 @@ export default function BlogApiKeyForm() {
                 </a>
               </p>
             </div>
+            
+            <div className="bg-blue-50 text-blue-700 p-3 rounded-md text-sm">
+              <p className="font-medium mb-1">Important: Add to Supabase Secrets</p>
+              <p>After validating your key, you'll need to add it to your Supabase Edge Function secrets:</p>
+              <ol className="list-decimal pl-5 mt-2 space-y-1">
+                <li>Go to your Supabase project dashboard</li>
+                <li>Navigate to Edge Functions</li>
+                <li>Click on "Secrets"</li>
+                <li>Add a new secret with name <code className="bg-blue-100 px-1">PERPLEXITY_API_KEY</code> and your API key as the value</li>
+              </ol>
+            </div>
           </div>
         </CardContent>
         <CardFooter className="flex justify-between gap-2">
@@ -146,7 +191,7 @@ export default function BlogApiKeyForm() {
             type="button" 
             variant="outline" 
             onClick={handleReset}
-            disabled={loading || !saved}
+            disabled={loading}
           >
             Reset
           </Button>
@@ -154,7 +199,7 @@ export default function BlogApiKeyForm() {
             type="submit" 
             disabled={loading || (saved && apiKey.includes("•"))}
           >
-            {loading ? "Validating..." : saved ? "Validated" : "Save Key"}
+            {loading ? "Validating..." : saved ? "Validated" : "Validate Key"}
           </Button>
         </CardFooter>
       </form>
