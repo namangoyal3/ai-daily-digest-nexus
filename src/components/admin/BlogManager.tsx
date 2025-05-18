@@ -3,11 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Edit, Trash, Plus, RefreshCcw, Calendar, FileText } from "lucide-react";
-import { generateDailyBlog, generateBlogForAllCategories } from "@/lib/blogService";
 import { toast } from "sonner";
 import { useNavigate, Link } from "react-router-dom";
 import BlogScheduleModal from "./BlogScheduleModal";
 import { getScheduleConfig, initializeScheduling, isTimeToRun, updateLastExecutedTime } from "@/lib/schedulingService";
+import { generateBlogPost, generateBlogPostsForCategories } from "@/lib/blogGenerationService";
 
 export default function BlogManager() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -69,17 +69,23 @@ export default function BlogManager() {
   const handleGenerateDaily = async () => {
     setIsGenerating(true);
     try {      
-      const newBlog = await generateDailyBlog();
+      // Generate for a random category
+      const categories = ["AI Trends", "Deep Learning", "AI Ethics", "Machine Learning", "AI Applications"];
+      const randomCategory = categories[Math.floor(Math.random() * categories.length)];
       
-      toast.success("New blog post generated successfully", {
-        description: `"${newBlog.title}" has been added to your blog.`,
-        action: {
-          label: "View",
-          onClick: () => navigate(`/ai-blogs/${newBlog.id}`),
-        },
-      });
+      const result = await generateBlogPost({ category: randomCategory });
       
-      return newBlog;
+      if (result.success) {
+        toast.success("New blog post generated successfully", {
+          description: `A new post has been added to the ${randomCategory} category.`,
+          action: {
+            label: "View",
+            onClick: () => navigate(`/ai-blogs/${result.blogId}`),
+          },
+        });
+      }
+      
+      return result;
     } catch (error) {
       console.error("Blog generation error:", error);
       toast.error("Failed to generate blog post", {
@@ -98,17 +104,23 @@ export default function BlogManager() {
   const handleGenerateForAllCategories = async () => {
     setIsGenerating(true);
     try {      
-      const newBlogs = await generateBlogForAllCategories();
+      const categories = scheduleConfig.categories.length > 0 
+        ? scheduleConfig.categories
+        : ["AI Trends", "Deep Learning", "AI Ethics", "Machine Learning", "AI Applications"];
       
-      toast.success(`${newBlogs.length} blog posts generated successfully`, {
-        description: `New posts have been added to your blog.`,
-        action: {
-          label: "View All",
-          onClick: () => navigate(`/ai-blogs`),
-        },
-      });
+      const result = await generateBlogPostsForCategories(categories);
       
-      return newBlogs;
+      if (result.success) {
+        toast.success(`${result.generatedCount} blog posts generated successfully`, {
+          description: `New posts have been added to your blog.`,
+          action: {
+            label: "View All",
+            onClick: () => navigate(`/ai-blogs`),
+          },
+        });
+      }
+      
+      return result;
     } catch (error) {
       console.error("Blog generation error:", error);
       toast.error("Failed to generate blog posts", {
