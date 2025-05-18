@@ -135,12 +135,38 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
             contentJson.excerpt = "An exploration of recent advancements in artificial intelligence and their implications.";
           }
           
-          if (!contentJson.content) {
+          // Make sure the content is proper HTML, not markdown or plain text
+          if (contentJson.content) {
+            // Check if content seems to be markdown or plain text rather than HTML
+            if (!contentJson.content.includes('<h2>') && !contentJson.content.includes('<p>')) {
+              // Simple conversion of plain text or markdown to HTML
+              contentJson.content = contentJson.content
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>');
+                
+              contentJson.content = `<p>${contentJson.content}</p>`;
+            }
+          } else {
             throw new Error("Blog content missing in API response");
           }
           
           if (!contentJson.category) {
             contentJson.category = category || "AI Trends";
+          } else {
+            // Normalize category to one of the allowed values
+            const validCategories = ["AI Trends", "Deep Learning", "AI Ethics", "Machine Learning", "AI Applications"];
+            if (!validCategories.includes(contentJson.category)) {
+              // Find closest match or default to provided category
+              const lowerCategory = contentJson.category.toLowerCase();
+              if (lowerCategory.includes("trend")) contentJson.category = "AI Trends";
+              else if (lowerCategory.includes("deep") || lowerCategory.includes("learn")) contentJson.category = "Deep Learning";
+              else if (lowerCategory.includes("ethic")) contentJson.category = "AI Ethics";
+              else if (lowerCategory.includes("machine")) contentJson.category = "Machine Learning";
+              else if (lowerCategory.includes("app")) contentJson.category = "AI Applications";
+              else contentJson.category = category || "AI Trends";
+            }
           }
           
           return {

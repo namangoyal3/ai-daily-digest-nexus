@@ -1,9 +1,10 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Edit, Trash, Plus, RefreshCcw, Calendar, FileText } from "lucide-react";
-import { generateDailyBlog } from "@/lib/blogService";
+import { generateDailyBlog, generateBlogForAllCategories } from "@/lib/blogService";
 import { toast } from "sonner";
 import { useNavigate, Link } from "react-router-dom";
 import BlogScheduleModal from "./BlogScheduleModal";
@@ -20,8 +21,8 @@ export default function BlogManager() {
     // Generate blog posts according to schedule
     const cleanup = initializeScheduling(async () => {
       try {
-        await handleGenerateDaily();
-        toast.success("Scheduled blog post generated", {
+        await handleGenerateForAllCategories();
+        toast.success("Scheduled blog post generation completed", {
           description: "Automatic blog generation completed successfully",
         });
       } catch (error) {
@@ -50,10 +51,7 @@ export default function BlogManager() {
 
   const handleGenerateDaily = async () => {
     setIsGenerating(true);
-    try {
-      // Skip the validation that was causing problems
-      // Trust that the API key is valid and let the API call itself validate
-      
+    try {      
       const newBlog = await generateDailyBlog();
       
       toast.success("New blog post generated successfully", {
@@ -68,6 +66,35 @@ export default function BlogManager() {
     } catch (error) {
       console.error("Blog generation error:", error);
       toast.error("Failed to generate blog post", {
+        description: error instanceof Error ? error.message : "Please try again",
+        action: {
+          label: "Settings",
+          onClick: () => navigate("/blog-settings"),
+        },
+      });
+      throw error;
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleGenerateForAllCategories = async () => {
+    setIsGenerating(true);
+    try {      
+      const newBlogs = await generateBlogForAllCategories();
+      
+      toast.success(`${newBlogs.length} blog posts generated successfully`, {
+        description: `New posts have been added to your blog.`,
+        action: {
+          label: "View All",
+          onClick: () => navigate(`/ai-blogs`),
+        },
+      });
+      
+      return newBlogs;
+    } catch (error) {
+      console.error("Blog generation error:", error);
+      toast.error("Failed to generate blog posts", {
         description: error instanceof Error ? error.message : "Please try again",
         action: {
           label: "Settings",
@@ -107,9 +134,9 @@ export default function BlogManager() {
             <Plus className="mr-2 h-4 w-4" />
             New Post
           </Button>
-          <Button onClick={handleGenerateDaily} disabled={isGenerating}>
+          <Button onClick={handleGenerateForAllCategories} disabled={isGenerating}>
             <RefreshCcw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
-            {isGenerating ? "Generating..." : "Generate Daily Post"}
+            {isGenerating ? "Generating..." : "Generate Posts"}
           </Button>
         </div>
       </div>

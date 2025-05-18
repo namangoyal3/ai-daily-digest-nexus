@@ -19,11 +19,14 @@ export default function AIBlogs() {
   const [isLoading, setIsLoading] = useState(true);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   
+  // Force a refresh when the component mounts or when we switch categories
   useEffect(() => {
     const fetchBlogs = async () => {
       setIsLoading(true);
       try {
+        console.log("Fetching blogs for category:", selectedCategory);
         const data = await getBlogsByCategory(selectedCategory);
+        console.log(`Fetched ${data.length} blogs`);
         setBlogs(data);
       } catch (error) {
         console.error("Error fetching blogs:", error);
@@ -34,7 +37,34 @@ export default function AIBlogs() {
     };
 
     fetchBlogs();
+    
+    // Add storage event listener to detect changes to localStorage (new blogs added)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'neural-nextgen-blogs') {
+        console.log("Blogs updated in localStorage, refreshing...");
+        fetchBlogs();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [selectedCategory]);
+  
+  // Add a custom event to refresh blogs when new ones are added
+  useEffect(() => {
+    // Dispatch a custom event to force refresh on first load
+    window.dispatchEvent(new StorageEvent('storage', { key: 'neural-nextgen-blogs' }));
+    
+    const refreshInterval = setInterval(() => {
+      // Check for new blogs every minute
+      window.dispatchEvent(new StorageEvent('storage', { key: 'neural-nextgen-blogs' }));
+    }, 60000);
+    
+    return () => clearInterval(refreshInterval);
+  }, []);
 
   return (
     <>
