@@ -769,7 +769,7 @@ function convertTables(content: string): string {
             `;
             
             // Group properties by similar descriptions
-            const groupedProperties = {};
+            const groupedProperties: Record<string, { description: string, items: Record<string, string> }> = {};
             properties.forEach(({ item, property }) => {
               // Create a simplified key for grouping similar properties
               const simplifiedProperty = property.toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ');
@@ -786,7 +786,7 @@ function convertTables(content: string): string {
               tableHtml += `<td>Feature</td>`;
               
               itemNames.forEach(item => {
-                if (group.items[item]) {
+                if (group.items && group.items[item]) {
                   tableHtml += `<td>${group.items[item]}</td>`;
                 } else {
                   tableHtml += '<td>-</td>';
