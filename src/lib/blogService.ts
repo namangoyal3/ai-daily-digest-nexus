@@ -1,8 +1,8 @@
-
 import { Blog } from "@/types/blog";
 import { generateBlogContent } from "./perplexityService";
 import { fetchRandomImage } from "./pollinationsService";
 import { formatDate } from "./dateUtils";
+import { getScheduleConfig } from "./schedulingService";
 
 // In-memory storage for blogs (would typically be in a database)
 const blogs: Blog[] = [
@@ -281,8 +281,15 @@ export async function getRelatedBlogs(currentBlogId: string, category?: string):
 // Generate a new blog using Perplexity API
 export async function generateDailyBlog(): Promise<Blog> {
   try {
+    // Get scheduled categories if available
+    const scheduleConfig = getScheduleConfig();
+    const categories = scheduleConfig.categories;
+    
+    // Randomly select one of the configured categories
+    const selectedCategory = categories[Math.floor(Math.random() * categories.length)];
+    
     // Generate blog content using Perplexity
-    const { title, content, excerpt, category } = await generateBlogContent();
+    const { title, content, excerpt, category } = await generateBlogContent(selectedCategory);
     
     // Fetch a relevant image from Pollinations
     const imageUrl = await fetchRandomImage(category || title);

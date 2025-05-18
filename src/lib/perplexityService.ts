@@ -6,22 +6,27 @@ interface BlogGenerationResponse {
   category: string;
 }
 
-export async function generateBlogContent(): Promise<BlogGenerationResponse> {
+export async function generateBlogContent(category?: string): Promise<BlogGenerationResponse> {
   const apiKey = localStorage.getItem('perplexity_api_key');
   
   if (!apiKey) {
     throw new Error("Perplexity API key not found. Please add your API key in settings.");
   }
   
+  const categoryPrompt = category 
+    ? `Create a blog post specifically about ${category}.`
+    : `Choose a specific category for the blog from: AI Trends, Deep Learning, AI Ethics, Machine Learning, AI Applications`;
+  
   const prompt = `
     Generate a high-quality, informative blog post about a trending topic in artificial intelligence or technology.
+    ${categoryPrompt}
+    
     The blog post should be well-structured with:
     - An engaging title
     - A brief introduction that serves as an excerpt (2-3 sentences)
     - Well-organized sections with h2 headings
     - Proper HTML formatting (p tags, h2, blockquote, ul/ol lists where appropriate)
     - A thoughtful conclusion
-    - Choose a specific category for the blog from: AI Trends, Deep Learning, AI Ethics, Machine Learning, AI Applications
     
     The entire response should be in valid JSON format with these fields:
     - title: string (the blog post title)
