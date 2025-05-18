@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, Settings } from "lucide-react";
+import { FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -50,23 +50,13 @@ export default function AIBlogs() {
         <Header />
         
         <main className="container mx-auto px-4 py-8 md:py-16">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-12">
-            <div className="max-w-3xl">
-              <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-aiblue">
-                AI Insights & Analysis
-              </h1>
-              <p className="text-gray-600 text-base md:text-lg lg:text-xl">
-                Discover in-depth articles about artificial intelligence, machine learning, and their impact on various industries
-              </p>
-            </div>
-            <div className="flex gap-2">
-              <Button variant="outline" asChild>
-                <Link to="/blog-settings" className="flex items-center">
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
-                </Link>
-              </Button>
-            </div>
+          <div className="max-w-3xl">
+            <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-aiblue">
+              AI Insights & Analysis
+            </h1>
+            <p className="text-gray-600 text-base md:text-lg lg:text-xl mb-8 md:mb-12">
+              Discover in-depth articles about artificial intelligence, machine learning, and their impact on various industries
+            </p>
           </div>
 
           <div className="flex flex-wrap gap-2 md:gap-3 justify-center mb-8 md:mb-12 px-2">
