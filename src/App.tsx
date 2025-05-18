@@ -1,7 +1,6 @@
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { Toaster } from "@/components/ui/sonner";
-import { Toaster as ShadcnToaster } from "@/components/ui/toaster";
+import { Toaster } from "sonner";
 import AIDigest from "./pages/AIDigest";
 import AIAgents from "./pages/AIAgents";
 import AIBlogs from "./pages/AIBlogs";
@@ -131,7 +130,6 @@ function App() {
     <>
       <RouterProvider router={router} />
       <Toaster position="top-right" richColors />
-      <ShadcnToaster />
     </>
   );
 }

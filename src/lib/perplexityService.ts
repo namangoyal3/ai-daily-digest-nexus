@@ -6,6 +6,13 @@ interface BlogGenerationResponse {
   category: string;
 }
 
+// Initialize API key if not already set
+(function initializeApiKey() {
+  if (!localStorage.getItem('perplexity_api_key')) {
+    localStorage.setItem('perplexity_api_key', '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');
+  }
+})();
+
 export async function generateBlogContent(category?: string): Promise<BlogGenerationResponse> {
   const apiKey = localStorage.getItem('perplexity_api_key');
   
