@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { ArrowLeft, Calendar, Share2, Bookmark, User } from "lucide-react";
+import { ArrowLeft, Calendar, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -14,12 +14,19 @@ import BlogSkeleton from "@/components/skeletons/BlogSkeleton";
 import { getBlogById } from "@/lib/blogService";
 import { Blog } from "@/types/blog";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { submitToGoogleSheets } from "@/lib/googleSheets";
 
 export default function BlogDetail() {
   const { blogId } = useParams<{ blogId: string }>();
   const [blog, setBlog] = useState<Blog | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [emailError, setEmailError] = useState("");
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -44,6 +51,39 @@ export default function BlogDetail() {
     // Scroll to top when navigating to a new blog
     window.scrollTo(0, 0);
   }, [blogId]);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setEmailError("");
+
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Add blog post ID as source for tracking
+      const result = await submitToGoogleSheets(email, 'blog-post-' + blogId);
+      
+      if (result.success) {
+        toast.success("Thanks for subscribing!");
+        setEmail("");
+      } else {
+        setEmailError(result.error || "Something went wrong. Please try again.");
+        toast.error("Subscription failed. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error in blog subscription:", err);
+      setEmailError("Failed to subscribe. Please try again later.");
+      toast.error("Connection error. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   if (error) {
     return (
@@ -124,8 +164,8 @@ export default function BlogDetail() {
                     </div>
                   </div>
 
-                  <div className="p-6 md:p-8 lg:p-10">
-                    <div className="flex flex-wrap items-center justify-between mb-6 md:mb-8 gap-4 max-w-3xl mx-auto">
+                  <div className="p-4 sm:p-6 md:p-8 lg:p-10">
+                    <div className="flex flex-wrap items-center justify-between mb-6 md:mb-8 gap-4 max-w-4xl mx-auto">
                       <div className="flex items-center">
                         <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
                           <User className="h-5 w-5 text-gray-500" />
@@ -135,35 +175,54 @@ export default function BlogDetail() {
                           <p className="text-xs text-gray-500">AI Research Team</p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Button variant="outline" size="icon" className="rounded-full hover:bg-gray-100">
-                          <Share2 className="h-4 w-4" />
-                        </Button>
-                        <Button variant="outline" size="icon" className="rounded-full hover:bg-gray-100">
-                          <Bookmark className="h-4 w-4" />
-                        </Button>
-                      </div>
                     </div>
 
-                    <BlogContent content={blog.content} />
+                    <div className="max-w-4xl mx-auto">
+                      <BlogContent content={blog.content} />
+                    </div>
 
-                    <Separator className="my-8 max-w-3xl mx-auto" />
+                    <Separator className="my-8 max-w-4xl mx-auto" />
 
-                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 py-6 max-w-3xl mx-auto">
-                      <div>
-                        <h3 className="font-heading font-semibold mb-3">Share this article</h3>
-                        <div className="flex flex-wrap gap-2">
-                          <Button variant="outline" size="sm" className="rounded-full">Twitter</Button>
-                          <Button variant="outline" size="sm" className="rounded-full">LinkedIn</Button>
-                          <Button variant="outline" size="sm" className="rounded-full">Facebook</Button>
+                    {/* Blog Subscription Form */}
+                    <div className="max-w-4xl mx-auto mt-12 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 md:p-8 shadow-sm border border-gray-100">
+                      <div className="text-center mb-6">
+                        <h3 className="font-heading font-bold text-xl md:text-2xl text-aiblue mb-2">
+                          Get AI Insights Delivered to Your Inbox
+                        </h3>
+                        <p className="text-gray-600 max-w-lg mx-auto">
+                          Join our newsletter and never miss new articles about AI advancements, trends, and practical applications.
+                        </p>
+                      </div>
+                      
+                      <form onSubmit={handleSubscribe} className="max-w-md mx-auto">
+                        <div className="mb-4">
+                          <Label htmlFor="blog-subscribe-email" className="sr-only">
+                            Email address
+                          </Label>
+                          <Input
+                            id="blog-subscribe-email"
+                            type="email"
+                            placeholder="you@example.com"
+                            className={`h-12 text-base ${emailError ? "border-red-500" : ""}`}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            disabled={isSubmitting}
+                          />
+                          {emailError && (
+                            <p className="mt-1 text-sm text-red-500">{emailError}</p>
+                          )}
                         </div>
-                      </div>
-                      <div className="mt-4 md:mt-0">
-                        <h3 className="font-heading font-semibold mb-3">Subscribe to our newsletter</h3>
-                        <Button className="bg-gradient-to-r from-aiblue to-aipurple text-white hover:from-aipurple hover:to-aiblue transition-all">
-                          Subscribe Now
+                        <Button 
+                          type="submit"
+                          className="w-full h-12 bg-gradient-to-r from-aiblue to-aipurple text-white hover:from-aipurple hover:to-aiblue transition-all font-medium"
+                          disabled={isSubmitting}
+                        >
+                          {isSubmitting ? "Subscribing..." : "Subscribe Now"}
                         </Button>
-                      </div>
+                        <p className="mt-2 text-xs text-center text-gray-500">
+                          By subscribing, you agree to our privacy policy and terms of service.
+                        </p>
+                      </form>
                     </div>
                   </div>
                 </article>

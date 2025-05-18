@@ -20,6 +20,7 @@ function generateNewsletterPrompt(params: {
   readability?: string;
   technicalDepth?: string;
   approach?: string;
+  randomizationSeed?: string;
 }): string {
   const {
     title = "",
@@ -31,7 +32,8 @@ function generateNewsletterPrompt(params: {
     includeRealLifeReferences = true,
     readability = "moderate",
     technicalDepth = "moderate",
-    approach = "practical"
+    approach = "practical",
+    randomizationSeed = Date.now().toString()
   } = params;
 
   return `
@@ -39,6 +41,7 @@ Write a ${contentStyle} and ${contentTone} newsletter article titled "${title ||
 
 ## Objective:
 The content should reflect a ${contentType.replace("_", " ")} focus and aim to keep the reader ${contentStyle === "engaging" ? "curious and emotionally invested" : contentStyle === "informative" ? "well-informed with clarity" : "persuaded with strong reasoning"}.
+Make this content unique and different from other articles. Use this randomization seed to ensure uniqueness: ${randomizationSeed}.
 
 ## Style & Formatting:
 Use a ${contentFormat === "emoji-rich" ? "Modern" : "Superhuman"} layout.
@@ -87,22 +90,31 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     throw new Error("Perplexity API key not found. Please add your API key in settings.");
   }
   
-  // Generate content based on category
-  const title = category 
-    ? `Latest Developments in ${category}`
-    : "Latest AI Developments";
+  // Generate random blog title variations based on category
+  const randomTitles = [
+    category ? `Latest Breakthroughs in ${category}` : "Cutting-Edge AI Developments",
+    category ? `${category} Innovation Roundup` : "AI Transformation Insights",
+    category ? `Exploring New Frontiers in ${category}` : "Next-Generation AI Advancements",
+    category ? `The Future of ${category}` : "Revolutionary AI Technologies",
+    category ? `${category} Trends to Watch` : "Emerging AI Paradigms"
+  ];
+  
+  // Select a random title from the options
+  const titleIndex = Math.floor(Math.random() * randomTitles.length);
+  const title = randomTitles[titleIndex];
     
-  // Create an optimized prompt using the newsletter generator
+  // Create an optimized prompt using the newsletter generator with randomization
   const prompt = generateNewsletterPrompt({
     title: title,
-    contentStyle: "engaging",
+    contentStyle: ["engaging", "informative", "persuasive"][Math.floor(Math.random() * 3)],
     contentType: category || "general_interest",
-    contentTone: "conversational",
-    contentFormat: "modern",
+    contentTone: ["conversational", "professional", "enthusiastic"][Math.floor(Math.random() * 3)],
+    contentFormat: Math.random() > 0.5 ? "modern" : "emoji-rich",
     includeRealLifeReferences: true,
-    readability: "moderate",
-    technicalDepth: "moderate",
-    approach: "practical"
+    readability: ["easy", "moderate", "advanced"][Math.floor(Math.random() * 3)],
+    technicalDepth: ["beginner", "moderate", "advanced"][Math.floor(Math.random() * 3)],
+    approach: ["practical", "conceptual", "balanced"][Math.floor(Math.random() * 3)],
+    randomizationSeed: Date.now().toString() + Math.random().toString()
   });
   
   try {
@@ -125,9 +137,10 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
             content: prompt
           }
         ],
-        temperature: 0.7,
+        temperature: 0.85, // Increase temperature for more randomness
         max_tokens: 2500,
-        presence_penalty: 0.6
+        presence_penalty: 0.6,
+        frequency_penalty: 0.7 // Add frequency penalty to reduce repetition
       }),
     });
     
@@ -205,7 +218,3 @@ export async function generateBlogsForCategories(categories: string[]): Promise<
   
   return results;
 }
-
-// Note: previous helper functions removed as they're no longer needed
-// with the new newsletter prompt approach that delivers properly
-// formatted HTML directly

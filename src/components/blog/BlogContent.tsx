@@ -65,7 +65,7 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
   return (
     <div 
       ref={contentRef}
-      className="prose prose-gray max-w-3xl mx-auto blog-content"
+      className="prose prose-gray max-w-none blog-content w-full"
       dangerouslySetInnerHTML={{ __html: isFormattedHtml ? enhanceContent(content) : processLegacyContent(content) }}
     />
   );
@@ -83,7 +83,7 @@ function applyAlternatingBackgrounds(container: HTMLElement): void {
     
     // Apply the gradient class and additional styling
     section.classList.add('bg-gradient-to-br', ...gradientClass.split(' '));
-    section.classList.add('rounded-xl', 'p-6', 'md:p-8', 'my-8', 'md:my-10', 'shadow-sm');
+    section.classList.add('rounded-xl', 'p-4', 'sm:p-6', 'md:p-8', 'my-6', 'sm:my-8', 'md:my-10', 'shadow-sm');
   });
 }
 
@@ -93,22 +93,22 @@ function applyAlternatingBackgrounds(container: HTMLElement): void {
 function enhanceContent(content: string): string {
   // Apply font classes to headings
   let enhancedContent = content
-    .replace(/<h1([^>]*)>/g, '<h1$1 class="font-heading font-bold text-aipurple mb-6 text-3xl md:text-4xl">') 
-    .replace(/<h2([^>]*)>/g, '<h2$1 class="font-heading font-semibold text-aiblue mt-8 mb-4 text-2xl md:text-3xl">') 
-    .replace(/<h3([^>]*)>/g, '<h3$1 class="font-heading font-medium text-gray-800 mt-6 mb-3 text-xl md:text-2xl">')
-    .replace(/<blockquote([^>]*)>/g, '<blockquote$1 class="border-l-4 border-aipurple bg-purple-50/50 pl-4 py-2 my-6 italic">')
+    .replace(/<h1([^>]*)>/g, '<h1$1 class="font-heading font-bold text-aipurple mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl">') 
+    .replace(/<h2([^>]*)>/g, '<h2$1 class="font-heading font-semibold text-aiblue mt-6 sm:mt-8 mb-3 sm:mb-4 text-xl sm:text-2xl md:text-3xl">') 
+    .replace(/<h3([^>]*)>/g, '<h3$1 class="font-heading font-medium text-gray-800 mt-4 sm:mt-6 mb-2 sm:mb-3 text-lg sm:text-xl md:text-2xl">')
+    .replace(/<blockquote([^>]*)>/g, '<blockquote$1 class="border-l-4 border-aipurple bg-purple-50/50 pl-4 py-2 my-4 sm:my-6 italic">')
     .replace(/<a([^>]*)>/g, '<a$1 class="text-aiblue hover:text-aipurple transition-colors underline">');
 
   // Add design system styling to any bulleted lists
-  enhancedContent = enhancedContent.replace(/<ul([^>]*)>/g, '<ul$1 class="space-y-3 my-6 list-none">');
+  enhancedContent = enhancedContent.replace(/<ul([^>]*)>/g, '<ul$1 class="space-y-2 sm:space-y-3 my-4 sm:my-6 list-none">');
   enhancedContent = enhancedContent.replace(/<li([^>]*)>/g, '<li$1 class="flex items-start"><span class="inline-block mr-2 mt-1 text-aipurple">•</span><span>');
   enhancedContent = enhancedContent.replace(/<\/li>/g, '</span></li>');
   
   // Style paragraphs with proper spacing
-  enhancedContent = enhancedContent.replace(/<p([^>]*)>/g, '<p$1 class="my-4 leading-relaxed">');
+  enhancedContent = enhancedContent.replace(/<p([^>]*)>/g, '<p$1 class="my-3 sm:my-4 leading-relaxed text-gray-700">');
   
-  // Add container wrapper to ensure consistent width
-  enhancedContent = `<div class="max-w-3xl mx-auto px-4">${enhancedContent}</div>`;
+  // Add container wrapper to ensure consistent width within the design system
+  enhancedContent = `<div class="w-full px-4 sm:px-6 md:px-8">${enhancedContent}</div>`;
 
   return enhancedContent;
 }
@@ -133,7 +133,7 @@ function processLegacyContent(content: string): string {
   const sections = processedContent.split(h2Regex);
   
   // Build proper HTML structure with design system classes
-  let formattedHtml = `<h1 class="font-heading font-bold text-aipurple mb-6 text-3xl md:text-4xl">${title}</h1>`;
+  let formattedHtml = `<h1 class="font-heading font-bold text-aipurple mb-4 sm:mb-6 text-2xl sm:text-3xl md:text-4xl">${title}</h1>`;
   
   // Process sections
   for (let i = 1; i < sections.length; i += 2) {
@@ -141,8 +141,8 @@ function processLegacyContent(content: string): string {
     const sectionContent = sections[i + 1] || '';
     
     formattedHtml += `
-      <section class="rounded-xl p-6 md:p-8 my-8 md:my-10 shadow-sm">
-        <h2 class="font-heading font-semibold text-aiblue mb-4 text-2xl md:text-3xl">${sectionTitle}</h2>
+      <section class="rounded-xl p-4 sm:p-6 md:p-8 my-6 sm:my-8 md:my-10 shadow-sm">
+        <h2 class="font-heading font-semibold text-aiblue mb-3 sm:mb-4 text-xl sm:text-2xl md:text-3xl">${sectionTitle}</h2>
         ${sectionContent}
       </section>
     `;
@@ -150,11 +150,11 @@ function processLegacyContent(content: string): string {
   
   // Handle case where content doesn't have h2 headings
   if (sections.length <= 1) {
-    formattedHtml += `<section class="rounded-xl p-6 md:p-8 my-8 md:my-10 shadow-sm">${processedContent}</section>`;
+    formattedHtml += `<section class="rounded-xl p-4 sm:p-6 md:p-8 my-6 sm:my-8 md:my-10 shadow-sm">${processedContent}</section>`;
   }
   
-  // Add container wrapper to ensure consistent width
-  formattedHtml = `<div class="max-w-3xl mx-auto px-4">${formattedHtml}</div>`;
+  // Add container wrapper to ensure consistent width within the design system
+  formattedHtml = `<div class="w-full px-4 sm:px-6 md:px-8">${formattedHtml}</div>`;
   
   return formattedHtml;
 }
