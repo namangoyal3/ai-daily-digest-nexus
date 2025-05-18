@@ -35,13 +35,14 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     - Proper HTML formatting (p tags, h2, blockquote, ul/ol lists where appropriate)
     - A thoughtful conclusion
     
-    The entire response should be in valid JSON format with these fields:
+    IMPORTANT: The response must be a valid JSON object with these fields:
     - title: string (the blog post title)
     - excerpt: string (2-3 sentence summary, no HTML tags)
     - content: string (fully formatted HTML content)
     - category: string (one of the categories mentioned above)
     
-    Don't include any preamble or explanation, just return the valid JSON object.
+    DO NOT include code blocks, markdown, or any formatting outside of the JSON structure.
+    ONLY return the JSON object, nothing else.
   `;
   
   try {
@@ -56,7 +57,7 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
         messages: [
           {
             role: 'system',
-            content: 'You are an expert AI and technology writer. Create content in well-formatted HTML.'
+            content: 'You are an expert AI and technology writer. Create content in well-formatted HTML. Always respond with valid JSON only.'
           },
           {
             role: 'user',
@@ -75,7 +76,23 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     }
     
     const data = await response.json();
-    const contentJson = JSON.parse(data.choices[0].message.content);
+    
+    // Handle potential formatting issues with JSON response
+    let contentJson;
+    try {
+      const rawContent = data.choices[0].message.content;
+      // Clean the content - remove any markdown code blocks or extra formatting
+      const cleanedContent = rawContent
+        .replace(/```json\s*/g, '')
+        .replace(/```\s*$/g, '')
+        .trim();
+        
+      contentJson = JSON.parse(cleanedContent);
+    } catch (parseError) {
+      console.error("Error parsing JSON from Perplexity:", parseError);
+      console.log("Raw content:", data.choices[0].message.content);
+      throw new Error("Failed to parse blog content from API response");
+    }
     
     return {
       title: contentJson.title,

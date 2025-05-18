@@ -1,4 +1,3 @@
-
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { Toaster } from "sonner";
 import AIDigest from "./pages/AIDigest";
@@ -57,6 +56,7 @@ const router = createBrowserRouter([
     path: "/ai-blogs/:blogId",
     element: <BlogDetail />,
   },
+  // We'll keep this route but we won't display it in the UI navigation
   {
     path: "/blog-settings",
     element: <BlogSettings />,
