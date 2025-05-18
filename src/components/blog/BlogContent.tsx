@@ -8,6 +8,18 @@ interface BlogContentProps {
   content: string;
 }
 
+// Define an array of gradients that match the design system
+const sectionGradients = [
+  'from-white to-blue-50/30', // Light blue gradient
+  'from-white to-purple-50/30', // Light purple gradient
+  'from-white to-green-50/20', // Light green gradient
+  'from-white to-amber-50/20', // Light amber gradient
+  'from-white to-rose-50/20', // Light rose gradient
+  'from-white to-teal-50/20', // Light teal gradient
+  'from-white to-indigo-50/20', // Light indigo gradient
+  'from-white to-sky-50/20', // Light sky gradient
+];
+
 const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -31,45 +43,74 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
           heading.setAttribute('id', id);
         }
       });
-      
-      // Process any elements that need interactive features
-      processInteractiveElements(contentRef.current);
+
+      // Apply alternating background gradients to sections
+      applyAlternatingBackgrounds(contentRef.current);
     }
   }, [content]);
   
   // Check if content is properly formatted HTML or not
   const isFormattedHtml = 
-    content.includes('<h1>') || 
-    content.includes('<section>') || 
-    content.includes('<div class=');
+    content && (
+      content.includes('<h1>') || 
+      content.includes('<section>') || 
+      content.includes('<div class=')
+    );
+  
+  // Safety check to ensure content exists
+  if (!content) {
+    return <div className="text-gray-600">No content available</div>;
+  }
   
   return (
     <div 
       ref={contentRef}
-      className="prose prose-gray max-w-none blog-content"
-      dangerouslySetInnerHTML={{ __html: isFormattedHtml ? content : processLegacyContent(content) }}
+      className="prose prose-gray max-w-3xl mx-auto blog-content"
+      dangerouslySetInnerHTML={{ __html: isFormattedHtml ? enhanceContent(content) : processLegacyContent(content) }}
     />
   );
 };
 
 /**
- * Process any interactive elements in the content
+ * Apply alternating background gradients to sections
  */
-function processInteractiveElements(container: HTMLElement): void {
-  // Add click handlers for table of contents links
-  const tocLinks = container.querySelectorAll('.toc-link');
-  tocLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const targetId = (link as HTMLAnchorElement).getAttribute('href')?.substring(1);
-      if (targetId) {
-        const targetElement = document.getElementById(targetId);
-        if (targetElement) {
-          targetElement.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
-    });
+function applyAlternatingBackgrounds(container: HTMLElement): void {
+  const sections = container.querySelectorAll('section');
+  sections.forEach((section, index) => {
+    // Get a random gradient for this section
+    const randomGradientIndex = Math.floor(Math.random() * sectionGradients.length);
+    const gradientClass = sectionGradients[randomGradientIndex];
+    
+    // Apply the gradient class and additional styling
+    section.classList.add('bg-gradient-to-br', ...gradientClass.split(' '));
+    section.classList.add('rounded-xl', 'p-6', 'md:p-8', 'my-8', 'md:my-10', 'shadow-sm');
   });
+}
+
+/**
+ * Enhance HTML content with design system styling
+ */
+function enhanceContent(content: string): string {
+  // Apply font classes to headings
+  let enhancedContent = content
+    .replace(/<h1([^>]*)>/g, '<h1$1 class="font-heading font-bold text-aipurple mb-6 text-3xl md:text-4xl">') 
+    .replace(/<h2([^>]*)>/g, '<h2$1 class="font-heading font-semibold text-aiblue mt-8 mb-4 text-2xl md:text-3xl">') 
+    .replace(/<h3([^>]*)>/g, '<h3$1 class="font-heading font-medium text-gray-800 mt-6 mb-3 text-xl md:text-2xl">')
+    .replace(/<blockquote([^>]*)>/g, '<blockquote$1 class="border-l-4 border-aipurple bg-purple-50/50 pl-4 py-2 my-6 italic">')
+    .replace(/<a([^>]*)>/g, '<a$1 class="text-aiblue hover:text-aipurple transition-colors underline">');
+
+  // Add design system styling to any bulleted lists
+  enhancedContent = enhancedContent.replace(/<ul([^>]*)>/g, '<ul$1 class="space-y-3 my-6 list-none">');
+  enhancedContent = enhancedContent.replace(/<li([^>]*)>/g, '<li$1 class="flex items-start"><span class="inline-block mr-2 mt-1 text-aipurple">•</span><span>');
+  enhancedContent = enhancedContent.replace(/<\/li>/g, '</span></li>');
+  
+  // Style paragraphs with proper spacing
+  enhancedContent = enhancedContent.replace(/<p([^>]*)>/g, '<p$1 class="my-4 leading-relaxed">');
+  
+  // Add container wrapper to ensure consistent width
+  enhancedContent = `<div class="max-w-3xl mx-auto px-4">${enhancedContent}</div>`;
+
+  return enhancedContent;
 }
 
 /**
@@ -91,8 +132,8 @@ function processLegacyContent(content: string): string {
   const h2Regex = /<h2[^>]*>(.*?)<\/h2>/gi;
   const sections = processedContent.split(h2Regex);
   
-  // Build proper HTML structure
-  let formattedHtml = `<h1>${title}</h1>`;
+  // Build proper HTML structure with design system classes
+  let formattedHtml = `<h1 class="font-heading font-bold text-aipurple mb-6 text-3xl md:text-4xl">${title}</h1>`;
   
   // Process sections
   for (let i = 1; i < sections.length; i += 2) {
@@ -100,8 +141,8 @@ function processLegacyContent(content: string): string {
     const sectionContent = sections[i + 1] || '';
     
     formattedHtml += `
-      <section>
-        <h2>${sectionTitle}</h2>
+      <section class="rounded-xl p-6 md:p-8 my-8 md:my-10 shadow-sm">
+        <h2 class="font-heading font-semibold text-aiblue mb-4 text-2xl md:text-3xl">${sectionTitle}</h2>
         ${sectionContent}
       </section>
     `;
@@ -109,8 +150,11 @@ function processLegacyContent(content: string): string {
   
   // Handle case where content doesn't have h2 headings
   if (sections.length <= 1) {
-    formattedHtml += `<section>${processedContent}</section>`;
+    formattedHtml += `<section class="rounded-xl p-6 md:p-8 my-8 md:my-10 shadow-sm">${processedContent}</section>`;
   }
+  
+  // Add container wrapper to ensure consistent width
+  formattedHtml = `<div class="max-w-3xl mx-auto px-4">${formattedHtml}</div>`;
   
   return formattedHtml;
 }

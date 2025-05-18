@@ -36,12 +36,6 @@ export async function fetchRandomImage(query: string): Promise<string> {
   }
 }
 
-// Add the missing export function that's being imported in blogService.ts
-export async function generateImageWithPrompt(prompt: string): Promise<string> {
-  // This function can simply be a wrapper around fetchRandomImage
-  return fetchRandomImage(prompt);
-}
-
 /**
  * Creates an enhanced, more descriptive prompt for blog header image generation
  */
@@ -137,3 +131,8 @@ function extractKeywords(query: string): string {
   
   return keywordString || query; // Fallback to original query if no keywords found
 }
+
+// Add the missing function that blogService.ts is expecting
+export const generateImageWithPrompt = async (prompt: string): Promise<string> => {
+  return fetchRandomImage(prompt);
+};
