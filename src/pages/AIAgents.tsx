@@ -16,25 +16,25 @@ export default function AIAgents() {
   return (
     <>
       <Helmet>
-        <title>AI Agents Directory 2025 | Find and Compare 500+ AI Tools</title>
-        <meta name="description" content="Explore our comprehensive directory of 500+ AI agents and tools. Compare features, pricing, and reviews to find the perfect AI solution for your specific needs." />
+        <title>AI Agents by NeuralNextGen: Explore Autonomous AI Solutions</title>
+        <meta name="description" content="Discover the latest in AI agents-autonomous, intelligent systems transforming industries. Insights, tools, and trends curated by NeuralNextGen." />
         <meta name="keywords" content="AI agents, artificial intelligence directory, AI tools comparison, AI chatbots, AI image generators, AI coding tools, AI video creation, AI writing assistants" />
-        <meta property="og:title" content="AI Agents Directory 2025 | Find and Compare 500+ AI Tools" />
-        <meta property="og:description" content="Browse and compare the latest AI agents from around the world. Find detailed reviews, pricing, and alternatives for popular tools like ChatGPT, Midjourney, DALL-E, Claude and more." />
+        <meta property="og:title" content="AI Agents by NeuralNextGen: Explore Autonomous AI Solutions" />
+        <meta property="og:description" content="Dive into the world of AI agents with NeuralNextGen. Learn about autonomous AI, industry applications, and the future of intelligent automation." />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://aidailydigest.com/images/ai-agents-directory.jpg" />
-        <link rel="canonical" href="https://aidailydigest.com/ai-agents" />
+        <meta property="og:image" content="https://neuralnextgen.com/images/ai-agents-og.jpg" />
+        <link rel="canonical" href="https://neuralnextgen.com/ai-agents" />
         <script type="application/ld+json">
           {`
             {
               "@context": "https://schema.org",
               "@type": "WebSite",
               "name": "AI Agents Directory",
-              "url": "https://aidailydigest.com/ai-agents",
+              "url": "https://neuralnextgen.com/ai-agents",
               "description": "Comprehensive directory of AI agents and tools from around the world",
               "potentialAction": {
                 "@type": "SearchAction",
-                "target": "https://aidailydigest.com/ai-agents/search?q={search_term_string}",
+                "target": "https://neuralnextgen.com/ai-agents/search?q={search_term_string}",
                 "query-input": "required name=search_term_string"
               },
               "mainEntity": {
@@ -44,19 +44,19 @@ export default function AIAgents() {
                     "@type": "ListItem",
                     "position": 1,
                     "name": "ChatGPT",
-                    "url": "https://aidailydigest.com/agent/gpt-4o"
+                    "url": "https://neuralnextgen.com/agent/gpt-4o"
                   },
                   {
                     "@type": "ListItem",
                     "position": 2,
                     "name": "Claude",
-                    "url": "https://aidailydigest.com/agent/claude-3-opus"
+                    "url": "https://neuralnextgen.com/agent/claude-3-opus"
                   },
                   {
                     "@type": "ListItem",
                     "position": 3,
                     "name": "Midjourney",
-                    "url": "https://aidailydigest.com/agent/midjourney"
+                    "url": "https://neuralnextgen.com/agent/midjourney"
                   }
                 ]
               }
