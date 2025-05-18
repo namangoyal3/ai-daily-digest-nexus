@@ -7,7 +7,8 @@ export default function ContentPreview() {
   
   return (
     <section id="preview" className="w-full py-12 md:py-16 lg:py-24 px-0 overflow-x-hidden">
-      <style jsx global>{`
+      <style>
+        {`
         html, body {
           margin: 0;
           padding: 0;
@@ -22,7 +23,8 @@ export default function ContentPreview() {
           margin: 0 auto;
           padding: 0;
         }
-      `}</style>
+        `}
+      </style>
       
       <div className="w-full max-w-full">
         <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12 lg:mb-16 px-4">

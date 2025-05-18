@@ -77,7 +77,8 @@ export default function AIBlogs() {
       </Helmet>
 
       <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
-        <style jsx global>{`
+        <style>
+          {`
           html, body {
             margin: 0;
             padding: 0;
@@ -91,7 +92,8 @@ export default function AIBlogs() {
             margin: 0;
             padding: 0;
           }
-        `}</style>
+          `}
+        </style>
         
         <Header />
         

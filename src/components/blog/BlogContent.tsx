@@ -64,7 +64,8 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
   
   return (
     <>
-      <style jsx global>{`
+      <style>
+        {`
         html, body {
           margin: 0;
           padding: 0;
@@ -85,7 +86,8 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
           max-width: 100%;
           box-sizing: border-box;
         }
-      `}</style>
+        `}
+      </style>
     
       <div 
         ref={contentRef}

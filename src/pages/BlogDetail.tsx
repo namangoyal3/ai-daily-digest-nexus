@@ -48,7 +48,8 @@ export default function BlogDetail() {
   if (error) {
     return (
       <div className="min-h-screen w-full max-w-full bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
-        <style jsx global>{`
+        <style>
+          {`
           html, body {
             margin: 0;
             padding: 0;
@@ -62,7 +63,8 @@ export default function BlogDetail() {
             margin: 0;
             padding: 0;
           }
-        `}</style>
+          `}
+        </style>
         <Header />
         <div className="container mx-auto px-4 py-16 flex flex-col items-center">
           <div className="bg-white p-8 rounded-lg shadow-md max-w-xl w-full text-center">
@@ -81,7 +83,8 @@ export default function BlogDetail() {
   return (
     <ErrorBoundary>
       <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
-        <style jsx global>{`
+        <style>
+          {`
           html, body {
             margin: 0;
             padding: 0;
@@ -95,7 +98,8 @@ export default function BlogDetail() {
             margin: 0;
             padding: 0;
           }
-        `}</style>
+          `}
+        </style>
         
         {/* Only add Helmet if blog exists to avoid the Symbol error */}
         {blog && (

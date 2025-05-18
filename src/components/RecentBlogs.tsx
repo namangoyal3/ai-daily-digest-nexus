@@ -59,7 +59,8 @@ export default function RecentBlogs() {
 
   return (
     <section className="py-10 md:py-16 w-full max-w-full bg-gradient-to-br from-white via-purple-50/10 to-blue-50/10">
-      <style jsx global>{`
+      <style>
+        {`
         html, body {
           margin: 0;
           padding: 0;
@@ -73,7 +74,8 @@ export default function RecentBlogs() {
           margin: 0;
           padding: 0;
         }
-      `}</style>
+        `}
+      </style>
       
       <div className="container mx-auto px-4 full-width-container">
         <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
