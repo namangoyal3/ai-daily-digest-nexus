@@ -103,10 +103,10 @@ export default function BlogDetail() {
         {blog && (
           <Helmet>
             <title>{blog.title} | NeuralNextGen</title>
-            <meta name="description" content={blog.excerpt} />
+            <meta name="description" content={blog.excerpt || ''} />
             <meta property="og:title" content={blog.title} />
-            <meta property="og:description" content={blog.excerpt} />
-            <meta property="og:image" content={blog.image} />
+            <meta property="og:description" content={blog.excerpt || ''} />
+            <meta property="og:image" content={blog.image_url || ''} />
             <meta property="og:type" content="article" />
             <meta property="article:published_time" content={blog.date} />
             <meta property="article:section" content={blog.category} />
@@ -133,7 +133,7 @@ export default function BlogDetail() {
                 <article className="bg-white rounded-xl shadow-sm overflow-hidden mb-12 w-full">
                   <div className="w-full h-64 md:h-[400px] lg:h-[450px] relative">
                     <img 
-                      src={blog.image} 
+                      src={blog.image_url || ''} 
                       alt={blog.title} 
                       className="w-full h-full object-cover"
                     />
@@ -149,7 +149,7 @@ export default function BlogDetail() {
                           {blog.date}
                         </span>
                         <span>•</span>
-                        <span>{blog.readTime}</span>
+                        <span>{blog.read_time}</span>
                       </div>
                       <h1 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
                         {blog.title}
