@@ -25,8 +25,7 @@ export function getScheduleConfig(): ScheduleConfig {
 }
 
 // Save the schedule config to localStorage
-// Renamed from saveScheduleConfig to setScheduleConfig to match import in BlogScheduleModal
-export function setScheduleConfig(config: ScheduleConfig): void {
+export function saveScheduleConfig(config: ScheduleConfig): void {
   localStorage.setItem('blog_schedule_config', JSON.stringify(config));
 }
 
