@@ -150,17 +150,12 @@ export default function BlogApiKeyForm() {
           >
             Reset
           </Button>
-          <div className="flex gap-2">
-            <Button asChild variant="outline">
-              <Link to="/ai-blogs">Cancel</Link>
-            </Button>
-            <Button 
-              type="submit" 
-              disabled={loading || (saved && apiKey.includes("•"))}
-            >
-              {loading ? "Validating..." : saved ? "Validated" : "Save Key"}
-            </Button>
-          </div>
+          <Button 
+            type="submit" 
+            disabled={loading || (saved && apiKey.includes("•"))}
+          >
+            {loading ? "Validating..." : saved ? "Validated" : "Save Key"}
+          </Button>
         </CardFooter>
       </form>
     </Card>
