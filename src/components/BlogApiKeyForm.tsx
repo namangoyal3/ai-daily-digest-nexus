@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ExternalLink, Key, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { ExternalLink, Key, CheckCircle, AlertCircle, Loader2, RefreshCcw } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
