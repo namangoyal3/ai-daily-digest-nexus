@@ -118,8 +118,18 @@ export default function BlogScheduleModal({ open, onOpenChange }: BlogScheduleMo
   // Handle form submission
   const onSubmit = (data: ScheduleFormValues) => {
     try {
-      // Save schedule configuration
-      setScheduleConfig(data);
+      // Ensure all required fields are present to satisfy ScheduleConfig type
+      const completeConfig = {
+        isActive: data.isActive,
+        time: data.time,
+        categories: data.categories,
+        frequency: data.frequency,
+        daysOfWeek: data.daysOfWeek,
+        dayOfMonth: data.dayOfMonth,
+      };
+      
+      // Save schedule configuration with type-safe data
+      setScheduleConfig(completeConfig);
       
       toast.success("Schedule settings saved", {
         description: data.isActive 

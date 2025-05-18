@@ -156,7 +156,7 @@ export function updateLastExecutedTime(config: ScheduleConfig): ScheduleConfig {
     lastExecuted: Date.now()
   };
   
-  saveScheduleConfig(updatedConfig);
+  setScheduleConfig(updatedConfig);
   return updatedConfig;
 }
 
