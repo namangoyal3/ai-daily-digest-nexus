@@ -23,7 +23,10 @@ export const supabase = createClient<Database>(
 export const testDatabaseConnection = async () => {
   try {
     console.log('Testing Supabase database connection...');
-    const { data, error } = await supabase.from('blogs').select('count').single();
+    const { data, error } = await supabase
+      .from('blogs')
+      .select('count')
+      .single();
     
     if (error) {
       console.error('Database connection error:', error);
@@ -60,7 +63,15 @@ export async function addSubscriber(email: string, source: string = 'website') {
     
     const { data, error } = await supabase
       .from('newsletter_subscribers')
-      .insert([{ email, subscribed_at: new Date().toISOString() }]);
+      .insert([
+        { 
+          email,
+          source, 
+          subscribed_at: new Date().toISOString(),
+          ip_address: null, // These would be set on the server side
+          user_agent: null  // These would be set on the server side
+        }
+      ]);
       
     if (error) {
       console.error('Error adding subscriber:', error);
