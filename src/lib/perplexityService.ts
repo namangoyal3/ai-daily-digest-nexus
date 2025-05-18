@@ -1,9 +1,58 @@
-
 interface BlogGenerationResponse {
   title: string;
   content: string;
   excerpt: string;
   category: string;
+}
+
+/**
+ * Generates a structured blog post prompt for the Perplexity API
+ */
+function generateStructuredBlogPrompt(category: string): string {
+  return `
+You are an expert AI content generator tasked with writing high-quality, unique blog posts for a professional AI-focused website. Each time you generate a blog post, ensure that the content is entirely original — no repeated phrasing, titles, quotes, examples, or bullets from any previous output. The blog must be fully dedicated to the specific category provided and should not drift into general AI trends unless they relate directly to the category.
+
+The blog post must follow this structured layout:
+
+1. A catchy title with an emoji that aligns with the topic.
+2. A 2–3 line introductory paragraph that sets the context for the topic in 2025.
+3. A highlighted expert quote, formatted as a short, thought-provoking statement from a fictional or real credible person (include their name, designation, and company).
+4. Three to four main sections each with:
+   - A bold section heading
+   - A concise, informative paragraph (2–4 sentences)
+   - A short bullet list with 3 specific tools, companies, or examples relevant to that section
+5. A dedicated section titled "Real-World Applications of ${category}", featuring how this AI category is being applied across industries such as Healthcare, Retail, Manufacturing, and Finance — with specific company or use-case examples.
+6. A final, bold closing statement or motto like "Stay Curious, Stay Ahead 🚀" centered for visual impact.
+7. A "Learn More" section with 2–3 suggested resources (real from the blogs), each with a name and source.
+
+Write the entire content so it is human-readable. Each section must be modular, well-structured, and styled for full-width website layout rendering — no narrow columns or reduced UI elements. All text should be conversational, insightful, and factually grounded while remaining easy to digest.
+
+Now, generate the blog post for the category: ${category}
+
+## Output Format:
+•⁠  ⁠Return the output in *clean, semantic HTML*.
+•⁠  ⁠Include the following structure:
+  - A clear and catchy title wrapped in an <h1>
+  - An engaging intro paragraph in a styled <div>
+  - Body sections using <section> with <h2> subheadings
+  - Use <ul> or <div> with class names for bullets, highlights, or callouts
+  - A closing section with a strong takeaway or CTA
+
+## Styling Instructions (CSS Embedded or Inline Preferred):
+•⁠  ⁠Use *modern, easy-to-read fonts* like Inter, Open Sans, or Lato
+•⁠  ⁠Line height: 1.6–1.8 for readability
+•⁠  ⁠Max width for content: 650px
+•⁠  ⁠Add generous padding (24px+) and margins between sections
+•⁠  ⁠Use *pastel backgrounds* or soft light-gray containers to separate sections
+•⁠  ⁠Headers: Large, bold, and optionally emoji-enhanced
+•⁠  ⁠Links should be styled with clear color and hover effects
+•⁠  ⁠Highlight important stats or quotes using <blockquote> or styled <div>
+•⁠  ⁠Make it visually appealing, clean, and suitable for *email clients* and web readers
+
+## Important:
+•⁠  ⁠DO NOT include markdown or explanation.
+•⁠  ⁠ONLY return the final HTML string.
+`.trim();
 }
 
 /**
@@ -92,18 +141,21 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     ? `Latest Developments in ${category}`
     : "Latest AI Developments";
     
-  // Create an optimized prompt using the newsletter generator
-  const prompt = generateNewsletterPrompt({
-    title: title,
-    contentStyle: "engaging",
-    contentType: category || "general_interest",
-    contentTone: "conversational",
-    contentFormat: "modern",
-    includeRealLifeReferences: true,
-    readability: "moderate",
-    technicalDepth: "moderate",
-    approach: "practical"
-  });
+  // Create an optimized prompt using the structured blog generator when a category is specified
+  // Otherwise fall back to the newsletter format
+  const prompt = category 
+    ? generateStructuredBlogPrompt(category)
+    : generateNewsletterPrompt({
+        title: title,
+        contentStyle: "engaging",
+        contentType: "general_interest",
+        contentTone: "conversational",
+        contentFormat: "modern",
+        includeRealLifeReferences: true,
+        readability: "moderate",
+        technicalDepth: "moderate",
+        approach: "practical"
+      });
   
   try {
     console.log("Calling Perplexity API...");
