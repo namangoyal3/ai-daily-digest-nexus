@@ -1,4 +1,3 @@
-
 // Types for schedule configuration
 export interface ScheduleConfig {
   isActive: boolean;
@@ -25,7 +24,6 @@ export function getScheduleConfig(): ScheduleConfig {
 }
 
 // Save the schedule config to localStorage
-// Renamed from saveScheduleConfig to setScheduleConfig to match import in BlogScheduleModal
 export function setScheduleConfig(config: ScheduleConfig): void {
   localStorage.setItem('blog_schedule_config', JSON.stringify(config));
 }
@@ -156,7 +154,7 @@ export function updateLastExecutedTime(config: ScheduleConfig): ScheduleConfig {
     lastExecuted: Date.now()
   };
   
-  saveScheduleConfig(updatedConfig);
+  setScheduleConfig(updatedConfig);
   return updatedConfig;
 }
 
