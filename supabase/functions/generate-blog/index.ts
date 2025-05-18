@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -25,6 +24,18 @@ interface ResponseData {
 
 // Main handler function for the edge function
 serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === "OPTIONS") {
+    return new Response(null, {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
+      status: 204,
+    });
+  }
+  
   try {
     console.log("Generate blog function called");
     
@@ -64,7 +75,9 @@ serve(async (req) => {
         { 
           headers: { 
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization"
           } 
         }
       );
@@ -109,7 +122,9 @@ serve(async (req) => {
       { 
         headers: { 
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization"
         } 
       }
     );
@@ -364,7 +379,9 @@ function createErrorResponse(message: string, status: number = 500): Response {
     { 
       headers: { 
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*" 
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
       }, 
       status 
     }

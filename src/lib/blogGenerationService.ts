@@ -130,7 +130,7 @@ export async function generateBlogPost({
 }
 
 /**
- * Generate blog posts for multiple categories 
+ * Generate blog posts one category at a time, sequentially 
  */
 export async function generateBlogPostsForCategories(categories: string[]): Promise<{
   success: boolean;
@@ -138,36 +138,50 @@ export async function generateBlogPostsForCategories(categories: string[]): Prom
   generatedCount: number;
   failedCategories?: string[];
 }> {
+  if (categories.length === 0) {
+    toast.error('No categories selected', {
+      description: 'Please select at least one category'
+    });
+    
+    return {
+      success: false,
+      message: 'No categories provided',
+      generatedCount: 0
+    };
+  }
+  
   const results = [];
   const failed = [];
   let successCount = 0;
-
-  console.log(`Starting generation for ${categories.length} categories:`, categories);
-
-  for (const category of categories) {
-    try {
-      console.log(`Generating blog for category: ${category}...`);
-      const result = await generateBlogPost({ category });
-      results.push(result);
-      
-      if (result.success) {
-        console.log(`Successfully generated blog for ${category}`);
-        successCount++;
-      } else {
-        console.error(`Failed to generate blog for ${category}:`, result.message);
-        failed.push(category);
-      }
-      
-      // Add a small delay between generations to avoid rate limiting
-      await new Promise(resolve => setTimeout(resolve, 1500));
-    } catch (error) {
-      console.error(`Error generating blog for category ${category}:`, error);
-      failed.push(category);
+  
+  console.log(`Starting sequential generation for ${categories.length} categories:`, categories);
+  
+  // Pick only the first category for now
+  const selectedCategory = categories[0];
+  
+  try {
+    console.log(`Generating blog for category: ${selectedCategory}...`);
+    toast.info('Generating blog post', {
+      description: `Creating content for category: ${selectedCategory}`
+    });
+    
+    const result = await generateBlogPost({ category: selectedCategory });
+    results.push(result);
+    
+    if (result.success) {
+      console.log(`Successfully generated blog for ${selectedCategory}`);
+      successCount++;
+    } else {
+      console.error(`Failed to generate blog for ${selectedCategory}:`, result.message);
+      failed.push(selectedCategory);
     }
+  } catch (error) {
+    console.error(`Error generating blog for category ${selectedCategory}:`, error);
+    failed.push(selectedCategory);
   }
-
+  
   console.log(`Generation complete. Success: ${successCount}, Failed: ${failed.length}`);
-
+  
   if (successCount === 0) {
     toast.error('Blog generation failed', {
       description: 'Failed to generate any blog posts'
@@ -180,27 +194,27 @@ export async function generateBlogPostsForCategories(categories: string[]): Prom
       failedCategories: failed
     };
   }
-
+  
   if (failed.length > 0) {
-    toast.warning(`Generated ${successCount} of ${categories.length} blog posts`, {
-      description: `Failed categories: ${failed.join(', ')}`
+    toast.warning(`Generated ${successCount} blog post`, {
+      description: `Failed category: ${failed.join(', ')}`
     });
     
     return {
       success: true,
-      message: `Generated ${successCount} of ${categories.length} blog posts`,
+      message: `Generated ${successCount} blog post`,
       generatedCount: successCount,
       failedCategories: failed
     };
   }
-
+  
   toast.success('Blog generation complete', {
-    description: `Successfully generated ${successCount} blog posts`
+    description: `Successfully generated a blog post for ${selectedCategory}`
   });
   
   return {
     success: true,
-    message: `Successfully generated ${successCount} blog posts`,
+    message: `Successfully generated a blog post for ${selectedCategory}`,
     generatedCount: successCount
   };
 }

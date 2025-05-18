@@ -4,6 +4,18 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 // Main handler function
 serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === "OPTIONS") {
+    return new Response(null, {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
+      status: 204,
+    });
+  }
+  
   try {
     // Initialize Supabase client
     const supabaseClient = createClient(
@@ -22,7 +34,12 @@ serve(async (req) => {
           configured: false
         }),
         { 
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization"
+          },
           status: 400
         }
       );
@@ -43,7 +60,9 @@ serve(async (req) => {
       { 
         headers: { 
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization"
         }
       }
     );
@@ -59,7 +78,9 @@ serve(async (req) => {
       { 
         headers: { 
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*" 
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization"
         },
         status: 500
       }

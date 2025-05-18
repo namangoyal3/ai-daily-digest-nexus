@@ -17,58 +17,56 @@ export default function BlogApiKeyForm() {
 
   // Check if API key is already set in Supabase
   useEffect(() => {
-    const checkApiKeyStatus = async () => {
-      try {
-        setChecking(true);
-        setConnectionError(null);
-        
-        console.log("Checking Perplexity API key status...");
-        
-        // Call a function to check if the API key is configured
-        const { data, error } = await supabase.functions.invoke('check-api-key-status', { 
-          body: { key_name: 'PERPLEXITY_API_KEY' } 
-        });
-        
-        if (error) {
-          console.error('Error checking API key status:', error);
-          setConnectionError(`Connection error: ${error.message}`);
-          toast.error("Failed to check API key status", {
-            description: error.message
-          });
-        } else if (data && data.configured) {
-          console.log("API key is configured in Supabase secrets");
-          // API key is configured in Supabase secrets
-          setApiKey("•".repeat(20) + " (CONFIGURED)");
-          setSaved(true);
-          toast.success("Perplexity API key is configured", {
-            description: "Your API key is properly set up"
-          });
-        } else {
-          console.log("API key is not configured in Supabase secrets");
-          setApiKey("");
-          setSaved(false);
-        }
-      } catch (err) {
-        console.error('Error checking key status:', err);
-        const message = err instanceof Error ? err.message : "Unknown error";
-        setConnectionError(`Error checking key status: ${message}`);
-        toast.error("Connection error", {
-          description: message
-        });
-      } finally {
-        setChecking(false);
-      }
-    };
-
     checkApiKeyStatus();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!apiKey || apiKey.includes("•")) {
+  const checkApiKeyStatus = async () => {
+    try {
+      setChecking(true);
+      setConnectionError(null);
+      
+      console.log("Checking Perplexity API key status...");
+      
+      // Call a function to check if the API key is configured
+      const { data, error } = await supabase.functions.invoke('check-api-key-status', { 
+        body: { key_name: 'PERPLEXITY_API_KEY' } 
+      });
+      
+      if (error) {
+        console.error('Error checking API key status:', error);
+        setConnectionError(`Connection error: ${error.message}`);
+        toast.error("Failed to check API key status", {
+          description: error.message
+        });
+      } else if (data && data.configured) {
+        console.log("API key is configured in Supabase secrets");
+        // API key is configured in Supabase secrets
+        setApiKey("•".repeat(20) + " (CONFIGURED)");
+        setSaved(true);
+        toast.success("Perplexity API key is configured", {
+          description: "Your API key is properly set up"
+        });
+      } else {
+        console.log("API key is not configured in Supabase secrets");
+        setApiKey("");
+        setSaved(false);
+      }
+    } catch (err) {
+      console.error('Error checking key status:', err);
+      const message = err instanceof Error ? err.message : "Unknown error";
+      setConnectionError(`Error checking key status: ${message}`);
+      toast.error("Connection error", {
+        description: message
+      });
+    } finally {
+      setChecking(false);
+    }
+  };
+
+  const validateApiKey = async (key: string) => {
+    if (!key) {
       setError("Please enter a valid API key");
-      return;
+      return false;
     }
     
     setLoading(true);
@@ -81,7 +79,7 @@ export default function BlogApiKeyForm() {
       const response = await fetch('https://api.perplexity.ai/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${apiKey}`,
+          'Authorization': `Bearer ${key}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -111,8 +109,9 @@ export default function BlogApiKeyForm() {
       });
       
       // Store masked key for display
-      setApiKey("•".repeat(20) + apiKey.slice(-5));
+      setApiKey("•".repeat(20) + key.slice(-5));
       setSaved(true);
+      return true;
       
     } catch (err) {
       console.error("API key validation error:", err);
@@ -120,8 +119,36 @@ export default function BlogApiKeyForm() {
       toast.error("API Key Validation Error", {
         description: err instanceof Error ? err.message : "Please check your key and try again",
       });
+      return false;
     } finally {
       setLoading(false);
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!apiKey || apiKey.includes("•")) {
+      setError("Please enter a valid API key");
+      return;
+    }
+    
+    await validateApiKey(apiKey);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setApiKey(value);
+    setSaved(false);
+    setError(null);
+    
+    // If input field is cleared, don't validate
+    if (!value) return;
+    
+    // Auto-validate after a short delay when typing stops
+    if (value.length > 20) {
+      // Validate immediately if pasting a full API key
+      validateApiKey(value);
     }
   };
 
@@ -167,11 +194,7 @@ export default function BlogApiKeyForm() {
                 type="password"
                 placeholder="Enter your Perplexity API key"
                 value={apiKey}
-                onChange={(e) => {
-                  setApiKey(e.target.value);
-                  setSaved(false);
-                  setError(null);
-                }}
+                onChange={handleInputChange}
                 className="font-mono text-sm"
               />
             </div>
@@ -220,29 +243,42 @@ export default function BlogApiKeyForm() {
                 <li>Navigate to Edge Functions</li>
                 <li>Click on "Secrets"</li>
                 <li>Add a new secret with name <code className="bg-blue-100 px-1">PERPLEXITY_API_KEY</code> and your API key as the value</li>
+                <li>After adding the secret, click the "Refresh" button below</li>
               </ol>
             </div>
           </div>
         </CardContent>
-        <CardFooter className="flex justify-between gap-2">
+        <CardFooter className="flex flex-col gap-2">
+          <div className="flex justify-between w-full">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={handleReset}
+              disabled={loading}
+            >
+              Reset
+            </Button>
+            <Button 
+              type="submit" 
+              disabled={loading || (saved && apiKey.includes("•"))}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Validating...
+                </>
+              ) : saved ? "Validated" : "Validate Key"}
+            </Button>
+          </div>
+          
           <Button 
             type="button" 
             variant="outline" 
-            onClick={handleReset}
-            disabled={loading}
+            className="w-full" 
+            onClick={checkApiKeyStatus}
           >
-            Reset
-          </Button>
-          <Button 
-            type="submit" 
-            disabled={loading || (saved && apiKey.includes("•"))}
-          >
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Validating...
-              </>
-            ) : saved ? "Validated" : "Validate Key"}
+            <RefreshCcw className="mr-2 h-4 w-4" />
+            Refresh Key Status
           </Button>
         </CardFooter>
       </form>

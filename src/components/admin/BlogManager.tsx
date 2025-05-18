@@ -8,12 +8,22 @@ import { useNavigate, Link } from "react-router-dom";
 import BlogScheduleModal from "./BlogScheduleModal";
 import { getScheduleConfig, initializeScheduling, isTimeToRun, updateLastExecutedTime } from "@/lib/schedulingService";
 import { generateBlogPost, generateBlogPostsForCategories } from "@/lib/blogGenerationService";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function BlogManager() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
   const [scheduleConfig, setScheduleConfig] = useState(getScheduleConfig());
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const navigate = useNavigate();
+  
+  const categories = [
+    "AI Trends", 
+    "Deep Learning", 
+    "AI Ethics", 
+    "Machine Learning", 
+    "AI Applications"
+  ];
 
   // Initialize scheduling when component mounts
   useEffect(() => {
@@ -66,18 +76,26 @@ export default function BlogManager() {
     };
   }, []);
 
-  const handleGenerateDaily = async () => {
+  const handleGenerateSingle = async () => {
+    if (!selectedCategory) {
+      toast.error("Please select a category", {
+        description: "You need to select a category to generate a blog post"
+      });
+      return;
+    }
+    
     setIsGenerating(true);
-    try {      
-      // Generate for a random category
-      const categories = ["AI Trends", "Deep Learning", "AI Ethics", "Machine Learning", "AI Applications"];
-      const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+    try {
+      console.log(`Generating blog post for category: ${selectedCategory}`);
+      toast.info("Generating blog post", {
+        description: `Creating content for ${selectedCategory}`
+      });
       
-      const result = await generateBlogPost({ category: randomCategory });
+      const result = await generateBlogPost({ category: selectedCategory });
       
       if (result.success) {
         toast.success("New blog post generated successfully", {
-          description: `A new post has been added to the ${randomCategory} category.`,
+          description: `A new post has been added to the ${selectedCategory} category.`,
           action: {
             label: "View",
             onClick: () => navigate(`/ai-blogs/${result.blogId}`),
@@ -104,15 +122,15 @@ export default function BlogManager() {
   const handleGenerateForAllCategories = async () => {
     setIsGenerating(true);
     try {      
-      const categories = scheduleConfig.categories.length > 0 
+      const categoriesToUse = scheduleConfig.categories.length > 0 
         ? scheduleConfig.categories
         : ["AI Trends", "Deep Learning", "AI Ethics", "Machine Learning", "AI Applications"];
       
-      const result = await generateBlogPostsForCategories(categories);
+      const result = await generateBlogPostsForCategories(categoriesToUse);
       
       if (result.success) {
-        toast.success(`${result.generatedCount} blog posts generated successfully`, {
-          description: `New posts have been added to your blog.`,
+        toast.success(`${result.generatedCount} blog post generated successfully`, {
+          description: `New content has been added to your blog.`,
           action: {
             label: "View All",
             onClick: () => navigate(`/ai-blogs`),
@@ -244,14 +262,54 @@ export default function BlogManager() {
             <Plus className="mr-2 h-4 w-4" />
             New Post
           </Button>
-          <Button onClick={handleGenerateForAllCategories} disabled={isGenerating}>
-            <RefreshCcw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
-            {isGenerating ? "Generating..." : "Generate Posts"}
-          </Button>
         </div>
       </div>
       
       <Separator />
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>Generate Content</CardTitle>
+          <CardDescription>
+            Create new AI-generated blog post from selected category
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="col-span-2">
+                <label htmlFor="category" className="block text-sm font-medium mb-1">Category</label>
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Categories</SelectLabel>
+                      {categories.map((category) => (
+                        <SelectItem key={category} value={category}>{category}</SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-end">
+                <Button 
+                  className="w-full" 
+                  onClick={handleGenerateSingle} 
+                  disabled={isGenerating || !selectedCategory}
+                >
+                  <RefreshCcw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
+                  {isGenerating ? "Generating..." : "Generate Post"}
+                </Button>
+              </div>
+            </div>
+            <div className="text-sm text-muted-foreground">
+              Select a category to generate a single blog post. The content will be automatically optimized for this topic.
+            </div>
+          </div>
+        </CardContent>
+      </Card>
       
       <Card>
         <CardHeader>
@@ -289,7 +347,7 @@ export default function BlogManager() {
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                   <h3 className="font-medium mb-1">Content Categories</h3>
                   <p className="text-sm text-muted-foreground">
-                    {scheduleConfig.categories.join(", ")}
+                    {scheduleConfig.categories.join(", ") || "None selected"}
                   </p>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
