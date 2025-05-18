@@ -13,6 +13,7 @@ import BlogContent from "@/components/blog/BlogContent";
 import BlogSkeleton from "@/components/skeletons/BlogSkeleton";
 import { getBlogById } from "@/lib/blogService";
 import { Blog } from "@/types/blog";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 export default function BlogDetail() {
   const { blogId } = useParams<{ blogId: string }>();
@@ -63,22 +64,7 @@ export default function BlogDetail() {
   }
 
   return (
-    <>
-      <Helmet>
-        <title>{isLoading ? "Loading Article..." : `${blog?.title} | NeuralNextGen`}</title>
-        <meta name="description" content={blog?.excerpt || "Loading article content..."} />
-        {blog && (
-          <>
-            <meta property="og:title" content={blog.title} />
-            <meta property="og:description" content={blog.excerpt} />
-            <meta property="og:image" content={blog.image} />
-            <meta property="og:type" content="article" />
-            <meta property="article:published_time" content={blog.date} />
-            <meta property="article:section" content={blog.category} />
-          </>
-        )}
-      </Helmet>
-
+    <ErrorBoundary>
       <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
         <Header />
         
@@ -94,76 +80,90 @@ export default function BlogDetail() {
           {isLoading ? (
             <BlogSkeleton />
           ) : blog ? (
-            <article className="max-w-4xl mx-auto bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="w-full h-64 md:h-96 relative">
-                <img 
-                  src={blog.image} 
-                  alt={blog.title} 
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                <div className="absolute bottom-0 left-0 p-6 md:p-8 w-full">
-                  <div className="flex items-center gap-2 text-xs md:text-sm text-white/90 mb-3">
-                    <span className="bg-aipurple/80 backdrop-blur-sm px-3 py-1 rounded-full">
-                      {blog.category}
-                    </span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      {blog.date}
-                    </span>
-                    <span>•</span>
-                    <span>{blog.readTime}</span>
-                  </div>
-                  <h1 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-white">
-                    {blog.title}
-                  </h1>
-                </div>
-              </div>
+            <>
+              {/* Add Helmet after we know blog exists */}
+              <Helmet>
+                <title>{blog.title} | NeuralNextGen</title>
+                <meta name="description" content={blog.excerpt} />
+                <meta property="og:title" content={blog.title} />
+                <meta property="og:description" content={blog.excerpt} />
+                <meta property="og:image" content={blog.image} />
+                <meta property="og:type" content="article" />
+                <meta property="article:published_time" content={blog.date} />
+                <meta property="article:section" content={blog.category} />
+              </Helmet>
 
-              <div className="p-6 md:p-8">
-                <div className="flex items-center justify-between mb-6 md:mb-8 gap-4">
-                  <div className="flex items-center">
-                    <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
-                      <User className="h-5 w-5 text-gray-500" />
+              <article className="max-w-4xl mx-auto bg-white rounded-xl shadow-sm overflow-hidden">
+                <div className="w-full h-64 md:h-96 relative">
+                  <img 
+                    src={blog.image} 
+                    alt={blog.title} 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute bottom-0 left-0 p-6 md:p-8 w-full">
+                    <div className="flex items-center gap-2 text-xs md:text-sm text-white/90 mb-3">
+                      <span className="bg-aipurple/80 backdrop-blur-sm px-3 py-1 rounded-full">
+                        {blog.category}
+                      </span>
+                      <span>•</span>
+                      <span className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        {blog.date}
+                      </span>
+                      <span>•</span>
+                      <span>{blog.readTime}</span>
                     </div>
+                    <h1 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-white">
+                      {blog.title}
+                    </h1>
+                  </div>
+                </div>
+
+                <div className="p-6 md:p-8">
+                  <div className="flex items-center justify-between mb-6 md:mb-8 gap-4">
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                        <User className="h-5 w-5 text-gray-500" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900">NeuralNextGen</p>
+                        <p className="text-xs text-gray-500">AI Research Team</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button variant="outline" size="icon" className="rounded-full hover:bg-gray-100">
+                        <Share2 className="h-4 w-4" />
+                      </Button>
+                      <Button variant="outline" size="icon" className="rounded-full hover:bg-gray-100">
+                        <Bookmark className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  <BlogContent content={blog.content} />
+
+                  <Separator className="my-8" />
+
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 py-4">
                     <div>
-                      <p className="font-medium text-gray-900">NeuralNextGen</p>
-                      <p className="text-xs text-gray-500">AI Research Team</p>
+                      <h3 className="font-heading font-semibold mb-2">Share this article</h3>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" className="rounded-full">Twitter</Button>
+                        <Button variant="outline" size="sm" className="rounded-full">LinkedIn</Button>
+                        <Button variant="outline" size="sm" className="rounded-full">Facebook</Button>
+                      </div>
+                    </div>
+                    <div className="mt-4 md:mt-0">
+                      <h3 className="font-heading font-semibold mb-2">Subscribe to our newsletter</h3>
+                      <Button className="bg-gradient-to-r from-aiblue to-aipurple text-white hover:from-aipurple hover:to-aiblue transition-all">
+                        Subscribe Now
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Button variant="outline" size="icon" className="rounded-full hover:bg-gray-100">
-                      <Share2 className="h-4 w-4" />
-                    </Button>
-                    <Button variant="outline" size="icon" className="rounded-full hover:bg-gray-100">
-                      <Bookmark className="h-4 w-4" />
-                    </Button>
-                  </div>
                 </div>
-
-                <BlogContent content={blog.content} />
-
-                <Separator className="my-8" />
-
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 py-4">
-                  <div>
-                    <h3 className="font-heading font-semibold mb-2">Share this article</h3>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" className="rounded-full">Twitter</Button>
-                      <Button variant="outline" size="sm" className="rounded-full">LinkedIn</Button>
-                      <Button variant="outline" size="sm" className="rounded-full">Facebook</Button>
-                    </div>
-                  </div>
-                  <div className="mt-4 md:mt-0">
-                    <h3 className="font-heading font-semibold mb-2">Subscribe to our newsletter</h3>
-                    <Button className="bg-gradient-to-r from-aiblue to-aipurple text-white hover:from-aipurple hover:to-aiblue transition-all">
-                      Subscribe Now
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </article>
+              </article>
+            </>
           ) : (
             <div className="text-center py-20">
               <h2 className="font-heading text-2xl text-gray-800">Blog post not found</h2>
@@ -179,6 +179,6 @@ export default function BlogDetail() {
 
         <Footer />
       </div>
-    </>
+    </ErrorBoundary>
   );
 }
