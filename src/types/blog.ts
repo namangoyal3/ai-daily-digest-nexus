@@ -5,9 +5,9 @@ export interface Blog {
   excerpt: string;
   content: string;
   date: string;
-  readTime: string;
+  read_time: string;
   category: string;
-  image: string;
+  image_url: string;
   author?: {
     name: string;
     avatar?: string;

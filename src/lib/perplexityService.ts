@@ -21,19 +21,64 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     Generate a high-quality, informative blog post about a trending topic in artificial intelligence or technology.
     ${categoryPrompt}
     
-    The blog post should be well-structured with:
-    - An engaging title
-    - A brief introduction that serves as an excerpt (2-3 sentences)
-    - Well-organized sections with h2 headings
-    - Proper HTML formatting (p tags, h2, blockquote, ul/ol lists where appropriate)
-    - A thoughtful conclusion
+    Please use this structured format:
+    
+    # TITLE
+    Write a clear, engaging headline that reflects the topic, trend, or promise of the article.
+    
+    ## SUBTITLE/HOOK (optional)
+    Include a catchy or value-driven tagline to draw readers in.
+    
+    ### INTRODUCTION
+    Open with a warm welcome and set the stage with one of the following:
+    - A recent trend, stat, or shift relevant to the audience
+    - A compelling question or challenge they're facing
+    - A brief summary of what they'll get from reading
+    
+    Example intro starter:
+    "With [industry/market] shifting fast, staying ahead of [specific topic] is more crucial than ever. In this post, we'll break down:
+    • [Takeaway 1]
+    • [Takeaway 2]
+    • [Optional teaser or fun hook]"
+    
+    ### SECTION 1: [TOPIC OR INSIGHT TITLE]
+    Begin with 1-2 sentences summarizing this section's insight.
+    • Point 1: Introduce a surprising fact, observation, or actionable idea
+    • Point 2: Add a supporting stat, real-world example, or expert quote
+    • Point 3: Include a brief takeaway or end with a thought-provoking question
+    
+    ### SECTION 2: [TIPS, TOOLS, OR STRATEGIES]
+    Frame this section as a way to help the reader do something better, faster, or smarter.
+    • Tip/Strategy 1: Describe the technique and why it works
+    • Tip/Strategy 2: Mention tools, formats, or helpful resources
+    • Tip/Strategy 3: Add a call to action or related suggestion readers can implement
+    
+    ### SECTION 3 (OPTIONAL): [DEEP DIVE, BREAKDOWN, OR CASE STUDY]
+    Share a deeper exploration of a strategy, campaign, or lesson learned.
+    • What worked: Explain the method or approach that succeeded
+    • What failed: Share a mistake or misstep with a lesson learned
+    • Try this: Offer a practical idea or mindset shift the reader can apply
+    
+    ### CALL TO ACTION
+    Promote a free or useful resource, tool, or guide that adds value.
+    
+    Example format:
+    "We created a [tool/resource] that helps you [result]. It only takes [time] to use and gives you [key benefit].
+    👉 [Call to Action Button or Link]"
+    
+    ### FEEDBACK PROMPT
+    Encourage readers to engage or reflect on the post with a question.
+    
+    ### CLOSING
+    Wrap up with a friendly sign-off and a nudge to subscribe, share, or read more.
     
     IMPORTANT: The response must be a valid JSON object with these fields:
     - title: string (the blog post title)
     - excerpt: string (2-3 sentence summary, no HTML tags)
-    - content: string (fully formatted HTML content)
+    - content: string (fully formatted HTML content following the structure above)
     - category: string (one of the categories mentioned above)
     
+    Format the content as proper HTML with h2, h3, p, ul/ol, li tags, etc. Make sure the content is engaging, informative, and follows best practices for web writing.
     DO NOT include code blocks, markdown, or any formatting outside of the JSON structure.
     ONLY return the JSON object, nothing else.
   `;
@@ -51,7 +96,7 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
         messages: [
           {
             role: 'system',
-            content: 'You are an expert AI and technology writer. Create content in well-formatted HTML. You MUST ONLY respond with a valid JSON object containing title, excerpt, content, and category fields. No other text or formatting.'
+            content: 'You are an expert AI and technology writer. Create content in well-formatted HTML following the structured format provided. You MUST ONLY respond with a valid JSON object containing title, excerpt, content, and category fields. No other text or formatting.'
           },
           {
             role: 'user',
@@ -59,7 +104,7 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
           }
         ],
         temperature: 0.7,
-        max_tokens: 2500,
+        max_tokens: 3000,
         presence_penalty: 0.6
       }),
     });
@@ -202,8 +247,27 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
           const sentences = content.split('.');
           const excerpt = sentences.slice(0, 2).join('.') + '.';
           
-          // Format the rest as HTML content
-          const htmlContent = `<p>${content.replace(/\n\n/g, '</p><p>')}</p>`;
+          // Format the rest as HTML content with the structured format
+          let htmlContent = `
+            <p>${content.replace(/\n\n/g, '</p><p>')}</p>
+            <h2>Key Insights</h2>
+            <p>Here are some important considerations about this topic:</p>
+            <ul>
+              <li>Understanding the fundamentals is crucial for success</li>
+              <li>Staying updated with the latest research can provide competitive advantages</li>
+              <li>Practical application is the best way to master these concepts</li>
+            </ul>
+            <h2>Strategies and Tools</h2>
+            <p>Consider implementing the following approaches:</p>
+            <ul>
+              <li>Start with small experiments to validate your ideas</li>
+              <li>Leverage existing frameworks to accelerate development</li>
+              <li>Measure results carefully and iterate based on data</li>
+            </ul>
+            <h3>Feedback</h3>
+            <p>What has been your experience with this technology? We'd love to hear your thoughts!</p>
+            <p>Thanks for reading. If you found this helpful, please share it with others who might benefit!</p>
+          `;
           
           return {
             title: title,
