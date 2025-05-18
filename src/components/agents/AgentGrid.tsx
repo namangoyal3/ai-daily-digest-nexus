@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -6,6 +5,7 @@ import { motion } from "framer-motion";
 import { Star, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface AgentCardProps {
   name: string;
@@ -50,20 +50,20 @@ const AgentCard = ({ name, description, category, rating, image, price, slug, is
             )}
           </div>
         </CardHeader>
-        <CardContent className="p-6">
+        <CardContent className="p-4 sm:p-6">
           <div className="flex justify-between items-start mb-3">
-            <CardTitle className="text-xl font-bold">{name}</CardTitle>
+            <CardTitle className="text-lg sm:text-xl font-bold">{name}</CardTitle>
             <div className="flex items-center gap-1">
               <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
               <span className="text-sm font-medium">{rating}</span>
             </div>
           </div>
-          <CardDescription className="mb-4 line-clamp-2">
+          <CardDescription className="mb-4 line-clamp-2 text-sm sm:text-base">
             {description}
           </CardDescription>
           <div className="flex items-center justify-between">
-            <span className="font-semibold text-aiblue">{price}</span>
-            <Button variant="outline" className="hover:bg-aiblue hover:text-white">
+            <span className="font-semibold text-aiblue text-sm sm:text-base">{price}</span>
+            <Button size="sm" variant="outline" className="text-xs sm:text-sm hover:bg-aiblue hover:text-white">
               <Link to={`/agent/${slug}`}>Learn More</Link>
             </Button>
           </div>
@@ -74,6 +74,8 @@ const AgentCard = ({ name, description, category, rating, image, price, slug, is
 }
 
 export default function AgentGrid() {
+  const isMobile = useIsMobile();
+  
   const agents = [
     {
       name: "ChatGPT",
@@ -191,9 +193,9 @@ export default function AgentGrid() {
   ];
 
   return (
-    <section className="py-12 md:py-16 bg-gray-50">
+    <section className="py-8 md:py-16 bg-gray-50">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {agents.map((agent, index) => (
             <div id={agent.category.toLowerCase().replace(/\s+/g, '-')} key={index}>
               <AgentCard {...agent} />

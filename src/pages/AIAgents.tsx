@@ -24,6 +24,7 @@ export default function AIAgents() {
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://neuralnextgen.com/images/ai-agents-og.jpg" />
         <link rel="canonical" href="https://neuralnextgen.com/ai-agents" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
         <script type="application/ld+json">
           {`
             {
@@ -71,7 +72,7 @@ export default function AIAgents() {
       >
         <PromotionBanner />
         <Header />
-        <main>
+        <main className="pb-8">
           <Hero />
           <FeaturedAgents />
           <AgentCategories />
@@ -79,8 +80,8 @@ export default function AIAgents() {
           <RelatedContent />
 
           {/* Breadcrumb Navigation for SEO */}
-          <div className="container mx-auto px-4 py-6">
-            <nav className="text-sm text-gray-500">
+          <div className="container mx-auto px-4 py-4 md:py-6">
+            <nav className="text-xs md:text-sm text-gray-500">
               <ol className="flex flex-wrap items-center">
                 <li>
                   <Link to="/" className="hover:text-aiblue">Home</Link>

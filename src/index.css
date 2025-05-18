@@ -84,4 +84,23 @@
       transform: translateY(0);
     }
   }
+
+  /* Mobile-specific classes */
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Responsive text sizing */
+  .responsive-text {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+  }
+
+  .responsive-heading {
+    font-size: clamp(1.5rem, 5vw, 3rem);
+  }
 }

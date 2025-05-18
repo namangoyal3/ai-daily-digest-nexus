@@ -51,13 +51,13 @@ export default function FAQ() {
   ];
 
   return (
-    <section id="faq" className="py-16 md:py-24">
-      <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto text-center mb-12 md:mb-16">
-          <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4 text-aiblue">
+    <section id="faq" className="py-12 md:py-16 lg:py-24 px-4">
+      <div className="container mx-auto">
+        <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12 lg:mb-16">
+          <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-aiblue">
             Frequently Asked Questions
           </h2>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 text-base md:text-lg">
             Everything you need to know about AI Daily Digest
           </p>
         </div>
@@ -66,10 +66,10 @@ export default function FAQ() {
           <Accordion type="single" collapsible className="w-full">
             {faqItems.map((item, index) => (
               <AccordionItem key={index} value={`item-${index}`} className="border-b border-gray-200">
-                <AccordionTrigger className="font-heading font-medium text-left py-6 hover:text-aiblue">
+                <AccordionTrigger className="font-heading font-medium text-left py-4 md:py-6 text-sm md:text-base hover:text-aiblue">
                   {item.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-gray-600 pb-6">
+                <AccordionContent className="text-gray-600 pb-4 md:pb-6 text-sm md:text-base">
                   {item.answer}
                 </AccordionContent>
               </AccordionItem>
