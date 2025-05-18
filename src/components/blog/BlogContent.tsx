@@ -31,17 +31,21 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
           heading.setAttribute('id', id);
         }
       });
-      
-      // Process any elements that need interactive features
-      processInteractiveElements(contentRef.current);
     }
   }, [content]);
   
   // Check if content is properly formatted HTML or not
   const isFormattedHtml = 
-    content.includes('<h1>') || 
-    content.includes('<section>') || 
-    content.includes('<div class=');
+    content && (
+      content.includes('<h1>') || 
+      content.includes('<section>') || 
+      content.includes('<div class=')
+    );
+  
+  // Safety check to ensure content exists
+  if (!content) {
+    return <div className="text-gray-600">No content available</div>;
+  }
   
   return (
     <div 
@@ -51,26 +55,6 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
     />
   );
 };
-
-/**
- * Process any interactive elements in the content
- */
-function processInteractiveElements(container: HTMLElement): void {
-  // Add click handlers for table of contents links
-  const tocLinks = container.querySelectorAll('.toc-link');
-  tocLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const targetId = (link as HTMLAnchorElement).getAttribute('href')?.substring(1);
-      if (targetId) {
-        const targetElement = document.getElementById(targetId);
-        if (targetElement) {
-          targetElement.scrollIntoView({ behavior: 'smooth' });
-        }
-      }
-    });
-  });
-}
 
 /**
  * Process legacy content format to make it compatible with the new newsletter style
