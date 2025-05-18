@@ -76,11 +76,27 @@ export default function AIBlogs() {
         <meta property="og:description" content="Expert articles and analysis on the latest developments in artificial intelligence." />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
+      <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
+        <style jsx global>{`
+          html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+          }
+          #root {
+            width: 100vw;
+            max-width: 100vw;
+            margin: 0;
+            padding: 0;
+          }
+        `}</style>
+        
         <Header />
         
-        <main className="container mx-auto px-4 py-8 md:py-16">
-          <div className="max-w-3xl">
+        <main className="container full-width-container mx-auto px-4 py-8 md:py-16 w-full max-w-full">
+          <div className="max-w-3xl mx-auto">
             <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-aiblue">
               AI Insights & Analysis
             </h1>

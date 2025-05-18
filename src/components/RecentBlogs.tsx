@@ -58,8 +58,24 @@ export default function RecentBlogs() {
   }, []);
 
   return (
-    <section className="py-10 md:py-16 bg-gradient-to-br from-white via-purple-50/10 to-blue-50/10">
-      <div className="container mx-auto px-4">
+    <section className="py-10 md:py-16 w-full max-w-full bg-gradient-to-br from-white via-purple-50/10 to-blue-50/10">
+      <style jsx global>{`
+        html, body {
+          margin: 0;
+          padding: 0;
+          width: 100%;
+          max-width: 100%;
+          overflow-x: hidden;
+        }
+        #root {
+          width: 100vw;
+          max-width: 100vw;
+          margin: 0;
+          padding: 0;
+        }
+      `}</style>
+      
+      <div className="container mx-auto px-4 full-width-container">
         <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
           <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-aiblue">
             Latest Insights from Tech Horizon

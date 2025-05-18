@@ -47,7 +47,22 @@ export default function BlogDetail() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
+      <div className="min-h-screen w-full max-w-full bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
+        <style jsx global>{`
+          html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+          }
+          #root {
+            width: 100vw;
+            max-width: 100vw;
+            margin: 0;
+            padding: 0;
+          }
+        `}</style>
         <Header />
         <div className="container mx-auto px-4 py-16 flex flex-col items-center">
           <div className="bg-white p-8 rounded-lg shadow-md max-w-xl w-full text-center">
@@ -65,7 +80,23 @@ export default function BlogDetail() {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
+      <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
+        <style jsx global>{`
+          html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+          }
+          #root {
+            width: 100vw;
+            max-width: 100vw;
+            margin: 0;
+            padding: 0;
+          }
+        `}</style>
+        
         {/* Only add Helmet if blog exists to avoid the Symbol error */}
         {blog && (
           <Helmet>
@@ -83,7 +114,7 @@ export default function BlogDetail() {
         
         <Header />
         
-        <main className="container mx-auto px-4 md:px-6 py-8 md:py-16">
+        <main className="w-full max-w-full px-4 md:px-6 py-8 md:py-16 full-width-container">
           <div className="max-w-5xl mx-auto">
             <Link 
               to="/ai-blogs" 
@@ -97,7 +128,7 @@ export default function BlogDetail() {
               <BlogSkeleton />
             ) : blog ? (
               <>
-                <article className="bg-white rounded-xl shadow-sm overflow-hidden mb-12">
+                <article className="bg-white rounded-xl shadow-sm overflow-hidden mb-12 w-full">
                   <div className="w-full h-64 md:h-[400px] lg:h-[450px] relative">
                     <img 
                       src={blog.image} 
@@ -124,8 +155,8 @@ export default function BlogDetail() {
                     </div>
                   </div>
 
-                  <div className="p-6 md:p-8 lg:p-10">
-                    <div className="flex flex-wrap items-center justify-between mb-6 md:mb-8 gap-4 max-w-3xl mx-auto">
+                  <div className="p-6 md:p-8 lg:p-10 w-full">
+                    <div className="flex flex-wrap items-center justify-between mb-6 md:mb-8 gap-4 max-w-5xl mx-auto">
                       <div className="flex items-center">
                         <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
                           <User className="h-5 w-5 text-gray-500" />
@@ -147,9 +178,9 @@ export default function BlogDetail() {
 
                     <BlogContent content={blog.content} />
 
-                    <Separator className="my-8 max-w-3xl mx-auto" />
+                    <Separator className="my-8 max-w-5xl mx-auto" />
 
-                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 py-6 max-w-3xl mx-auto">
+                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 py-6 max-w-5xl mx-auto">
                       <div>
                         <h3 className="font-heading font-semibold mb-3">Share this article</h3>
                         <div className="flex flex-wrap gap-2">

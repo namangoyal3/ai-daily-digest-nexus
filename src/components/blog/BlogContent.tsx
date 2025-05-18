@@ -63,11 +63,36 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
   }
   
   return (
-    <div 
-      ref={contentRef}
-      className="prose prose-gray max-w-3xl mx-auto blog-content"
-      dangerouslySetInnerHTML={{ __html: isFormattedHtml ? enhanceContent(content) : processLegacyContent(content) }}
-    />
+    <>
+      <style jsx global>{`
+        html, body {
+          margin: 0;
+          padding: 0;
+          width: 100%;
+          max-width: 100%;
+          overflow-x: hidden;
+        }
+
+        #root {
+          width: 100vw;
+          max-width: 100vw;
+          margin: 0 auto;
+          padding: 0;
+        }
+
+        .blog-content-full-width {
+          width: 100%;
+          max-width: 100%;
+          box-sizing: border-box;
+        }
+      `}</style>
+    
+      <div 
+        ref={contentRef}
+        className="prose prose-gray max-w-none w-full blog-content blog-content-full-width"
+        dangerouslySetInnerHTML={{ __html: isFormattedHtml ? enhanceContent(content) : processLegacyContent(content) }}
+      />
+    </>
   );
 };
 
@@ -107,8 +132,8 @@ function enhanceContent(content: string): string {
   // Style paragraphs with proper spacing
   enhancedContent = enhancedContent.replace(/<p([^>]*)>/g, '<p$1 class="my-4 leading-relaxed">');
   
-  // Add container wrapper to ensure consistent width
-  enhancedContent = `<div class="max-w-3xl mx-auto px-4">${enhancedContent}</div>`;
+  // Add container wrapper to ensure full width
+  enhancedContent = `<div class="w-full mx-auto px-4">${enhancedContent}</div>`;
 
   return enhancedContent;
 }
@@ -153,8 +178,8 @@ function processLegacyContent(content: string): string {
     formattedHtml += `<section class="rounded-xl p-6 md:p-8 my-8 md:my-10 shadow-sm">${processedContent}</section>`;
   }
   
-  // Add container wrapper to ensure consistent width
-  formattedHtml = `<div class="max-w-3xl mx-auto px-4">${formattedHtml}</div>`;
+  // Use full width container
+  formattedHtml = `<div class="w-full mx-auto px-4">${formattedHtml}</div>`;
   
   return formattedHtml;
 }

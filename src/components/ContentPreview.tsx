@@ -6,9 +6,26 @@ export default function ContentPreview() {
   const isMobile = useIsMobile();
   
   return (
-    <section id="preview" className="py-12 md:py-16 lg:py-24 px-4">
-      <div className="container mx-auto">
-        <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12 lg:mb-16">
+    <section id="preview" className="w-full py-12 md:py-16 lg:py-24 px-0 overflow-x-hidden">
+      <style jsx global>{`
+        html, body {
+          margin: 0;
+          padding: 0;
+          width: 100%;
+          max-width: 100%;
+          overflow-x: hidden;
+        }
+
+        #root {
+          width: 100vw;
+          max-width: 100vw;
+          margin: 0 auto;
+          padding: 0;
+        }
+      `}</style>
+      
+      <div className="w-full max-w-full">
+        <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12 lg:mb-16 px-4">
           <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold mb-3 md:mb-4 text-aiblue">
             Tech Horizon: Your Daily AI Insights
           </h2>
@@ -17,7 +34,7 @@ export default function ContentPreview() {
           </p>
         </div>
         
-        <div className="max-w-4xl mx-auto bg-white rounded-lg md:rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+        <div className="max-w-4xl mx-auto bg-white rounded-lg md:rounded-2xl shadow-lg overflow-hidden border border-gray-100 mx-4 sm:mx-6 md:mx-auto">
           {/* Newsletter Header */}
           <div className="bg-gradient-to-r from-aiblue to-aipurple p-4 md:p-6 text-white">
             <div className="flex justify-between items-center">
