@@ -1,8 +1,7 @@
 
 import React, { useEffect, useRef } from 'react';
-import hljs from 'highlight.js';
-import 'highlight.js/styles/github.css';
 import { CheckCircle, BookOpen } from "lucide-react";
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 
 interface BlogContentProps {
   content: string;
@@ -14,15 +13,9 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
   // Process content to enhance structure, formatting, and organization
   const processedContent = processContent(content);
 
-  // Add syntax highlighting for code blocks and prepare anchor links
+  // Add anchor links and prepare interactive elements
   useEffect(() => {
     if (contentRef.current) {
-      // Apply code syntax highlighting for any remaining code blocks
-      const codeBlocks = contentRef.current.querySelectorAll('pre code');
-      codeBlocks.forEach((block) => {
-        hljs.highlightElement(block as HTMLElement);
-      });
-      
       // Add IDs to headings for table of contents links
       const headings = contentRef.current.querySelectorAll('h2, h3');
       headings.forEach((heading) => {
@@ -57,6 +50,7 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
           font-family: var(--font-sans);
           line-height: 1.8;
           color: #1A1F2C;
+          font-size: 1.05rem;
         }
         
         .blog-content h1 {
@@ -65,7 +59,7 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
           margin-top: 2rem;
           margin-bottom: 1.5rem;
           color: #1A1F2C;
-          font-family: var(--font-heading);
+          font-family: 'Montserrat', sans-serif;
           line-height: 1.3;
         }
         
@@ -75,7 +69,7 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
           margin-top: 2.5rem;
           margin-bottom: 1rem;
           color: #1A1F2C;
-          font-family: var(--font-heading);
+          font-family: 'Montserrat', sans-serif;
           padding-bottom: 0.5rem;
           border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
@@ -86,7 +80,7 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
           margin-top: 1.5rem;
           margin-bottom: 1rem;
           color: #1A1F2C;
-          font-family: var(--font-heading);
+          font-family: 'Montserrat', sans-serif;
         }
         
         .blog-content p {
@@ -119,7 +113,7 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          font-family: var(--font-heading);
+          font-family: 'Montserrat', sans-serif;
           color: #4361EE;
         }
         
@@ -164,6 +158,7 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
         .blog-content em {
           font-style: italic;
           color: #4B5563;
+          font-family: 'Playfair Display', serif;
         }
         
         .blog-content .callout {
@@ -189,7 +184,7 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
           font-weight: 600;
           margin-bottom: 1rem;
           color: #0369A1;
-          font-family: var(--font-heading);
+          font-family: 'Montserrat', sans-serif;
         }
         
         .blog-content .key-takeaways ul {
@@ -238,6 +233,29 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
           color: #4361EE;
           width: 1.25rem;
           height: 1.25rem;
+        }
+        
+        .blog-content blockquote {
+          font-family: 'Playfair Display', serif;
+          font-style: italic;
+          color: #4B5563;
+          border-left: 3px solid #7C3AED;
+          padding-left: 1.5rem;
+          margin: 2rem 0;
+          line-height: 1.7;
+        }
+        
+        .blog-content blockquote p {
+          margin-bottom: 0.5rem;
+        }
+        
+        .blog-content blockquote cite {
+          display: block;
+          font-style: normal;
+          font-weight: 500;
+          font-size: 0.9rem;
+          margin-top: 0.75rem;
+          color: #6B7280;
         }
         
         @media (max-width: 768px) {
@@ -308,6 +326,9 @@ function processContent(content: string): string {
   // Step 10: Remove empty sections or placeholders
   processedContent = removeEmptySections(processedContent);
   
+  // Step 11: Convert any tables to properly styled tables
+  processedContent = convertTables(processedContent);
+  
   return processedContent;
 }
 
@@ -315,7 +336,7 @@ function processContent(content: string): string {
  * Remove code blocks and technical content
  */
 function removeCodeBlocks(content: string): string {
-  // Remove code blocks with triple backticks (markdown style)
+  // Remove code blocks with triple backticks
   let cleanedContent = content.replace(/```[\s\S]*?```/g, '');
   
   // Remove inline code
@@ -323,12 +344,27 @@ function removeCodeBlocks(content: string): string {
   
   // Remove JSON blocks
   cleanedContent = cleanedContent.replace(/<pre><code class="language-json">[\s\S]*?<\/code><\/pre>/g, '');
+  cleanedContent = cleanedContent.replace(/<pre><code>[\s\S]*?<\/code><\/pre>/g, '');
   
   // Remove any code examples or code blocks
   cleanedContent = cleanedContent.replace(/<div class="json-example">[\s\S]*?<\/div>/g, '');
   
+  // Remove JSON specific content
+  cleanedContent = cleanedContent.replace(/\{[\s\S]*?"[^"]+"\s*:\s*"[^"]*"[\s\S]*?\}/g, '');
+  cleanedContent = cleanedContent.replace(/\[[\s\S]*?\{[\s\S]*?\}[\s\S]*?\]/g, '');
+  
   // Remove any remaining technical jargon indicators
   cleanedContent = cleanedContent.replace(/\bJSON\b|\bAPI\b|\bfunction\b|\bparameter\b|\bobject\b|\barray\b|\bstring\b|\bboolean\b|\bnumber\b|\bundefined\b|\bnull\b|\bconsole\.log\b/g, '');
+  
+  // Remove typical JSON formatting
+  cleanedContent = cleanedContent.replace(/\{[\s\n]*"[^"]+"\s*:\s*("[^"]*"|[\d.]+|\{|\[)[\s\S]*?\}/g, '');
+  
+  // Remove any lines with just curly braces, brackets, or commas (typical JSON syntax)
+  cleanedContent = cleanedContent.replace(/^\s*[{}[\],]\s*$/gm, '');
+  
+  // Remove any remaining code syntax
+  cleanedContent = cleanedContent.replace(/(var|let|const|function)\s+\w+\s*=/g, '');
+  cleanedContent = cleanedContent.replace(/=>\s*{[\s\S]*?}/g, '');
   
   return cleanedContent;
 }
@@ -382,6 +418,43 @@ function deduplicateContent(content: string): string {
         uniqueSentences.add(normalized);
       }
     }
+  });
+  
+  // Remove duplicated phrases within paragraphs
+  const paragraphsAgain = deduplicatedContent.match(/<p>.*?<\/p>/gs) || [];
+  paragraphsAgain.forEach(paragraph => {
+    const cleanParagraph = paragraph.replace(/<\/?p>/g, '');
+    const phrases = cleanParagraph.match(/[^.!?]+[.!?]+/g) || [];
+    
+    // Find duplicated phrases within the same paragraph
+    const uniquePhrases = new Set();
+    const duplicatedPhrases = [];
+    
+    phrases.forEach(phrase => {
+      const normalized = phrase.trim().toLowerCase();
+      if (normalized.length > 20) { // Only consider substantial phrases
+        if (uniquePhrases.has(normalized)) {
+          duplicatedPhrases.push(phrase);
+        } else {
+          uniquePhrases.add(normalized);
+        }
+      }
+    });
+    
+    // Remove duplicated phrases from the paragraph
+    let cleanedParagraph = paragraph;
+    duplicatedPhrases.forEach(phrase => {
+      // Only remove the second instance onwards
+      const firstIndex = cleanedParagraph.indexOf(phrase);
+      if (firstIndex !== -1) {
+        const secondIndex = cleanedParagraph.indexOf(phrase, firstIndex + 1);
+        if (secondIndex !== -1) {
+          cleanedParagraph = cleanedParagraph.slice(0, secondIndex) + cleanedParagraph.slice(secondIndex + phrase.length);
+        }
+      }
+    });
+    
+    deduplicatedContent = deduplicatedContent.replace(paragraph, cleanedParagraph);
   });
   
   return deduplicatedContent;
@@ -452,8 +525,8 @@ function addTableOfContents(content: string): string {
     }
   }
   
-  // Generate table of contents HTML
-  if (headings.length > 0) {
+  // Only generate TOC if we have enough headings
+  if (headings.length > 2) {
     let tocHtml = `
       <div class="toc">
         <div class="toc-title">
@@ -476,7 +549,7 @@ function addTableOfContents(content: string): string {
     
     // Insert after the first h1 or at the beginning if no h1
     const h1Match = content.match(/<\/h1>/i);
-    if (h1Match && h1Match.index) {
+    if (h1Match && h1Match.index !== undefined) {
       const insertPosition = h1Match.index + h1Match[0].length;
       content = content.slice(0, insertPosition) + '\n' + tocHtml + content.slice(insertPosition);
     } else {
@@ -645,18 +718,114 @@ function addKeyTakeaways(content: string): string {
 }
 
 /**
+ * Convert any table-like content to properly formatted HTML tables
+ */
+function convertTables(content: string): string {
+  // Look for potential comparison sections
+  const hasComparisonSection = /comparison|versus|vs\.|comparing|difference between/i.test(content);
+  
+  if (hasComparisonSection) {
+    // Find paragraphs that might contain comparisons
+    const paragraphs = content.match(/<p>.*?<\/p>/gs) || [];
+    
+    for (const paragraph of paragraphs) {
+      if (/comparison|versus|vs\.|comparing|difference between/i.test(paragraph)) {
+        // Extract the comparison content
+        const comparisonText = paragraph.replace(/<\/?p>/g, '');
+        
+        // Check if there are enough items to compare (at least 2 items with properties)
+        const items = comparisonText.match(/([A-Z][a-zA-Z0-9\s]+)(\sis\s|\shas\s|\soffers\s|\sprovides\s)/g);
+        
+        if (items && items.length >= 2) {
+          // Create a comparison table
+          const itemNames = items.map(item => item.replace(/(\sis\s|\shas\s|\soffers\s|\sprovides\s)/g, '').trim());
+          
+          // Extract properties for each item
+          const properties = [];
+          itemNames.forEach(item => {
+            const regex = new RegExp(`${item}\\s(is|has|offers|provides)\\s([^.]+)`, 'gi');
+            const matches = comparisonText.match(regex);
+            if (matches) {
+              matches.forEach(match => {
+                const property = match.replace(regex, '$2').trim();
+                properties.push({ item, property });
+              });
+            }
+          });
+          
+          // Only create a table if we have enough properties
+          if (properties.length >= 4) {
+            let tableHtml = `
+              <div class="comparison-table">
+                <h4>Comparison of ${itemNames.join(' vs. ')}</h4>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Feature</th>
+                      ${itemNames.map(name => `<th>${name}</th>`).join('')}
+                    </tr>
+                  </thead>
+                  <tbody>
+            `;
+            
+            // Group properties by similar descriptions
+            const groupedProperties = {};
+            properties.forEach(({ item, property }) => {
+              // Create a simplified key for grouping similar properties
+              const simplifiedProperty = property.toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ' ');
+              
+              if (!groupedProperties[simplifiedProperty]) {
+                groupedProperties[simplifiedProperty] = { description: property, items: {} };
+              }
+              groupedProperties[simplifiedProperty].items[item] = property;
+            });
+            
+            // Create table rows
+            Object.values(groupedProperties).forEach(group => {
+              tableHtml += '<tr>';
+              tableHtml += `<td>Feature</td>`;
+              
+              itemNames.forEach(item => {
+                if (group.items[item]) {
+                  tableHtml += `<td>${group.items[item]}</td>`;
+                } else {
+                  tableHtml += '<td>-</td>';
+                }
+              });
+              
+              tableHtml += '</tr>';
+            });
+            
+            tableHtml += `
+                  </tbody>
+                </table>
+              </div>
+            `;
+            
+            // Replace the paragraph with the table
+            content = content.replace(paragraph, tableHtml);
+          }
+        }
+      }
+    }
+  }
+  
+  return content;
+}
+
+/**
  * Fix content alignment issues
  */
 function fixContentAlignment(content: string): string {
-  // Make sure images are centered
-  content = content.replace(/<img/g, '<img style="display: block; margin: 0 auto;"');
+  // Make sure images are centered and responsive
+  content = content.replace(/<img/g, '<img style="display: block; margin: 0 auto; max-width: 100%; height: auto;"');
   
   // Ensure paragraphs are properly aligned
   content = content.replace(/<p style="text-align: justify;/g, '<p');
   
   // Remove any fixed width constraints
-  content = content.replace(/width: \d+px;/g, '');
-  content = content.replace(/max-width: \d+px;/g, '');
+  content = content.replace(/width: \d+px;/g, 'max-width: 100%;');
+  content = content.replace(/max-width: \d+px;/g, 'max-width: 100%;');
   
   return content;
 }
@@ -673,6 +842,12 @@ function removeEmptySections(content: string): string {
   
   // Remove placeholder text
   content = content.replace(/<p>(\s*Lorem ipsum.*?|.*?placeholder.*?)<\/p>/gi, '');
+
+  // Remove empty sections (heading followed immediately by another heading)
+  content = content.replace(/<h([23])>(.*?)<\/h\1>\s*(?=<h[23])/g, '');
+  
+  // Remove "section-h2" or "section-h3" text that might appear in the content
+  content = content.replace(/section-h[23]"|id="/g, '');
   
   return content;
 }
@@ -702,21 +877,23 @@ function generateKeyTakeaways(content: string, heading: string): string[] {
   if (takeaways.length < 3) {
     if (/productivity/i.test(heading)) {
       takeaways.push('AI productivity tools can significantly reduce time spent on repetitive tasks.');
-    }
-    if (/content creation/i.test(heading)) {
+    } else if (/content creation/i.test(heading)) {
       takeaways.push('AI-powered content generation enables creators to focus more on strategy and less on production.');
-    }
-    if (/industry/i.test(heading)) {
+    } else if (/industry/i.test(heading)) {
       takeaways.push('Industry-specific AI applications are creating new opportunities for innovation and efficiency.');
+    } else if (/ethics/i.test(heading)) {
+      takeaways.push('Ethical considerations are essential for responsible development and deployment of AI systems.');
+    } else if (/future/i.test(heading)) {
+      takeaways.push('Future AI advancements will continue to transform how we work, create, and solve problems.');
     }
   }
   
-  // Ensure we have at least 3 takeaways
-  while (takeaways.length < 3) {
+  // Ensure we have at least 2 takeaways
+  while (takeaways.length < 2) {
     takeaways.push(`${heading} represents a significant advancement in how AI is being applied in practical scenarios.`);
   }
   
-  return takeaways.slice(0, 4); // Limit to 4 takeaways maximum
+  return takeaways.slice(0, 3); // Limit to 3 takeaways maximum
 }
 
 export default BlogContent;
