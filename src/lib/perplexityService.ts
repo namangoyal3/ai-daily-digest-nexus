@@ -13,8 +13,6 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     throw new Error("Perplexity API key not found. Please add your API key in settings.");
   }
   
-  // Remove validation that was causing issues with valid API keys
-  
   const categoryPrompt = category 
     ? `Create a blog post specifically about ${category}.`
     : `Choose a specific category for the blog from: AI Trends, Deep Learning, AI Ethics, Machine Learning, AI Applications`;
@@ -53,7 +51,7 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
         messages: [
           {
             role: 'system',
-            content: 'You are an expert AI and technology writer. Create content in well-formatted HTML. Always respond with valid JSON only.'
+            content: 'You are an expert AI and technology writer. Create content in well-formatted HTML. You MUST ONLY respond with a valid JSON object containing title, excerpt, content, and category fields. No other text or formatting.'
           },
           {
             role: 'user',
@@ -70,7 +68,6 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
       const errorText = await response.text();
       console.error("API response error:", response.status, errorText);
       
-      // More specific error messages based on status codes
       if (response.status === 401 || response.status === 403) {
         throw new Error("Invalid API key. Please check your Perplexity API key and try again.");
       } else if (response.status === 429) {
@@ -83,53 +80,120 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     }
     
     const data = await response.json();
-    console.log("API response received:", data);
+    console.log("API response received");
     
-    // Handle potential formatting issues with JSON response
-    let contentJson;
+    // Enhanced JSON parsing logic
     try {
-      const rawContent = data.choices[0].message.content;
-      // Clean the content - remove any markdown code blocks or extra formatting
-      let cleanedContent = rawContent
-        .replace(/```json\s*/g, '')
-        .replace(/```\s*$/g, '')
-        .replace(/^```/, '')  // Remove opening code block if present without json specifier
-        .trim();
+      // First check if the entire response is valid JSON already
+      if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
+        const rawContent = data.choices[0].message.content;
+        console.log("Raw content length:", rawContent.length);
         
-      // Check if the content has proper JSON structure
-      if (!cleanedContent.startsWith('{')) {
-        console.warn("API response doesn't start with an object", cleanedContent);
-        // Try to find the first opening curly brace
-        const jsonStart = cleanedContent.indexOf('{');
-        if (jsonStart >= 0) {
-          cleanedContent = cleanedContent.substring(jsonStart);
+        let contentJson;
+        
+        // Try direct parsing first
+        try {
+          contentJson = JSON.parse(rawContent);
+          console.log("Successfully parsed JSON directly");
+        } catch (initialParseError) {
+          console.log("Direct JSON parse failed, trying to clean the content");
+          
+          // Clean the content - remove any markdown code blocks or extra formatting
+          let cleanedContent = rawContent
+            .replace(/```json\s*/g, '')
+            .replace(/```\s*$/g, '')
+            .replace(/```/g, '')
+            .trim();
+            
+          // Extract JSON if embedded in other text
+          const jsonStartIndex = cleanedContent.indexOf('{');
+          const jsonEndIndex = cleanedContent.lastIndexOf('}');
+          
+          if (jsonStartIndex !== -1 && jsonEndIndex !== -1 && jsonEndIndex > jsonStartIndex) {
+            cleanedContent = cleanedContent.substring(jsonStartIndex, jsonEndIndex + 1);
+            console.log("Extracted JSON from text");
+          }
+          
+          // Final attempt to parse JSON
+          try {
+            contentJson = JSON.parse(cleanedContent);
+            console.log("Successfully parsed JSON after cleaning");
+          } catch (finalParseError) {
+            console.error("All JSON parsing attempts failed");
+            throw new Error("Could not parse the API response as valid JSON");
+          }
+        }
+        
+        // Validate the content has the required fields
+        if (contentJson && typeof contentJson === 'object') {
+          // Ensure all required fields exist
+          if (!contentJson.title) {
+            contentJson.title = "Latest AI Developments";
+          }
+          
+          if (!contentJson.excerpt) {
+            contentJson.excerpt = "An exploration of recent advancements in artificial intelligence and their implications.";
+          }
+          
+          if (!contentJson.content) {
+            throw new Error("Blog content missing in API response");
+          }
+          
+          if (!contentJson.category) {
+            contentJson.category = category || "AI Trends";
+          }
+          
+          return {
+            title: contentJson.title,
+            content: contentJson.content,
+            excerpt: contentJson.excerpt,
+            category: contentJson.category
+          };
+        } else {
+          throw new Error("Invalid response format from API");
+        }
+      } else {
+        throw new Error("Unexpected API response structure");
+      }
+    } catch (parseError) {
+      console.error("Error parsing JSON from Perplexity:", parseError);
+      
+      // Last resort: Create a fallback post if we can extract any usable content
+      if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
+        const content = data.choices[0].message.content;
+        
+        // If it's just a plain text response without JSON, we can try to structure it
+        if (content.length > 100) {
+          console.log("Creating fallback post from text content");
+          
+          // Extract a title (first sentence or first 50 chars)
+          let title = content.split('.')[0];
+          if (title.length > 60) {
+            title = title.substring(0, 60) + "...";
+          }
+          
+          // First 2-3 sentences as excerpt
+          const sentences = content.split('.');
+          const excerpt = sentences.slice(0, 2).join('.') + '.';
+          
+          // Format the rest as HTML content
+          const htmlContent = `<p>${content.replace(/\n\n/g, '</p><p>')}</p>`;
+          
+          return {
+            title: title,
+            content: htmlContent,
+            excerpt: excerpt,
+            category: category || "AI Trends"
+          };
         }
       }
       
-      // Check if there's any trailing content after the JSON
-      const lastClosingBrace = cleanedContent.lastIndexOf('}');
-      if (lastClosingBrace > 0 && lastClosingBrace < cleanedContent.length - 1) {
-        cleanedContent = cleanedContent.substring(0, lastClosingBrace + 1);
-      }
-      
-      console.log("Cleaned content:", cleanedContent);
-      contentJson = JSON.parse(cleanedContent);
-    } catch (parseError) {
-      console.error("Error parsing JSON from Perplexity:", parseError);
-      console.log("Raw content:", data.choices[0].message.content);
-      throw new Error("Failed to parse blog content from API response. Try again or contact support.");
+      throw new Error("Failed to parse blog content from API. Try again with a different prompt.");
     }
-    
-    return {
-      title: contentJson.title,
-      content: contentJson.content,
-      excerpt: contentJson.excerpt,
-      category: contentJson.category
-    };
   } catch (error) {
     console.error("Error calling Perplexity API:", error);
     if (error instanceof Error) {
-      throw error; // Re-throw the existing error with its message
+      throw error;
     } else {
       throw new Error("Failed to generate blog content. Please check your API key and try again.");
     }
