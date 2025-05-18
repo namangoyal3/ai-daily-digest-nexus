@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -100,14 +99,8 @@ export default function BlogScheduleModal({ open, onOpenChange }: BlogScheduleMo
   const handlePublishNow = async () => {
     setIsGenerating(true);
     try {
-      const apiKey = localStorage.getItem('perplexity_api_key');
-      if (!apiKey) {
-        toast.error("API key is missing", {
-          description: "Please add your Perplexity API key in the API Keys section",
-        });
-        setIsGenerating(false);
-        return;
-      }
+      // Remove API key validation that was causing problems
+      // Let the API call itself validate the key
       
       // Use one of the selected categories for immediate publishing
       const newBlog = await generateDailyBlog();
@@ -120,7 +113,7 @@ export default function BlogScheduleModal({ open, onOpenChange }: BlogScheduleMo
     } catch (error) {
       console.error("Blog generation error:", error);
       toast.error("Failed to generate blog post", {
-        description: "Please check your API key in the API Keys section",
+        description: error instanceof Error ? error.message : "Please try again",
       });
     } finally {
       setIsGenerating(false);

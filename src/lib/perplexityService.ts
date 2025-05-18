@@ -13,6 +13,8 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     throw new Error("Perplexity API key not found. Please add your API key in settings.");
   }
   
+  // Remove validation that was causing issues with valid API keys
+  
   const categoryPrompt = category 
     ? `Create a blog post specifically about ${category}.`
     : `Choose a specific category for the blog from: AI Trends, Deep Learning, AI Ethics, Machine Learning, AI Applications`;
@@ -67,7 +69,17 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     if (!response.ok) {
       const errorText = await response.text();
       console.error("API response error:", response.status, errorText);
-      throw new Error(`Perplexity API error: ${response.status} ${errorText}`);
+      
+      // More specific error messages based on status codes
+      if (response.status === 401 || response.status === 403) {
+        throw new Error("Invalid API key. Please check your Perplexity API key and try again.");
+      } else if (response.status === 429) {
+        throw new Error("Rate limit exceeded. Please try again later or check your subscription tier.");
+      } else if (response.status >= 500) {
+        throw new Error("Perplexity API server error. Please try again later.");
+      } else {
+        throw new Error(`Perplexity API error: ${response.status} ${errorText}`);
+      }
     }
     
     const data = await response.json();
@@ -105,7 +117,7 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     } catch (parseError) {
       console.error("Error parsing JSON from Perplexity:", parseError);
       console.log("Raw content:", data.choices[0].message.content);
-      throw new Error("Failed to parse blog content from API response");
+      throw new Error("Failed to parse blog content from API response. Try again or contact support.");
     }
     
     return {
@@ -116,6 +128,10 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     };
   } catch (error) {
     console.error("Error calling Perplexity API:", error);
-    throw new Error("Failed to generate blog content. Please check your API key and try again.");
+    if (error instanceof Error) {
+      throw error; // Re-throw the existing error with its message
+    } else {
+      throw new Error("Failed to generate blog content. Please check your API key and try again.");
+    }
   }
 }

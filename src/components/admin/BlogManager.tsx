@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
@@ -52,13 +51,8 @@ export default function BlogManager() {
   const handleGenerateDaily = async () => {
     setIsGenerating(true);
     try {
-      const apiKey = localStorage.getItem('perplexity_api_key');
-      if (!apiKey) {
-        toast.error("API key is missing", {
-          description: "Please add your Perplexity API key in the API Keys section",
-        });
-        return;
-      }
+      // Skip the validation that was causing problems
+      // Trust that the API key is valid and let the API call itself validate
       
       const newBlog = await generateDailyBlog();
       
@@ -74,7 +68,11 @@ export default function BlogManager() {
     } catch (error) {
       console.error("Blog generation error:", error);
       toast.error("Failed to generate blog post", {
-        description: "Please check your API key in the API Keys section",
+        description: error instanceof Error ? error.message : "Please try again",
+        action: {
+          label: "Settings",
+          onClick: () => navigate("/blog-settings"),
+        },
       });
       throw error;
     } finally {

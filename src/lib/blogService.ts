@@ -336,6 +336,6 @@ export async function generateDailyBlog(): Promise<Blog> {
     return newBlog;
   } catch (error) {
     console.error("Error generating daily blog:", error);
-    throw new Error("Failed to generate daily blog");
+    throw error; // Re-throw the error to be handled by the caller
   }
 }
