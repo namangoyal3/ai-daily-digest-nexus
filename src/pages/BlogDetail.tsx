@@ -165,7 +165,7 @@ export default function BlogDetail() {
                   </div>
 
                   <div className="p-4 sm:p-6 md:p-8 lg:p-10">
-                    <div className="flex flex-wrap items-center justify-between mb-6 md:mb-8 gap-4 max-w-4xl mx-auto">
+                    <div className="flex flex-wrap items-center justify-between mb-6 md:mb-8 gap-4 max-w-5xl mx-auto">
                       <div className="flex items-center">
                         <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
                           <User className="h-5 w-5 text-gray-500" />
@@ -177,20 +177,20 @@ export default function BlogDetail() {
                       </div>
                     </div>
 
-                    <div className="max-w-4xl mx-auto">
+                    <div className="max-w-5xl mx-auto">
                       <BlogContent content={blog.content} />
                     </div>
 
-                    <Separator className="my-8 max-w-4xl mx-auto" />
+                    <Separator className="my-8 max-w-5xl mx-auto" />
 
                     {/* Blog Subscription Form */}
-                    <div className="max-w-4xl mx-auto mt-12 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 md:p-8 shadow-sm border border-gray-100">
+                    <div className="max-w-5xl mx-auto mt-12 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 md:p-8 shadow-sm border border-gray-100">
                       <div className="text-center mb-6">
                         <h3 className="font-heading font-bold text-xl md:text-2xl text-aiblue mb-2">
-                          Get AI Insights Delivered to Your Inbox
+                          Subscribe Now for More AI Insights
                         </h3>
                         <p className="text-gray-600 max-w-lg mx-auto">
-                          Join our newsletter and never miss new articles about AI advancements, trends, and practical applications.
+                          Join our newsletter and get exclusive access to cutting-edge AI research, expert analyses, and industry trends delivered to your inbox.
                         </p>
                       </div>
                       

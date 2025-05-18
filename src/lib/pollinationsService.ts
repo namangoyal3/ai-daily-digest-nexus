@@ -132,7 +132,15 @@ function extractKeywords(query: string): string {
   return keywordString || query; // Fallback to original query if no keywords found
 }
 
-// Add the missing function that blogService.ts is expecting
+// Function for blogService to use
 export const generateImageWithPrompt = async (prompt: string): Promise<string> => {
-  return fetchRandomImage(prompt);
+  try {
+    console.log(`Generating image for prompt: "${prompt}"`);
+    const imageUrl = await fetchRandomImage(prompt);
+    console.log(`Generated image URL: ${imageUrl}`);
+    return imageUrl;
+  } catch (error) {
+    console.error("Error in generateImageWithPrompt:", error);
+    return "https://images.unsplash.com/photo-1518770660439-4636190af475"; // Fallback image
+  }
 };
