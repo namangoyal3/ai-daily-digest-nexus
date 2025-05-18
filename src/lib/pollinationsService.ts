@@ -131,3 +131,8 @@ function extractKeywords(query: string): string {
   
   return keywordString || query; // Fallback to original query if no keywords found
 }
+
+// Add the missing function that blogService.ts is expecting
+export const generateImageWithPrompt = async (prompt: string): Promise<string> => {
+  return fetchRandomImage(prompt);
+};
