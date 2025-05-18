@@ -145,7 +145,9 @@ export default function BlogDetail() {
                       </div>
                     </div>
 
-                    <BlogContent content={blog.content} />
+                    <div className="w-full mx-auto">
+                      <BlogContent content={blog.content} />
+                    </div>
 
                     <Separator className="my-8 max-w-3xl mx-auto" />
 
