@@ -77,6 +77,7 @@ export default function BlogDetail() {
             <meta property="og:type" content="article" />
             <meta property="article:published_time" content={blog.date} />
             <meta property="article:section" content={blog.category} />
+            <meta name="keywords" content={`AI, artificial intelligence, ${blog.category}, machine learning, technology`} />
           </Helmet>
         )}
         

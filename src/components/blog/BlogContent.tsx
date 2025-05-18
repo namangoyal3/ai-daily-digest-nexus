@@ -5,7 +5,7 @@ import 'highlight.js/styles/github.css';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { Lightbulb, RocketLaunch, Code, BookOpen, CheckCircle } from "lucide-react";
+import { Lightbulb, Code, BookOpen, CheckCircle } from "lucide-react";
 
 interface BlogContentProps {
   content: string;
@@ -54,7 +54,8 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
 
   return (
     <>
-      <style jsx global>{`
+      <style>
+        {`
         .blog-content h1 {
           font-size: 2.25rem;
           font-weight: 700;
@@ -256,7 +257,8 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
             font-size: 0.875rem;
           }
         }
-      `}</style>
+        `}
+      </style>
       <div 
         ref={contentRef}
         className="prose prose-gray max-w-none blog-content"
@@ -439,7 +441,7 @@ function formatHeadings(content: string): string {
     let icon = '<span class="section-icon"><Lightbulb /></span>';
     
     if (/productivity|tools|efficiency|automation/i.test(headingText)) {
-      icon = '<span class="section-icon"><RocketLaunch /></span>';
+      icon = '<span class="section-icon"><Code /></span>';
     } else if (/content creation|generation|creative/i.test(headingText)) {
       icon = '<span class="section-icon"><Code /></span>';
     } else if (/industry|business|enterprise|commercial/i.test(headingText)) {
@@ -917,4 +919,3 @@ function addComparisonTables(content: string): string {
 }
 
 export default BlogContent;
-

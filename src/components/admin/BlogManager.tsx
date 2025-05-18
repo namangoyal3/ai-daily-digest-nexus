@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
@@ -8,7 +7,7 @@ import { generateDailyBlog, generateBlogForAllCategories } from "@/lib/blogServi
 import { toast } from "sonner";
 import { useNavigate, Link } from "react-router-dom";
 import BlogScheduleModal from "./BlogScheduleModal";
-import { getScheduleConfig, initializeScheduling } from "@/lib/schedulingService";
+import { getScheduleConfig, initializeScheduling, isTimeToRun, updateLastExecutedTime } from "@/lib/schedulingService";
 
 export default function BlogManager() {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -18,6 +17,24 @@ export default function BlogManager() {
 
   // Initialize scheduling when component mounts
   useEffect(() => {
+    // Check if we should run the schedule immediately
+    const config = getScheduleConfig();
+    if (config.isActive && isTimeToRun(config)) {
+      console.log("Running scheduled blog generation on component mount...");
+      handleGenerateForAllCategories()
+        .then(() => {
+          updateLastExecutedTime(config);
+          setScheduleConfig(getScheduleConfig()); // Refresh the config
+          toast.success("Scheduled blog post generation completed");
+        })
+        .catch(error => {
+          console.error("Scheduled blog generation failed:", error);
+          toast.error("Scheduled blog generation failed", {
+            description: "Check API key settings and try again",
+          });
+        });
+    }
+    
     // Generate blog posts according to schedule
     const cleanup = initializeScheduling(async () => {
       try {
@@ -111,6 +128,87 @@ export default function BlogManager() {
     setScheduleModalOpen(true);
   };
 
+  // Format next scheduled time
+  const getFormattedNextTime = () => {
+    if (!scheduleConfig.isActive) return "Not scheduled";
+    
+    const nextRunDate = scheduleConfig.lastExecuted 
+      ? getNextRunDateAfterExecution() 
+      : new Date();
+      
+    return nextRunDate.toLocaleString();
+  };
+  
+  // Calculate the next run date based on last execution
+  const getNextRunDateAfterExecution = () => {
+    if (!scheduleConfig.lastExecuted) return new Date();
+    
+    const lastRun = new Date(scheduleConfig.lastExecuted);
+    const nextRun = new Date(lastRun);
+    
+    // Set time from config
+    const [hours, minutes] = scheduleConfig.time.split(':').map(Number);
+    nextRun.setHours(hours, minutes, 0, 0);
+    
+    // Adjust date based on frequency
+    if (scheduleConfig.frequency === 'daily') {
+      // If last run was today before scheduled time, run today at scheduled time
+      // Otherwise, run tomorrow at scheduled time
+      if (
+        lastRun.getHours() < hours || 
+        (lastRun.getHours() === hours && lastRun.getMinutes() < minutes)
+      ) {
+        // Keep the current date
+      } else {
+        nextRun.setDate(nextRun.getDate() + 1);
+      }
+    } else if (scheduleConfig.frequency === 'weekly' && scheduleConfig.daysOfWeek?.length) {
+      // Find next day of week in the schedule
+      const currentDay = nextRun.getDay();
+      let daysToAdd = 0;
+      
+      // Sort days of week to ensure we find the next one
+      const sortedDays = [...scheduleConfig.daysOfWeek].sort();
+      
+      // Find the next day in the schedule
+      for (let i = 0; i < 7; i++) {
+        const checkDay = (currentDay + i) % 7;
+        if (sortedDays.includes(checkDay)) {
+          // If it's today, check if the time has already passed
+          if (i === 0) {
+            if (
+              lastRun.getHours() < hours || 
+              (lastRun.getHours() === hours && lastRun.getMinutes() < minutes)
+            ) {
+              daysToAdd = 0;
+              break;
+            }
+          } else {
+            daysToAdd = i;
+            break;
+          }
+        }
+      }
+      
+      nextRun.setDate(nextRun.getDate() + daysToAdd);
+    } else if (scheduleConfig.frequency === 'monthly' && scheduleConfig.dayOfMonth) {
+      // Set to the specified day of the month
+      nextRun.setDate(scheduleConfig.dayOfMonth);
+      
+      // If that day this month has passed, move to next month
+      if (
+        nextRun < lastRun || 
+        (nextRun.getDate() === lastRun.getDate() && 
+         lastRun.getHours() >= hours && 
+         lastRun.getMinutes() >= minutes)
+      ) {
+        nextRun.setMonth(nextRun.getMonth() + 1);
+      }
+    }
+    
+    return nextRun;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
@@ -192,6 +290,18 @@ export default function BlogManager() {
                   </div>
                 </div>
               </div>
+              
+              {scheduleConfig.isActive && (
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                  <h3 className="font-medium mb-1">Next Generation</h3>
+                  <p className="text-sm text-blue-700">{getFormattedNextTime()}</p>
+                  {scheduleConfig.lastExecuted && (
+                    <p className="text-xs text-blue-600 mt-1">
+                      Last generated: {new Date(scheduleConfig.lastExecuted).toLocaleString()}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </CardContent>

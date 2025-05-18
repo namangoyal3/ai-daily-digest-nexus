@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ScheduleConfig, saveScheduleConfig, getScheduleConfig } from "@/lib/schedulingService";
+import { ScheduleConfig, saveScheduleConfig, getScheduleConfig, updateLastExecutedTime } from "@/lib/schedulingService";
 import { toast } from "sonner";
 import { generateDailyBlog } from "@/lib/blogService";
 
@@ -87,29 +88,48 @@ export default function BlogScheduleModal({ open, onOpenChange }: BlogScheduleMo
   };
 
   const handleSave = () => {
-    saveScheduleConfig(config);
+    // If activating the schedule for the first time, reset the last executed time
+    if (config.isActive && !getScheduleConfig().isActive) {
+      // This ensures the schedule will run at the next appropriate time
+      const configWithoutLastExecuted = {
+        ...config,
+        lastExecuted: undefined
+      };
+      saveScheduleConfig(configWithoutLastExecuted);
+    } else {
+      saveScheduleConfig(config);
+    }
+    
     toast.success("Schedule configuration saved", {
       description: config.isActive 
         ? "Automatic blog generation has been activated" 
         : "Schedule settings saved but not activated",
     });
+    
     onOpenChange(false);
+    
+    // Force storage event to update other components
+    window.dispatchEvent(new Event('storage'));
   };
 
   const handlePublishNow = async () => {
     setIsGenerating(true);
     try {
-      // Remove API key validation that was causing problems
-      // Let the API call itself validate the key
-      
       // Use one of the selected categories for immediate publishing
-      const newBlog = await generateDailyBlog();
+      const selectedCategory = config.categories[0];
+      const newBlog = await generateDailyBlog(selectedCategory);
+      
+      // Update last executed time
+      updateLastExecutedTime(config);
       
       toast.success("New blog post generated and published", {
         description: `"${newBlog.title}" has been added to your blog.`,
       });
       
       onOpenChange(false);
+      
+      // Force storage event to update other components
+      window.dispatchEvent(new Event('storage'));
     } catch (error) {
       console.error("Blog generation error:", error);
       toast.error("Failed to generate blog post", {

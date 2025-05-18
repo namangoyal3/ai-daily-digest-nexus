@@ -7,6 +7,7 @@ export interface ScheduleConfig {
   frequency: 'daily' | 'weekly' | 'monthly';
   daysOfWeek?: number[]; // 0-6 for Sunday-Saturday, used for weekly schedule
   dayOfMonth?: number; // 1-31, used for monthly schedule
+  lastExecuted?: number; // Timestamp of last execution
 }
 
 // Default schedule configuration
@@ -26,6 +27,81 @@ export function getScheduleConfig(): ScheduleConfig {
 // Save the schedule config to localStorage
 export function saveScheduleConfig(config: ScheduleConfig): void {
   localStorage.setItem('blog_schedule_config', JSON.stringify(config));
+}
+
+// Check if it's time to run the scheduled task
+export function isTimeToRun(config: ScheduleConfig): boolean {
+  // If scheduling is not active, don't run
+  if (!config.isActive) {
+    return false;
+  }
+  
+  const now = new Date();
+  const [hours, minutes] = config.time.split(':').map(Number);
+  
+  // Current time components
+  const currentHours = now.getHours();
+  const currentMinutes = now.getMinutes();
+  
+  // Check if we've already executed today or recently
+  if (config.lastExecuted) {
+    const lastExecution = new Date(config.lastExecuted);
+    
+    // For daily schedule, check if it was run today after the scheduled time
+    if (config.frequency === 'daily') {
+      if (
+        lastExecution.getDate() === now.getDate() &&
+        lastExecution.getMonth() === now.getMonth() &&
+        lastExecution.getFullYear() === now.getFullYear() &&
+        (lastExecution.getHours() > hours || 
+          (lastExecution.getHours() === hours && lastExecution.getMinutes() >= minutes))
+      ) {
+        return false; // Already executed today after the scheduled time
+      }
+    }
+    
+    // For weekly schedule
+    if (config.frequency === 'weekly' && config.daysOfWeek && config.daysOfWeek.length > 0) {
+      // Check if today is a scheduled day
+      const today = now.getDay();
+      if (!config.daysOfWeek.includes(today)) {
+        return false; // Today is not a scheduled day
+      }
+      
+      // Check if it was already executed today after the scheduled time
+      if (
+        lastExecution.getDate() === now.getDate() &&
+        lastExecution.getMonth() === now.getMonth() &&
+        lastExecution.getFullYear() === now.getFullYear() &&
+        (lastExecution.getHours() > hours || 
+          (lastExecution.getHours() === hours && lastExecution.getMinutes() >= minutes))
+      ) {
+        return false; // Already executed today after scheduled time
+      }
+    }
+    
+    // For monthly schedule
+    if (config.frequency === 'monthly' && config.dayOfMonth) {
+      // Check if today is the scheduled day of month
+      if (now.getDate() !== config.dayOfMonth) {
+        return false; // Not the scheduled day of the month
+      }
+      
+      // Check if it was already executed today after the scheduled time
+      if (
+        lastExecution.getDate() === now.getDate() &&
+        lastExecution.getMonth() === now.getMonth() &&
+        lastExecution.getFullYear() === now.getFullYear() &&
+        (lastExecution.getHours() > hours || 
+          (lastExecution.getHours() === hours && lastExecution.getMinutes() >= minutes))
+      ) {
+        return false; // Already executed today after scheduled time
+      }
+    }
+  }
+  
+  // Check if current time is past the scheduled time
+  return (currentHours > hours || (currentHours === hours && currentMinutes >= minutes));
 }
 
 // Calculate the next scheduled time for blog generation
@@ -72,9 +148,21 @@ export function getNextScheduledTime(config: ScheduleConfig): Date {
   return scheduledTime;
 }
 
+// Update the last execution time in the config
+export function updateLastExecutedTime(config: ScheduleConfig): ScheduleConfig {
+  const updatedConfig = {
+    ...config,
+    lastExecuted: Date.now()
+  };
+  
+  saveScheduleConfig(updatedConfig);
+  return updatedConfig;
+}
+
 // Initialize scheduling
 export function initializeScheduling(onGenerate: () => Promise<void>): () => void {
   let timeoutId: number | undefined;
+  let checkIntervalId: number | undefined;
   
   const scheduleNext = () => {
     const config = getScheduleConfig();
@@ -94,23 +182,56 @@ export function initializeScheduling(onGenerate: () => Promise<void>): () => voi
     
     // Schedule the next run
     timeoutId = window.setTimeout(async () => {
-      // Generate the blog
-      await onGenerate();
-      
-      // Schedule the next one
-      scheduleNext();
+      try {
+        // Generate the blog
+        await onGenerate();
+        
+        // Update last executed time
+        updateLastExecutedTime(config);
+      } catch (error) {
+        console.error("Failed to generate scheduled blog:", error);
+      } finally {
+        // Schedule the next one
+        scheduleNext();
+      }
     }, timeUntilNext);
     
     console.log(`Blog generation scheduled for ${nextTime.toLocaleString()}`);
   };
   
+  // Set up an interval to check every minute if we need to run the schedule
+  // This acts as a backup in case the timeout is missed (e.g., if the browser was closed)
+  const checkSchedule = () => {
+    const config = getScheduleConfig();
+    
+    if (config.isActive && isTimeToRun(config)) {
+      onGenerate()
+        .then(() => {
+          updateLastExecutedTime(config);
+          console.log("Scheduled blog generation completed");
+          
+          // Reschedule for next time
+          scheduleNext();
+        })
+        .catch(err => {
+          console.error("Failed to generate scheduled blog:", err);
+        });
+    }
+  };
+  
   // Initial scheduling
   scheduleNext();
   
-  // Return cleanup function to clear timeout
+  // Check every minute if we need to run
+  checkIntervalId = window.setInterval(checkSchedule, 60000); // Check every minute
+  
+  // Return cleanup function to clear timeout and interval
   return () => {
     if (timeoutId) {
       window.clearTimeout(timeoutId);
+    }
+    if (checkIntervalId) {
+      window.clearInterval(checkIntervalId);
     }
   };
 }
