@@ -1,3 +1,4 @@
+
 import { Blog } from "@/types/blog";
 import { generateBlogContent } from "./perplexityService";
 import { fetchRandomImage } from "./pollinationsService";
@@ -63,9 +64,9 @@ const getStoredBlogs = (): Blog[] => {
         <p>The organizations that thrive in this environment will be those that view AI not merely as a technology to be deployed, but as a collaborative partner in solving complex problems and creating new value.</p>
       `,
       date: "2025-04-15",
-      readTime: "5 min read",
+      read_time: "5 min read",
       category: "AI Trends",
-      image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
+      image_url: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
       author: {
         name: "Alex Morgan",
         role: "AI Research Analyst"
@@ -148,9 +149,9 @@ const getStoredBlogs = (): Blog[] => {
         <p>As these models continue to evolve, maintaining a balanced approach that harnesses their benefits while mitigating their risks will be essential to their successful integration into business processes and society at large.</p>
       `,
       date: "2025-04-10",
-      readTime: "7 min read",
+      read_time: "7 min read",
       category: "Deep Learning",
-      image: "https://images.unsplash.com/photo-1518770660439-4636190af475",
+      image_url: "https://images.unsplash.com/photo-1518770660439-4636190af475",
       author: {
         name: "Dr. Rachel Chen",
         role: "ML Research Scientist"
@@ -243,9 +244,9 @@ const getStoredBlogs = (): Blog[] => {
         <p>As AI continues to evolve and permeate more aspects of society, ongoing dialogue and adaptation of ethical approaches will be essential to ensuring these powerful technologies serve humanity's best interests.</p>
       `,
       date: "2025-04-05",
-      readTime: "6 min read",
+      read_time: "6 min read",
       category: "AI Ethics",
-      image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81",
+      image_url: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81",
       author: {
         name: "Dr. James Wilson",
         role: "Ethics Director"
@@ -344,9 +345,9 @@ export async function generateDailyBlog(specificCategory?: string): Promise<Blog
       excerpt,
       content,
       date: formatDate(new Date()),
-      readTime,
+      read_time: readTime,
       category: category || selectedCategory,
-      image: imageUrl,
+      image_url: imageUrl,
       author: {
         name: "AI Content Generator",
         role: "Assistant Writer"
