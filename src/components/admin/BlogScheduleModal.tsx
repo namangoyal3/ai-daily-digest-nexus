@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
@@ -29,10 +30,15 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { getScheduleConfig, setScheduleConfig, ScheduleConfig } from "@/lib/schedulingService";
+import { getScheduleConfig, setScheduleConfig } from "@/lib/schedulingService";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "sonner";
 
 const scheduleFormSchema = z.object({
@@ -112,19 +118,8 @@ export default function BlogScheduleModal({ open, onOpenChange }: BlogScheduleMo
   // Handle form submission
   const onSubmit = (data: ScheduleFormValues) => {
     try {
-      // Ensure all required fields are present for ScheduleConfig
-      const configToSave: ScheduleConfig = {
-        isActive: data.isActive,
-        time: data.time,
-        frequency: data.frequency,
-        categories: data.categories,
-        // Include optional fields conditionally
-        ...(data.daysOfWeek && { daysOfWeek: data.daysOfWeek }),
-        ...(data.dayOfMonth && { dayOfMonth: data.dayOfMonth }),
-      };
-      
       // Save schedule configuration
-      setScheduleConfig(configToSave);
+      setScheduleConfig(data);
       
       toast.success("Schedule settings saved", {
         description: data.isActive 

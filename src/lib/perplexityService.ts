@@ -20,7 +20,6 @@ function generateNewsletterPrompt(params: {
   readability?: string;
   technicalDepth?: string;
   approach?: string;
-  randomizationSeed?: string;
 }): string {
   const {
     title = "",
@@ -32,8 +31,7 @@ function generateNewsletterPrompt(params: {
     includeRealLifeReferences = true,
     readability = "moderate",
     technicalDepth = "moderate",
-    approach = "practical",
-    randomizationSeed = Date.now().toString()
+    approach = "practical"
   } = params;
 
   return `
@@ -41,7 +39,6 @@ Write a ${contentStyle} and ${contentTone} newsletter article titled "${title ||
 
 ## Objective:
 The content should reflect a ${contentType.replace("_", " ")} focus and aim to keep the reader ${contentStyle === "engaging" ? "curious and emotionally invested" : contentStyle === "informative" ? "well-informed with clarity" : "persuaded with strong reasoning"}.
-Make this content unique and different from other articles. Use this randomization seed to ensure uniqueness: ${randomizationSeed}.
 
 ## Style & Formatting:
 Use a ${contentFormat === "emoji-rich" ? "Modern" : "Superhuman"} layout.
@@ -80,12 +77,6 @@ ${includeRealLifeReferences ? "- Include references to real companies, tools, or
 ## Important:
 •⁠  ⁠DO NOT include markdown or explanation.
 •⁠  ⁠ONLY return the final HTML string.
-
-## Special Instructions for Uniqueness:
-•⁠  ⁠Each article must be significantly different even on the same topic.
-•⁠  ⁠Vary the structure, examples, and insights provided.
-•⁠  ⁠Write with a unique angle that hasn't been covered before.
-•⁠  ⁠Timestamp reference: ${new Date().toISOString()}
 `.trim();
 }
 
@@ -96,55 +87,26 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     throw new Error("Perplexity API key not found. Please add your API key in settings.");
   }
   
-  // Generate random blog title variations based on category
-  const randomTitles = [
-    category ? `Latest Breakthroughs in ${category}` : "Cutting-Edge AI Developments",
-    category ? `${category} Innovation Roundup` : "AI Transformation Insights",
-    category ? `Exploring New Frontiers in ${category}` : "Next-Generation AI Advancements",
-    category ? `The Future of ${category}` : "Revolutionary AI Technologies",
-    category ? `${category} Trends to Watch` : "Emerging AI Paradigms",
-    category ? `How ${category} is Changing Business` : "AI's Impact on Modern Business",
-    category ? `${category}: A Deep Dive` : "Decoding AI: Expert Analysis",
-    category ? `${category} in Practice: Case Studies` : "Real-World AI Applications",
-    category ? `The Evolution of ${category}` : "AI Evolution Timeline",
-    category ? `${category} Challenges and Solutions` : "Overcoming AI Implementation Challenges"
-  ];
-  
-  // Select a random title from the options
-  const titleIndex = Math.floor(Math.random() * randomTitles.length);
-  const title = randomTitles[titleIndex];
+  // Generate content based on category
+  const title = category 
+    ? `Latest Developments in ${category}`
+    : "Latest AI Developments";
     
-  // Create an optimized prompt using the newsletter generator with randomization
-  const contentStyles = ["engaging", "informative", "persuasive", "thought-provoking", "analytical"];
-  const contentTones = ["conversational", "professional", "enthusiastic", "authoritative", "balanced"];
-  const contentFormats = ["modern", "emoji-rich"];
-  const readabilityLevels = ["easy", "moderate", "advanced"];
-  const technicalDepths = ["beginner", "moderate", "advanced"];
-  const approaches = ["practical", "conceptual", "balanced", "case-study", "trend-analysis"];
-  
-  // Select random values for each parameter
-  const contentStyle = contentStyles[Math.floor(Math.random() * contentStyles.length)];
-  const contentTone = contentTones[Math.floor(Math.random() * contentTones.length)];
-  const contentFormat = contentFormats[Math.floor(Math.random() * contentFormats.length)];
-  const readability = readabilityLevels[Math.floor(Math.random() * readabilityLevels.length)];
-  const technicalDepth = technicalDepths[Math.floor(Math.random() * technicalDepths.length)];
-  const approach = approaches[Math.floor(Math.random() * approaches.length)];
-  
+  // Create an optimized prompt using the newsletter generator
   const prompt = generateNewsletterPrompt({
     title: title,
-    contentStyle: contentStyle,
+    contentStyle: "engaging",
     contentType: category || "general_interest",
-    contentTone: contentTone,
-    contentFormat: contentFormat,
+    contentTone: "conversational",
+    contentFormat: "modern",
     includeRealLifeReferences: true,
-    readability: readability,
-    technicalDepth: technicalDepth,
-    approach: approach,
-    randomizationSeed: Date.now().toString() + Math.random().toString()
+    readability: "moderate",
+    technicalDepth: "moderate",
+    approach: "practical"
   });
   
   try {
-    console.log("Calling Perplexity API for category:", category);
+    console.log("Calling Perplexity API...");
     const response = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
@@ -163,10 +125,9 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
             content: prompt
           }
         ],
-        temperature: 0.85, // Increase temperature for more randomness
+        temperature: 0.7,
         max_tokens: 2500,
-        presence_penalty: 0.6,
-        frequency_penalty: 0.7 // Add frequency penalty to reduce repetition
+        presence_penalty: 0.6
       }),
     });
     
@@ -186,7 +147,7 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     }
     
     const data = await response.json();
-    console.log("API response received for category:", category);
+    console.log("API response received");
     
     // Process the HTML content from Perplexity
     if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
@@ -209,7 +170,6 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
         category: category || "AI Trends"
       };
     } else {
-      console.error("Invalid API response structure:", data);
       throw new Error("Failed to extract content from the API response");
     }
   } catch (error) {
@@ -236,7 +196,7 @@ export async function generateBlogsForCategories(categories: string[]): Promise<
       results.push(blogData);
       
       // Add a small delay between API calls to avoid rate limiting
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 1000));
     } catch (error) {
       console.error(`Failed to generate blog for category ${category}:`, error);
       // Continue with the next category even if one fails
@@ -245,3 +205,7 @@ export async function generateBlogsForCategories(categories: string[]): Promise<
   
   return results;
 }
+
+// Note: previous helper functions removed as they're no longer needed
+// with the new newsletter prompt approach that delivers properly
+// formatted HTML directly
