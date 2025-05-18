@@ -66,6 +66,20 @@ export default function BlogDetail() {
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
+        {/* Only add Helmet if blog exists to avoid the Symbol error */}
+        {blog && (
+          <Helmet>
+            <title>{blog.title} | NeuralNextGen</title>
+            <meta name="description" content={blog.excerpt} />
+            <meta property="og:title" content={blog.title} />
+            <meta property="og:description" content={blog.excerpt} />
+            <meta property="og:image" content={blog.image} />
+            <meta property="og:type" content="article" />
+            <meta property="article:published_time" content={blog.date} />
+            <meta property="article:section" content={blog.category} />
+          </Helmet>
+        )}
+        
         <Header />
         
         <main className="container mx-auto px-4 py-8 md:py-16">
@@ -81,18 +95,6 @@ export default function BlogDetail() {
             <BlogSkeleton />
           ) : blog ? (
             <>
-              {/* Add Helmet after we know blog exists */}
-              <Helmet>
-                <title>{blog.title} | NeuralNextGen</title>
-                <meta name="description" content={blog.excerpt} />
-                <meta property="og:title" content={blog.title} />
-                <meta property="og:description" content={blog.excerpt} />
-                <meta property="og:image" content={blog.image} />
-                <meta property="og:type" content="article" />
-                <meta property="article:published_time" content={blog.date} />
-                <meta property="article:section" content={blog.category} />
-              </Helmet>
-
               <article className="max-w-4xl mx-auto bg-white rounded-xl shadow-sm overflow-hidden">
                 <div className="w-full h-64 md:h-96 relative">
                   <img 
