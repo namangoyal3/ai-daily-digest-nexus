@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { ArrowLeft, Calendar, Share2, Bookmark, User, BookOpen, CheckCircle } from "lucide-react";
+import { ArrowLeft, Calendar, Share2, Bookmark, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -14,7 +14,6 @@ import BlogSkeleton from "@/components/skeletons/BlogSkeleton";
 import { getBlogById } from "@/lib/blogService";
 import { Blog } from "@/types/blog";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { toast } from "sonner";
 
 export default function BlogDetail() {
   const { blogId } = useParams<{ blogId: string }>();
@@ -45,37 +44,6 @@ export default function BlogDetail() {
     // Scroll to top when navigating to a new blog
     window.scrollTo(0, 0);
   }, [blogId]);
-
-  const handleBookmark = () => {
-    toast.success("Article saved to your bookmarks", {
-      description: "You can find it in your saved articles section.",
-      position: "bottom-right",
-    });
-  };
-
-  const handleShare = () => {
-    if (navigator.share && blog) {
-      navigator.share({
-        title: blog.title,
-        text: blog.excerpt,
-        url: window.location.href,
-      }).catch((err) => {
-        console.error("Error sharing:", err);
-        toast.success("Link copied to clipboard", {
-          description: "You can now share it with anyone.",
-          position: "bottom-right",
-        });
-        navigator.clipboard.writeText(window.location.href);
-      });
-    } else {
-      // Fallback for browsers that don't support the Web Share API
-      navigator.clipboard.writeText(window.location.href);
-      toast.success("Link copied to clipboard", {
-        description: "You can now share it with anyone.",
-        position: "bottom-right",
-      });
-    }
-  };
 
   if (error) {
     return (
@@ -128,25 +96,25 @@ export default function BlogDetail() {
             <BlogSkeleton />
           ) : blog ? (
             <>
-              <article className="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-                <div className="w-full h-72 md:h-[400px] relative">
+              <article className="max-w-4xl mx-auto bg-white rounded-xl shadow-sm overflow-hidden">
+                <div className="w-full h-64 md:h-[400px] relative">
                   <img 
                     src={blog.image} 
                     alt={blog.title} 
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 p-6 md:p-8 w-full">
                     <div className="flex flex-wrap items-center gap-2 text-xs md:text-sm text-white/90 mb-3">
                       <span className="bg-aipurple/80 backdrop-blur-sm px-3 py-1 rounded-full">
                         {blog.category}
                       </span>
-                      <span className="text-white/70">•</span>
+                      <span>•</span>
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         {blog.date}
                       </span>
-                      <span className="text-white/70">•</span>
+                      <span>•</span>
                       <span>{blog.readTime}</span>
                     </div>
                     <h1 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight">
@@ -158,8 +126,8 @@ export default function BlogDetail() {
                 <div className="p-4 sm:p-6 md:p-8 lg:p-10">
                   <div className="flex flex-wrap items-center justify-between mb-6 md:mb-8 gap-4">
                     <div className="flex items-center">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-aiblue to-aipurple flex items-center justify-center mr-3">
-                        <User className="h-5 w-5 text-white" />
+                      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
+                        <User className="h-5 w-5 text-gray-500" />
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">NeuralNextGen</p>
@@ -167,31 +135,13 @@ export default function BlogDetail() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="icon" 
-                        className="rounded-full hover:bg-gray-100"
-                        onClick={handleShare}
-                      >
+                      <Button variant="outline" size="icon" className="rounded-full hover:bg-gray-100">
                         <Share2 className="h-4 w-4" />
                       </Button>
-                      <Button 
-                        variant="outline" 
-                        size="icon" 
-                        className="rounded-full hover:bg-gray-100"
-                        onClick={handleBookmark}
-                      >
+                      <Button variant="outline" size="icon" className="rounded-full hover:bg-gray-100">
                         <Bookmark className="h-4 w-4" />
                       </Button>
                     </div>
-                  </div>
-
-                  <div className="mb-8 md:mb-10 bg-gray-50 p-4 rounded-lg border border-gray-100">
-                    <div className="flex items-start mb-2">
-                      <BookOpen className="h-5 w-5 text-aiblue mr-2 mt-1" />
-                      <h2 className="text-lg font-heading font-semibold text-gray-800">Executive Summary</h2>
-                    </div>
-                    <p className="text-gray-700">{blog.excerpt}</p>
                   </div>
 
                   <BlogContent content={blog.content} />
@@ -200,16 +150,16 @@ export default function BlogDetail() {
 
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 py-6">
                     <div>
-                      <h3 className="font-heading font-semibold mb-3 text-gray-800">Share this article</h3>
+                      <h3 className="font-heading font-semibold mb-3">Share this article</h3>
                       <div className="flex flex-wrap gap-2">
-                        <Button variant="outline" size="sm" className="rounded-full hover:bg-aipurple/10">Twitter</Button>
-                        <Button variant="outline" size="sm" className="rounded-full hover:bg-aipurple/10">LinkedIn</Button>
-                        <Button variant="outline" size="sm" className="rounded-full hover:bg-aipurple/10">Facebook</Button>
+                        <Button variant="outline" size="sm" className="rounded-full">Twitter</Button>
+                        <Button variant="outline" size="sm" className="rounded-full">LinkedIn</Button>
+                        <Button variant="outline" size="sm" className="rounded-full">Facebook</Button>
                       </div>
                     </div>
                     <div className="mt-4 md:mt-0">
-                      <h3 className="font-heading font-semibold mb-3 text-gray-800">Subscribe to our newsletter</h3>
-                      <Button className="bg-gradient-to-r from-aiblue to-aipurple text-white hover:opacity-90 transition-all">
+                      <h3 className="font-heading font-semibold mb-3">Subscribe to our newsletter</h3>
+                      <Button className="bg-gradient-to-r from-aiblue to-aipurple text-white hover:from-aipurple hover:to-aiblue transition-all">
                         Subscribe Now
                       </Button>
                     </div>
