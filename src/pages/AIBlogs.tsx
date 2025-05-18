@@ -3,68 +3,86 @@ import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText } from "lucide-react";
+import { FileText, Settings, RefreshCcw } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BlogCardSkeleton from "@/components/skeletons/BlogCardSkeleton";
-
-const blogs = [
-  {
-    id: 1,
-    title: "The Future of AI in 2025: Trends and Predictions",
-    excerpt: "Explore the emerging trends and innovations that will shape artificial intelligence in the coming year.",
-    date: "2025-04-15",
-    readTime: "5 min read",
-    category: "AI Trends",
-    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
-  },
-  {
-    id: 2,
-    title: "Understanding Large Language Models",
-    excerpt: "A comprehensive guide to how LLMs work and their impact on various industries.",
-    date: "2025-04-14",
-    readTime: "7 min read",
-    category: "Deep Learning",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475"
-  },
-  {
-    id: 3,
-    title: "AI Ethics: Navigating the Challenges",
-    excerpt: "Key considerations for responsible AI development and implementation.",
-    date: "2025-04-13",
-    readTime: "6 min read",
-    category: "AI Ethics",
-    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81"
-  },
-];
+import { getBlogs, getBlogsByCategory, generateDailyBlog } from "@/lib/blogService";
+import { Blog } from "@/types/blog";
+import { toast } from "sonner";
 
 const categories = ["All", "AI Trends", "Deep Learning", "AI Ethics", "Machine Learning", "AI Applications"];
 
 export default function AIBlogs() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
   
   useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    const fetchBlogs = async () => {
+      setIsLoading(true);
+      try {
+        const data = await getBlogsByCategory(selectedCategory);
+        setBlogs(data);
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+        toast.error("Failed to load blog posts");
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    return () => clearTimeout(timer);
+    fetchBlogs();
   }, [selectedCategory]);
 
-  const filteredBlogs = selectedCategory === "All" 
-    ? blogs 
-    : blogs.filter(blog => blog.category === selectedCategory);
+  const handleGeneratePost = async () => {
+    setIsGenerating(true);
+    try {
+      const apiKey = localStorage.getItem('perplexity_api_key');
+      if (!apiKey) {
+        toast.error("API key is missing", {
+          description: "Please add your Perplexity API key in settings",
+          action: {
+            label: "Settings",
+            onClick: () => window.location.href = "/blog-settings",
+          },
+        });
+        return;
+      }
+      
+      const newBlog = await generateDailyBlog();
+      
+      // Refresh the blog list with the new post
+      if (selectedCategory === "All" || selectedCategory === newBlog.category) {
+        setBlogs(prevBlogs => [newBlog, ...prevBlogs]);
+      }
+      
+      toast.success("New blog post generated", {
+        description: `"${newBlog.title}" has been created`,
+        action: {
+          label: "View",
+          onClick: () => window.location.href = `/ai-blogs/${newBlog.id}`,
+        },
+      });
+    } catch (error) {
+      console.error("Error generating blog:", error);
+      toast.error("Failed to generate blog post", {
+        description: "Please check your API key in settings",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   return (
     <>
       <Helmet>
-        <title>AI Daily Digest - Latest AI Insights and Analysis</title>
+        <title>AI Insights & Analysis - NeuralNextGen</title>
         <meta name="description" content="Discover the latest insights, trends, and analysis in artificial intelligence. Stay informed with our expert articles on AI technology, ethics, and applications." />
         <meta name="keywords" content="AI blogs, artificial intelligence articles, AI insights, tech blog, AI analysis, AI trends" />
-        <meta property="og:title" content="AI Daily Digest - Latest AI Insights and Analysis" />
+        <meta property="og:title" content="AI Insights & Analysis - NeuralNextGen" />
         <meta property="og:description" content="Expert articles and analysis on the latest developments in artificial intelligence." />
       </Helmet>
 
@@ -72,13 +90,32 @@ export default function AIBlogs() {
         <Header />
         
         <main className="container mx-auto px-4 py-8 md:py-16">
-          <div className="max-w-3xl mx-auto text-center mb-8 md:mb-12">
-            <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-aiblue">
-              AI Insights & Analysis
-            </h1>
-            <p className="text-gray-600 text-base md:text-lg lg:text-xl px-4">
-              Discover in-depth articles about artificial intelligence, machine learning, and their impact on various industries
-            </p>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-12">
+            <div className="max-w-3xl">
+              <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-aiblue">
+                AI Insights & Analysis
+              </h1>
+              <p className="text-gray-600 text-base md:text-lg lg:text-xl">
+                Discover in-depth articles about artificial intelligence, machine learning, and their impact on various industries
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                onClick={handleGeneratePost}
+                disabled={isGenerating}
+                className="whitespace-nowrap"
+              >
+                <RefreshCcw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
+                {isGenerating ? "Generating..." : "Generate Post"}
+              </Button>
+              <Button variant="outline" asChild>
+                <Link to="/blog-settings" className="flex items-center">
+                  <Settings className="mr-2 h-4 w-4" />
+                  Settings
+                </Link>
+              </Button>
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-2 md:gap-3 justify-center mb-8 md:mb-12 px-2">
@@ -103,8 +140,8 @@ export default function AIBlogs() {
               Array(6).fill(0).map((_, index) => (
                 <BlogCardSkeleton key={index} />
               ))
-            ) : (
-              filteredBlogs.map((blog) => (
+            ) : blogs.length > 0 ? (
+              blogs.map((blog) => (
                 <Link to={`/ai-blogs/${blog.id}`} key={blog.id} className="focus:outline-none focus:ring-2 focus:ring-aiblue">
                   <Card className="h-full hover:shadow-lg transition-all duration-300 group">
                     <div className="aspect-video w-full overflow-hidden rounded-t-lg">
@@ -132,6 +169,15 @@ export default function AIBlogs() {
                   </Card>
                 </Link>
               ))
+            ) : (
+              <div className="col-span-1 md:col-span-3 text-center py-12">
+                <h3 className="text-xl font-medium text-gray-700 mb-2">No articles found</h3>
+                <p className="text-gray-500 mb-6">There are no articles available in this category yet.</p>
+                <Button onClick={handleGeneratePost} disabled={isGenerating}>
+                  <RefreshCcw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
+                  {isGenerating ? "Generating..." : "Generate First Post"}
+                </Button>
+              </div>
             )}
           </div>
         </main>

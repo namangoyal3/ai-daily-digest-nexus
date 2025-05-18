@@ -5,6 +5,8 @@ import { Toaster as ShadcnToaster } from "@/components/ui/toaster";
 import AIDigest from "./pages/AIDigest";
 import AIAgents from "./pages/AIAgents";
 import AIBlogs from "./pages/AIBlogs";
+import BlogDetail from "./pages/BlogDetail";
+import BlogSettings from "./pages/BlogSettings";
 import AICourses from "./pages/AICourses";
 import AICoursesDirectory from "./pages/AICoursesDirectory";
 import NotFound from "./pages/NotFound";
@@ -51,6 +53,14 @@ const router = createBrowserRouter([
   {
     path: "/ai-blogs",
     element: <AIBlogs />,
+  },
+  {
+    path: "/ai-blogs/:blogId",
+    element: <BlogDetail />,
+  },
+  {
+    path: "/blog-settings",
+    element: <BlogSettings />,
   },
   {
     path: "/ai-courses",
