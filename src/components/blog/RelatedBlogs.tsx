@@ -20,6 +20,11 @@ export default function RelatedBlogs({ currentBlogId, category }: RelatedBlogsPr
     const fetchRelatedBlogs = async () => {
       setIsLoading(true);
       try {
+        if (!category) {
+          setRelatedBlogs([]);
+          return;
+        }
+        
         const blogs = await getRelatedBlogs(currentBlogId, category);
         setRelatedBlogs(blogs);
       } catch (error) {
@@ -51,7 +56,7 @@ export default function RelatedBlogs({ currentBlogId, category }: RelatedBlogsPr
               <Card className="h-full hover:shadow-lg transition-all duration-300 group">
                 <div className="aspect-video w-full overflow-hidden rounded-t-lg">
                   <img 
-                    src={blog.image} 
+                    src={blog.image_url || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485'} 
                     alt={blog.title}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     loading="lazy"
@@ -62,7 +67,7 @@ export default function RelatedBlogs({ currentBlogId, category }: RelatedBlogsPr
                     <FileText className="h-4 w-4 flex-shrink-0" />
                     <span>{blog.category}</span>
                     <span>•</span>
-                    <span>{blog.readTime}</span>
+                    <span>{blog.read_time}</span>
                   </div>
                   <CardTitle className="text-lg md:text-xl mb-2 line-clamp-2 group-hover:text-aiblue transition-colors">
                     {blog.title}

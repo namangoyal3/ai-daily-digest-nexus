@@ -1,5 +1,5 @@
 
-import { supabase } from './supabase';
+import { supabase } from './supabase-client';
 import { toast } from 'sonner';
 
 interface GenerateBlogParams {
@@ -130,7 +130,7 @@ export async function generateBlogPost({
 }
 
 /**
- * Generate blog posts one category at a time, sequentially 
+ * Generate blog posts for multiple categories
  */
 export async function generateBlogPostsForCategories(categories: string[]): Promise<{
   success: boolean;
@@ -154,30 +154,29 @@ export async function generateBlogPostsForCategories(categories: string[]): Prom
   const failed = [];
   let successCount = 0;
   
-  console.log(`Starting sequential generation for ${categories.length} categories:`, categories);
+  console.log(`Starting generation for ${categories.length} categories:`, categories);
   
-  // Pick only the first category for now
-  const selectedCategory = categories[0];
-  
-  try {
-    console.log(`Generating blog for category: ${selectedCategory}...`);
-    toast.info('Generating blog post', {
-      description: `Creating content for category: ${selectedCategory}`
-    });
-    
-    const result = await generateBlogPost({ category: selectedCategory });
-    results.push(result);
-    
-    if (result.success) {
-      console.log(`Successfully generated blog for ${selectedCategory}`);
-      successCount++;
-    } else {
-      console.error(`Failed to generate blog for ${selectedCategory}:`, result.message);
-      failed.push(selectedCategory);
+  for (const category of categories) {
+    try {
+      console.log(`Generating blog for category: ${category}...`);
+      toast.info('Generating blog post', {
+        description: `Creating content for category: ${category}`
+      });
+      
+      const result = await generateBlogPost({ category });
+      results.push(result);
+      
+      if (result.success) {
+        console.log(`Successfully generated blog for ${category}`);
+        successCount++;
+      } else {
+        console.error(`Failed to generate blog for ${category}:`, result.message);
+        failed.push(category);
+      }
+    } catch (error) {
+      console.error(`Error generating blog for category ${category}:`, error);
+      failed.push(category);
     }
-  } catch (error) {
-    console.error(`Error generating blog for category ${selectedCategory}:`, error);
-    failed.push(selectedCategory);
   }
   
   console.log(`Generation complete. Success: ${successCount}, Failed: ${failed.length}`);
@@ -196,25 +195,25 @@ export async function generateBlogPostsForCategories(categories: string[]): Prom
   }
   
   if (failed.length > 0) {
-    toast.warning(`Generated ${successCount} blog post`, {
-      description: `Failed category: ${failed.join(', ')}`
+    toast.warning(`Generated ${successCount} blog posts`, {
+      description: `Failed categories: ${failed.join(', ')}`
     });
     
     return {
       success: true,
-      message: `Generated ${successCount} blog post`,
+      message: `Generated ${successCount} blog posts, failed on ${failed.length} categories`,
       generatedCount: successCount,
       failedCategories: failed
     };
   }
   
   toast.success('Blog generation complete', {
-    description: `Successfully generated a blog post for ${selectedCategory}`
+    description: `Successfully generated ${successCount} blog posts`
   });
   
   return {
     success: true,
-    message: `Successfully generated a blog post for ${selectedCategory}`,
+    message: `Successfully generated ${successCount} blog posts`,
     generatedCount: successCount
   };
 }

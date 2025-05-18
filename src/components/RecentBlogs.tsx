@@ -5,52 +5,28 @@ import { Button } from "@/components/ui/button";
 import { FileText, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import BlogCardSkeleton from "./skeletons/BlogCardSkeleton";
-
-const recentBlogs = [
-  {
-    id: 1,
-    title: "Multimodal AI Systems: The Next Frontier in Human-Computer Interaction",
-    excerpt: "How systems that combine vision, language, and audio understanding are transforming the way we interact with technology.",
-    date: "2025-04-29",
-    readTime: "6 min read",
-    category: "Emerging Tech",
-    image: "https://images.unsplash.com/photo-1535378917042-10a22c95931a"
-  },
-  {
-    id: 2,
-    title: "Quantum Computing and AI: A New Paradigm for Machine Learning",
-    excerpt: "Exploring how quantum algorithms are beginning to reshape the foundations of deep learning and neural network design.",
-    date: "2025-04-27",
-    readTime: "8 min read",
-    category: "Quantum AI",
-    image: "https://images.unsplash.com/photo-1516192518150-0d8fee5425e3"
-  },
-  {
-    id: 3,
-    title: "Edge AI Development: Practical Solutions for Privacy-First Applications",
-    excerpt: "Best practices for deploying machine learning models directly on devices without compromising user privacy or security.",
-    date: "2025-04-25",
-    readTime: "7 min read",
-    category: "AI Development",
-    image: "https://images.unsplash.com/photo-1558346490-a72e53ae2d4f"
-  }
-];
+import { getBlogs } from "@/lib/blogService";
+import { Blog } from "@/types/blog";
+import { toast } from "sonner";
 
 export default function RecentBlogs() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        // Simulating API fetch with a timeout
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        // In a real app, you would fetch data from an API here
+        setIsLoading(true);
+        // Fetch from database - limit to 3 most recent
+        const fetchedBlogs = await getBlogs();
+        setBlogs(fetchedBlogs.slice(0, 3));
         setIsLoading(false);
       } catch (err) {
         setError("Failed to load blog articles. Please try again later.");
         setIsLoading(false);
         console.error("Error fetching blogs:", err);
+        toast.error("Failed to load recent blogs");
       }
     };
 
@@ -103,13 +79,13 @@ export default function RecentBlogs() {
               Array(3).fill(0).map((_, index) => (
                 <BlogCardSkeleton key={index} />
               ))
-            ) : (
-              recentBlogs.map((blog) => (
+            ) : blogs.length > 0 ? (
+              blogs.map((blog) => (
                 <Link to={`/ai-blogs/${blog.id}`} key={blog.id} className="focus:outline-none focus:ring-2 focus:ring-aiblue">
                   <Card className="h-full hover:shadow-lg transition-shadow duration-300 group relative overflow-hidden">
                     <div className="aspect-video w-full overflow-hidden rounded-t-lg">
                       <img 
-                        src={blog.image} 
+                        src={blog.image_url || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485'} 
                         alt={blog.title}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         loading="lazy"
@@ -120,7 +96,7 @@ export default function RecentBlogs() {
                         <FileText className="h-4 w-4 flex-shrink-0" />
                         <span>{blog.category}</span>
                         <span>•</span>
-                        <span>{blog.readTime}</span>
+                        <span>{blog.read_time}</span>
                       </div>
                       <CardTitle className="text-lg md:text-xl mb-2 line-clamp-2 group-hover:text-aiblue transition-colors">
                         {blog.title}
@@ -137,6 +113,10 @@ export default function RecentBlogs() {
                   </Card>
                 </Link>
               ))
+            ) : (
+              <div className="col-span-1 md:col-span-3 text-center py-8">
+                <p className="text-gray-600">No blog posts found. Check back soon!</p>
+              </div>
             )}
           </div>
         )}

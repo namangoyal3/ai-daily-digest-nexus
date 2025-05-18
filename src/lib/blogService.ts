@@ -1,28 +1,38 @@
 
+import { supabase } from './supabase-client';
 import { generateBlogContent, generateBlogsForCategories } from './perplexityService';
 import { generateImageWithPrompt } from './pollinationsService';
 import { v4 as uuidv4 } from 'uuid';
 import { Blog } from '@/types/blog';
 import { toast } from 'sonner';
 
-// Initialize blogs if they don't exist
-const initializeBlogs = (): Blog[] => {
-  const storedBlogs = localStorage.getItem('neural-nextgen-blogs');
-  if (!storedBlogs) {
-    return [];
+// Get all blogs from database
+export const getBlogs = async (): Promise<Blog[]> => {
+  const { data: blogs, error } = await supabase
+    .from('blogs')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (error) {
+    console.error('Error fetching blogs:', error);
+    throw error;
   }
-  return JSON.parse(storedBlogs);
-};
-
-// Get all blogs from local storage
-export const getBlogs = (): Blog[] => {
-  return initializeBlogs();
+  
+  return blogs || [];
 };
 
 // Get a blog by ID
-export const getBlogById = (id: string): Blog => {
-  const blogs = initializeBlogs();
-  const blog = blogs.find(blog => blog.id.toString() === id);
+export const getBlogById = async (id: string): Promise<Blog> => {
+  const { data: blog, error } = await supabase
+    .from('blogs')
+    .select('*')
+    .eq('id', id)
+    .single();
+  
+  if (error) {
+    console.error(`Error fetching blog with ID ${id}:`, error);
+    throw error;
+  }
   
   if (!blog) {
     throw new Error(`Blog with ID ${id} not found`);
@@ -32,41 +42,73 @@ export const getBlogById = (id: string): Blog => {
 };
 
 // Get blogs by category
-export const getBlogsByCategory = (category: string): Blog[] => {
-  const blogs = initializeBlogs();
-  
+export const getBlogsByCategory = async (category: string): Promise<Blog[]> => {
   if (category === 'All') {
-    return blogs;
+    return getBlogs();
   }
   
-  return blogs.filter(blog => blog.category === category);
+  const { data: blogs, error } = await supabase
+    .from('blogs')
+    .select('*')
+    .eq('category', category)
+    .order('created_at', { ascending: false });
+  
+  if (error) {
+    console.error(`Error fetching blogs for category ${category}:`, error);
+    throw error;
+  }
+  
+  return blogs || [];
 };
 
 // Get related blogs (same category, excluding current blog)
-export const getRelatedBlogs = (currentBlogId: string, category: string, limit: number = 3): Blog[] => {
-  const blogs = initializeBlogs();
+export const getRelatedBlogs = async (currentBlogId: string, category?: string): Promise<Blog[]> => {
+  if (!category) return [];
   
-  return blogs
-    .filter(blog => blog.category === category && blog.id.toString() !== currentBlogId)
-    .slice(0, limit);
+  const { data: blogs, error } = await supabase
+    .from('blogs')
+    .select('*')
+    .eq('category', category)
+    .neq('id', currentBlogId)
+    .limit(3);
+  
+  if (error) {
+    console.error(`Error fetching related blogs:`, error);
+    throw error;
+  }
+  
+  return blogs || [];
 };
 
-// Save a blog to local storage
-const saveBlog = (blog: Blog): void => {
-  const blogs = initializeBlogs();
-  blogs.push(blog);
-  localStorage.setItem('neural-nextgen-blogs', JSON.stringify(blogs));
-  // Dispatch a storage event to notify other components that blogs have been updated
-  window.dispatchEvent(new StorageEvent('storage', { key: 'neural-nextgen-blogs' }));
+// Save a blog to database
+const saveBlog = async (blog: Omit<Blog, 'id'>): Promise<Blog> => {
+  const { data, error } = await supabase
+    .from('blogs')
+    .insert([blog])
+    .select()
+    .single();
+  
+  if (error) {
+    console.error('Error saving blog:', error);
+    throw error;
+  }
+  
+  return data;
 };
 
-// Save multiple blogs to local storage
-const saveMultipleBlogs = (newBlogs: Blog[]): void => {
-  const blogs = initializeBlogs();
-  blogs.push(...newBlogs);
-  localStorage.setItem('neural-nextgen-blogs', JSON.stringify(blogs));
-  // Dispatch a storage event to notify other components that blogs have been updated
-  window.dispatchEvent(new StorageEvent('storage', { key: 'neural-nextgen-blogs' }));
+// Save multiple blogs to database
+const saveMultipleBlogs = async (newBlogs: Omit<Blog, 'id'>[]): Promise<Blog[]> => {
+  const { data, error } = await supabase
+    .from('blogs')
+    .insert(newBlogs)
+    .select();
+  
+  if (error) {
+    console.error('Error saving multiple blogs:', error);
+    throw error;
+  }
+  
+  return data || [];
 };
 
 // Calculate estimated read time based on content
@@ -100,20 +142,19 @@ export const generateDailyBlog = async (): Promise<Blog> => {
     const imageUrl = await generateImageWithPrompt(imagePrompt);
     
     // Create the blog object
-    const blog: Blog = {
-      id: uuidv4(),
+    const blogToSave = {
       title: blogData.title,
       content: blogData.content,
       excerpt: blogData.excerpt,
-      image: imageUrl,
+      image_url: imageUrl,
       category: blogData.category,
       date: generateDateString(),
-      readTime: calculateReadTime(blogData.content),
+      read_time: calculateReadTime(blogData.content),
     };
     
-    // Save the blog to local storage
-    saveBlog(blog);
-    return blog;
+    // Save the blog to database
+    const savedBlog = await saveBlog(blogToSave);
+    return savedBlog;
   } catch (error) {
     console.error("Error generating blog:", error);
     throw error;
@@ -127,7 +168,7 @@ export const generateBlogForAllCategories = async (): Promise<Blog[]> => {
     const blogResults = await generateBlogsForCategories(categories);
     
     // Generate blogs with images
-    const newBlogs: Blog[] = await Promise.all(
+    const blogsToSave = await Promise.all(
       blogResults.map(async (blogData) => {
         // Generate an image for each blog
         const imagePrompt = `A futuristic tech visualization representing: ${blogData.title}`;
@@ -135,21 +176,20 @@ export const generateBlogForAllCategories = async (): Promise<Blog[]> => {
         
         // Create the blog object
         return {
-          id: uuidv4(),
           title: blogData.title,
           content: blogData.content,
           excerpt: blogData.excerpt,
-          image: imageUrl,
+          image_url: imageUrl,
           category: blogData.category,
           date: generateDateString(),
-          readTime: calculateReadTime(blogData.content),
+          read_time: calculateReadTime(blogData.content),
         };
       })
     );
     
-    // Save all blogs to local storage
-    saveMultipleBlogs(newBlogs);
-    return newBlogs;
+    // Save all blogs to database
+    const savedBlogs = await saveMultipleBlogs(blogsToSave);
+    return savedBlogs;
   } catch (error) {
     console.error("Error generating blogs for all categories:", error);
     throw error;
@@ -157,9 +197,14 @@ export const generateBlogForAllCategories = async (): Promise<Blog[]> => {
 };
 
 // Delete a blog
-export const deleteBlog = (id: string): void => {
-  const blogs = initializeBlogs();
-  const updatedBlogs = blogs.filter(blog => blog.id.toString() !== id);
-  localStorage.setItem('neural-nextgen-blogs', JSON.stringify(updatedBlogs));
-  window.dispatchEvent(new StorageEvent('storage', { key: 'neural-nextgen-blogs' }));
+export const deleteBlog = async (id: string): Promise<void> => {
+  const { error } = await supabase
+    .from('blogs')
+    .delete()
+    .eq('id', id);
+    
+  if (error) {
+    console.error(`Error deleting blog with ID ${id}:`, error);
+    throw error;
+  }
 };

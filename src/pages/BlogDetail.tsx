@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -13,6 +14,7 @@ import BlogSkeleton from "@/components/skeletons/BlogSkeleton";
 import { getBlogById } from "@/lib/blogService";
 import { Blog } from "@/types/blog";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { toast } from "sonner";
 
 export default function BlogDetail() {
   const { blogId } = useParams<{ blogId: string }>();
@@ -34,6 +36,7 @@ export default function BlogDetail() {
       } catch (err) {
         console.error("Error fetching blog:", err);
         setError("Failed to load the blog post. Please try again later.");
+        toast.error("Failed to load blog post");
       } finally {
         setIsLoading(false);
       }

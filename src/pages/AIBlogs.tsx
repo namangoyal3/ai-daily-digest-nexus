@@ -19,7 +19,7 @@ export default function AIBlogs() {
   const [isLoading, setIsLoading] = useState(true);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   
-  // Force a refresh when the component mounts or when we switch categories
+  // Fetch blogs when component mounts or when we switch categories
   useEffect(() => {
     const fetchBlogs = async () => {
       setIsLoading(true);
@@ -37,34 +37,19 @@ export default function AIBlogs() {
     };
 
     fetchBlogs();
-    
-    // Add storage event listener to detect changes to localStorage (new blogs added)
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'neural-nextgen-blogs') {
-        console.log("Blogs updated in localStorage, refreshing...");
-        fetchBlogs();
-      }
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
   }, [selectedCategory]);
   
-  // Add a custom event to refresh blogs when new ones are added
+  // Set up an interval to refresh blogs data
   useEffect(() => {
-    // Dispatch a custom event to force refresh on first load
-    window.dispatchEvent(new StorageEvent('storage', { key: 'neural-nextgen-blogs' }));
-    
     const refreshInterval = setInterval(() => {
-      // Check for new blogs every minute
-      window.dispatchEvent(new StorageEvent('storage', { key: 'neural-nextgen-blogs' }));
+      // Refresh blogs every minute
+      getBlogsByCategory(selectedCategory)
+        .then(data => setBlogs(data))
+        .catch(error => console.error("Error refreshing blogs:", error));
     }, 60000);
     
     return () => clearInterval(refreshInterval);
-  }, []);
+  }, [selectedCategory]);
 
   return (
     <>
@@ -135,7 +120,7 @@ export default function AIBlogs() {
                   <Card className="h-full hover:shadow-lg transition-all duration-300 group">
                     <div className="aspect-video w-full overflow-hidden rounded-t-lg">
                       <img 
-                        src={blog.image} 
+                        src={blog.image_url || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485'} 
                         alt={blog.title}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         loading="lazy"
@@ -146,7 +131,7 @@ export default function AIBlogs() {
                         <FileText className="h-4 w-4 flex-shrink-0" />
                         <span>{blog.category}</span>
                         <span>•</span>
-                        <span>{blog.readTime}</span>
+                        <span>{blog.read_time}</span>
                       </div>
                       <CardTitle className="text-lg md:text-xl mb-2 line-clamp-2 group-hover:text-aiblue transition-colors">
                         {blog.title}
