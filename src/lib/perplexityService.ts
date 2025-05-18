@@ -182,30 +182,6 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
   }
 }
 
-/**
- * Generate blog posts for multiple categories at once
- */
-export async function generateBlogsForCategories(categories: string[]): Promise<BlogGenerationResponse[]> {
-  // Generate blog posts one by one for each category
-  const results: BlogGenerationResponse[] = [];
-  
-  for (const category of categories) {
-    try {
-      console.log(`Generating blog for category: ${category}`);
-      const blogData = await generateBlogContent(category);
-      results.push(blogData);
-      
-      // Add a small delay between API calls to avoid rate limiting
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    } catch (error) {
-      console.error(`Failed to generate blog for category ${category}:`, error);
-      // Continue with the next category even if one fails
-    }
-  }
-  
-  return results;
-}
-
 // Note: previous helper functions removed as they're no longer needed
 // with the new newsletter prompt approach that delivers properly
 // formatted HTML directly
