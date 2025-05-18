@@ -44,7 +44,7 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
         }
       });
 
-      // Apply alternating background gradients to sections
+      // Apply alternating backgrounds to sections
       applyAlternatingBackgrounds(contentRef.current);
     }
   }, [content]);
@@ -64,8 +64,7 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
   
   return (
     <>
-      <style>
-        {`
+      <style>{`
         html, body {
           margin: 0;
           padding: 0;
@@ -86,8 +85,7 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
           max-width: 100%;
           box-sizing: border-box;
         }
-        `}
-      </style>
+      `}</style>
     
       <div 
         ref={contentRef}
