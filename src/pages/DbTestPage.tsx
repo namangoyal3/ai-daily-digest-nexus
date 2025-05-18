@@ -4,7 +4,6 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import DatabaseConnectionTest from '@/components/DatabaseConnectionTest';
 import ApiRouteCheck from '@/components/ApiRouteCheck';
-import SubscriptionTest from '@/components/SubscriptionTest';
 
 export default function DbTestPage() {
   return (
@@ -19,10 +18,7 @@ export default function DbTestPage() {
           
           <div className="space-y-8">
             <ApiRouteCheck />
-            <div className="grid md:grid-cols-2 gap-8">
-              <DatabaseConnectionTest />
-              <SubscriptionTest />
-            </div>
+            <DatabaseConnectionTest />
           </div>
           
           <div className="mt-12 p-6 bg-gray-50 rounded-lg border border-gray-200">

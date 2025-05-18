@@ -19,7 +19,7 @@ export default function AIBlogs() {
   const [isLoading, setIsLoading] = useState(true);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   
-  // Fetch blogs when component mounts or when we switch categories
+  // Force a refresh when the component mounts or when we switch categories
   useEffect(() => {
     const fetchBlogs = async () => {
       setIsLoading(true);
@@ -37,19 +37,34 @@ export default function AIBlogs() {
     };
 
     fetchBlogs();
+    
+    // Add storage event listener to detect changes to localStorage (new blogs added)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'neural-nextgen-blogs') {
+        console.log("Blogs updated in localStorage, refreshing...");
+        fetchBlogs();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, [selectedCategory]);
   
-  // Set up an interval to refresh blogs data
+  // Add a custom event to refresh blogs when new ones are added
   useEffect(() => {
+    // Dispatch a custom event to force refresh on first load
+    window.dispatchEvent(new StorageEvent('storage', { key: 'neural-nextgen-blogs' }));
+    
     const refreshInterval = setInterval(() => {
-      // Refresh blogs every minute
-      getBlogsByCategory(selectedCategory)
-        .then(data => setBlogs(data))
-        .catch(error => console.error("Error refreshing blogs:", error));
+      // Check for new blogs every minute
+      window.dispatchEvent(new StorageEvent('storage', { key: 'neural-nextgen-blogs' }));
     }, 60000);
     
     return () => clearInterval(refreshInterval);
-  }, [selectedCategory]);
+  }, []);
 
   return (
     <>
@@ -61,29 +76,11 @@ export default function AIBlogs() {
         <meta property="og:description" content="Expert articles and analysis on the latest developments in artificial intelligence." />
       </Helmet>
 
-      <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
-        <style>
-          {`
-          html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            max-width: 100%;
-            overflow-x: hidden;
-          }
-          #root {
-            width: 100vw;
-            max-width: 100vw;
-            margin: 0;
-            padding: 0;
-          }
-          `}
-        </style>
-        
+      <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
         <Header />
         
-        <main className="container full-width-container mx-auto px-4 py-8 md:py-16 w-full max-w-full">
-          <div className="max-w-3xl mx-auto">
+        <main className="container mx-auto px-4 py-8 md:py-16">
+          <div className="max-w-3xl">
             <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-aiblue">
               AI Insights & Analysis
             </h1>
@@ -120,7 +117,7 @@ export default function AIBlogs() {
                   <Card className="h-full hover:shadow-lg transition-all duration-300 group">
                     <div className="aspect-video w-full overflow-hidden rounded-t-lg">
                       <img 
-                        src={blog.image_url || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485'} 
+                        src={blog.image} 
                         alt={blog.title}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         loading="lazy"
@@ -131,7 +128,7 @@ export default function AIBlogs() {
                         <FileText className="h-4 w-4 flex-shrink-0" />
                         <span>{blog.category}</span>
                         <span>•</span>
-                        <span>{blog.read_time}</span>
+                        <span>{blog.readTime}</span>
                       </div>
                       <CardTitle className="text-lg md:text-xl mb-2 line-clamp-2 group-hover:text-aiblue transition-colors">
                         {blog.title}

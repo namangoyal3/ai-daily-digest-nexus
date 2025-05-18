@@ -1,377 +1,248 @@
-
-import React, { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
+import { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { getScheduleConfig, setScheduleConfig } from "@/lib/schedulingService";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ScheduleConfig, saveScheduleConfig, getScheduleConfig } from "@/lib/schedulingService";
 import { toast } from "sonner";
-
-const scheduleFormSchema = z.object({
-  isActive: z.boolean().default(false),
-  frequency: z.enum(["daily", "weekly", "monthly"]),
-  time: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
-    message: "Time must be in 24-hour format (HH:MM)",
-  }),
-  daysOfWeek: z.array(z.number().min(0).max(6)).optional(),
-  dayOfMonth: z.number().min(1).max(31).optional(),
-  categories: z.array(z.string()),
-});
-
-type ScheduleFormValues = z.infer<typeof scheduleFormSchema>;
+import { generateDailyBlog } from "@/lib/blogService";
 
 interface BlogScheduleModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
+const DAYS_OF_WEEK = [
+  { value: 0, label: "Sunday" },
+  { value: 1, label: "Monday" },
+  { value: 2, label: "Tuesday" },
+  { value: 3, label: "Wednesday" },
+  { value: 4, label: "Thursday" },
+  { value: 5, label: "Friday" },
+  { value: 6, label: "Saturday" },
+];
+
+const CATEGORIES = ["AI Trends", "Deep Learning", "AI Ethics", "Machine Learning", "AI Applications"];
+
 export default function BlogScheduleModal({ open, onOpenChange }: BlogScheduleModalProps) {
-  const [isActive, setIsActive] = useState(false);
+  const [config, setConfig] = useState<ScheduleConfig>(getScheduleConfig());
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  // Categories for blog generation
-  const availableCategories = [
-    "AI Trends",
-    "Deep Learning",
-    "AI Ethics",
-    "Machine Learning",
-    "AI Applications",
-    "Computer Vision",
-    "Natural Language Processing",
-    "Robotics",
-  ];
-
-  // Days of the week for weekly scheduling
-  const daysOfWeek = [
-    { value: 0, label: "Sunday" },
-    { value: 1, label: "Monday" },
-    { value: 2, label: "Tuesday" },
-    { value: 3, label: "Wednesday" },
-    { value: 4, label: "Thursday" },
-    { value: 5, label: "Friday" },
-    { value: 6, label: "Saturday" },
-  ];
-
-  // Create form with default values from current config
-  const form = useForm<ScheduleFormValues>({
-    resolver: zodResolver(scheduleFormSchema),
-    defaultValues: getScheduleConfig(),
-  });
-
-  // Update isActive state when form value changes
-  useEffect(() => {
-    const subscription = form.watch((value, { name }) => {
-      if (name === "isActive") {
-        setIsActive(value.isActive as boolean);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form.watch]);
-
-  // Initialize isActive state on mount
-  useEffect(() => {
-    setIsActive(form.getValues("isActive"));
-  }, [form]);
-
-  // Update form defaults when modal is opened
+  // Reset to saved config when modal opens
   useEffect(() => {
     if (open) {
-      const config = getScheduleConfig();
-      form.reset(config);
-      setIsActive(config.isActive);
+      setConfig(getScheduleConfig());
     }
-  }, [open, form]);
+  }, [open]);
 
-  // Handle form submission
-  const onSubmit = (data: ScheduleFormValues) => {
+  const handleFrequencyChange = (value: string) => {
+    setConfig({
+      ...config,
+      frequency: value as 'daily' | 'weekly' | 'monthly',
+      // Reset related fields
+      daysOfWeek: value === 'weekly' ? [1] : undefined, // Default to Monday
+      dayOfMonth: value === 'monthly' ? 1 : undefined, // Default to 1st
+    });
+  };
+
+  const toggleDayOfWeek = (day: number) => {
+    const newDays = config.daysOfWeek ? [...config.daysOfWeek] : [];
+    
+    if (newDays.includes(day)) {
+      // Remove day if it's the only day, don't allow empty selection
+      if (newDays.length > 1) {
+        setConfig({
+          ...config,
+          daysOfWeek: newDays.filter(d => d !== day),
+        });
+      }
+    } else {
+      setConfig({
+        ...config,
+        daysOfWeek: [...newDays, day],
+      });
+    }
+  };
+  
+  const toggleCategory = (category: string) => {
+    const newCategories = [...config.categories];
+    
+    if (newCategories.includes(category)) {
+      // Don't allow empty selection
+      if (newCategories.length > 1) {
+        setConfig({
+          ...config,
+          categories: newCategories.filter(c => c !== category),
+        });
+      }
+    } else {
+      setConfig({
+        ...config,
+        categories: [...newCategories, category],
+      });
+    }
+  };
+
+  const handleSave = () => {
+    saveScheduleConfig(config);
+    toast.success("Schedule configuration saved", {
+      description: config.isActive 
+        ? "Automatic blog generation has been activated" 
+        : "Schedule settings saved but not activated",
+    });
+    onOpenChange(false);
+  };
+
+  const handlePublishNow = async () => {
+    setIsGenerating(true);
     try {
-      // Ensure all required fields are present to satisfy ScheduleConfig type
-      const completeConfig = {
-        isActive: data.isActive,
-        time: data.time,
-        categories: data.categories,
-        frequency: data.frequency,
-        daysOfWeek: data.daysOfWeek,
-        dayOfMonth: data.dayOfMonth,
-      };
+      // Remove API key validation that was causing problems
+      // Let the API call itself validate the key
       
-      // Save schedule configuration with type-safe data
-      setScheduleConfig(completeConfig);
+      // Use one of the selected categories for immediate publishing
+      const newBlog = await generateDailyBlog();
       
-      toast.success("Schedule settings saved", {
-        description: data.isActive 
-          ? "Automatic blog generation has been scheduled" 
-          : "Automatic blog generation has been disabled",
+      toast.success("New blog post generated and published", {
+        description: `"${newBlog.title}" has been added to your blog.`,
       });
       
-      // Close the modal
       onOpenChange(false);
     } catch (error) {
-      console.error("Error saving schedule:", error);
-      toast.error("Failed to save schedule", {
-        description: "Please try again",
+      console.error("Blog generation error:", error);
+      toast.error("Failed to generate blog post", {
+        description: error instanceof Error ? error.message : "Please try again",
       });
+    } finally {
+      setIsGenerating(false);
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[525px]">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Blog Publication Schedule</DialogTitle>
+          <DialogTitle>Configure Publication Schedule</DialogTitle>
+          <DialogDescription>
+            Set up when to automatically generate and publish blog posts
+          </DialogDescription>
         </DialogHeader>
         
-        <ScrollArea className="max-h-[75vh]">
-          <div className="p-1">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="isActive"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
-                      <div className="space-y-0.5">
-                        <FormLabel className="text-base">Automated Publishing</FormLabel>
-                        <FormDescription>
-                          Enable automatic blog post generation on schedule
-                        </FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                
-                {isActive && (
-                  <>
-                    <FormField
-                      control={form.control}
-                      name="frequency"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Frequency</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            value={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select frequency" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="daily">Daily</SelectItem>
-                              <SelectItem value="weekly">Weekly</SelectItem>
-                              <SelectItem value="monthly">Monthly</SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="time"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Time of day (24-hour format)</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="14:00"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            The time when blog posts will be generated (in your local time zone)
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    {form.watch("frequency") === "weekly" && (
-                      <FormField
-                        control={form.control}
-                        name="daysOfWeek"
-                        render={() => (
-                          <FormItem>
-                            <div className="mb-4">
-                              <FormLabel className="text-base">Days of the week</FormLabel>
-                              <FormDescription>
-                                Select which days to publish posts
-                              </FormDescription>
-                            </div>
-                            <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-                              {daysOfWeek.map((day) => (
-                                <FormField
-                                  key={day.value}
-                                  control={form.control}
-                                  name="daysOfWeek"
-                                  render={({ field }) => {
-                                    return (
-                                      <FormItem
-                                        key={day.value}
-                                        className="flex flex-row items-start space-x-3 space-y-0"
-                                      >
-                                        <FormControl>
-                                          <Checkbox
-                                            checked={field.value?.includes(day.value)}
-                                            onCheckedChange={(checked) => {
-                                              const currentValue = field.value || [];
-                                              return checked
-                                                ? field.onChange([...currentValue, day.value])
-                                                : field.onChange(
-                                                    currentValue.filter(
-                                                      (value) => value !== day.value
-                                                    )
-                                                  );
-                                            }}
-                                          />
-                                        </FormControl>
-                                        <FormLabel className="font-normal">
-                                          {day.label}
-                                        </FormLabel>
-                                      </FormItem>
-                                    );
-                                  }}
-                                />
-                              ))}
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    )}
-                    
-                    {form.watch("frequency") === "monthly" && (
-                      <FormField
-                        control={form.control}
-                        name="dayOfMonth"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Day of month</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                min="1"
-                                max="31"
-                                placeholder="1"
-                                {...field}
-                                onChange={event => field.onChange(parseInt(event.target.value))}
-                              />
-                            </FormControl>
-                            <FormDescription>
-                              The day of the month when blog posts will be generated (1-31)
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    )}
-                    
-                    <FormField
-                      control={form.control}
-                      name="categories"
-                      render={() => (
-                        <FormItem>
-                          <div className="mb-4">
-                            <FormLabel className="text-base">Blog Categories</FormLabel>
-                            <FormDescription>
-                              Select which categories to generate content for
-                            </FormDescription>
-                          </div>
-                          <div className="grid grid-cols-2 gap-2">
-                            {availableCategories.map((category) => (
-                              <FormField
-                                key={category}
-                                control={form.control}
-                                name="categories"
-                                render={({ field }) => {
-                                  return (
-                                    <FormItem
-                                      key={category}
-                                      className="flex flex-row items-start space-x-3 space-y-0"
-                                    >
-                                      <FormControl>
-                                        <Checkbox
-                                          checked={field.value?.includes(category)}
-                                          onCheckedChange={(checked) => {
-                                            const currentValue = field.value || [];
-                                            return checked
-                                              ? field.onChange([...currentValue, category])
-                                              : field.onChange(
-                                                  currentValue.filter(
-                                                    (value) => value !== category
-                                                  )
-                                                );
-                                          }}
-                                        />
-                                      </FormControl>
-                                      <FormLabel className="font-normal">
-                                        {category}
-                                      </FormLabel>
-                                    </FormItem>
-                                  );
-                                }}
-                              />
-                            ))}
-                          </div>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </>
-                )}
-                
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button variant="outline" type="button">Cancel</Button>
-                  </DialogClose>
-                  <Button type="submit">Save Schedule</Button>
-                </DialogFooter>
-              </form>
-            </Form>
+        <div className="grid gap-4 py-4">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="schedule-active">Enable automatic publishing</Label>
+            <Switch 
+              id="schedule-active" 
+              checked={config.isActive}
+              onCheckedChange={(checked) => setConfig({ ...config, isActive: checked })}
+            />
           </div>
-        </ScrollArea>
+
+          <div className="bg-blue-50 p-3 rounded-md border border-blue-100 mb-2">
+            <Button 
+              className="w-full bg-gradient-to-r from-aiblue to-aipurple hover:from-aipurple hover:to-aiblue"
+              onClick={handlePublishNow}
+              disabled={isGenerating}
+            >
+              {isGenerating ? "Publishing..." : "Publish New Blog Now"}
+            </Button>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="schedule-frequency">Frequency</Label>
+              <Select 
+                value={config.frequency} 
+                onValueChange={handleFrequencyChange}
+              >
+                <SelectTrigger id="schedule-frequency">
+                  <SelectValue placeholder="Select frequency" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="daily">Daily</SelectItem>
+                  <SelectItem value="weekly">Weekly</SelectItem>
+                  <SelectItem value="monthly">Monthly</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="schedule-time">Time (24h)</Label>
+              <Input 
+                id="schedule-time" 
+                type="time" 
+                value={config.time}
+                onChange={(e) => setConfig({ ...config, time: e.target.value })}
+              />
+            </div>
+          </div>
+          
+          {config.frequency === "weekly" && (
+            <div className="space-y-2">
+              <Label>Days of week</Label>
+              <div className="grid grid-cols-7 gap-2">
+                {DAYS_OF_WEEK.map((day) => (
+                  <div key={day.value} className="flex flex-col items-center">
+                    <Checkbox 
+                      id={`day-${day.value}`}
+                      checked={config.daysOfWeek?.includes(day.value)}
+                      onCheckedChange={() => toggleDayOfWeek(day.value)}
+                      className="mb-1"
+                    />
+                    <Label 
+                      htmlFor={`day-${day.value}`}
+                      className="text-xs"
+                    >
+                      {day.label.substring(0, 3)}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
+          {config.frequency === "monthly" && (
+            <div className="space-y-2">
+              <Label htmlFor="day-of-month">Day of month</Label>
+              <Input 
+                id="day-of-month"
+                type="number" 
+                min={1} 
+                max={31} 
+                value={config.dayOfMonth || 1}
+                onChange={(e) => setConfig({ 
+                  ...config, 
+                  dayOfMonth: Math.min(31, Math.max(1, parseInt(e.target.value) || 1)) 
+                })}
+              />
+            </div>
+          )}
+          
+          <div className="space-y-2">
+            <Label>Content categories</Label>
+            <div className="grid grid-cols-2 gap-2">
+              {CATEGORIES.map((category) => (
+                <div key={category} className="flex items-center space-x-2">
+                  <Checkbox 
+                    id={`category-${category}`}
+                    checked={config.categories.includes(category)}
+                    onCheckedChange={() => toggleCategory(category)}
+                  />
+                  <Label htmlFor={`category-${category}`}>{category}</Label>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Cancel
+          </Button>
+          <Button onClick={handleSave}>Save configuration</Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

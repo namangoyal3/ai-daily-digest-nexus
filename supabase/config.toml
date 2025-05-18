@@ -1,5 +1,0 @@
-
-project_id = "vlvqevzienylwlproxpj"
-
-[functions.create-table-function]
-verify_jwt = true

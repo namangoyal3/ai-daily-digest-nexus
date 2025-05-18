@@ -2,15 +2,12 @@
 export interface Blog {
   id: number | string;
   title: string;
-  excerpt?: string | null;
+  excerpt: string;
   content: string;
   date: string;
-  read_time?: string | null;
+  readTime: string;
   category: string;
-  image_url?: string | null;
-  featured?: boolean | null;
-  created_at?: string;
-  updated_at?: string;
+  image: string;
   author?: {
     name: string;
     avatar?: string;

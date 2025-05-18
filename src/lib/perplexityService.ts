@@ -1,132 +1,9 @@
+
 interface BlogGenerationResponse {
   title: string;
   content: string;
   excerpt: string;
   category: string;
-}
-
-/**
- * Generates a structured blog post prompt for the Perplexity API
- */
-function generateStructuredBlogPrompt(category: string): string {
-  return `
-You are an expert AI content generator tasked with writing high-quality, unique blog posts for a professional AI-focused website. Each time you generate a blog post, ensure that the content is entirely original — no repeated phrasing, titles, quotes, examples, or bullets from any previous output. The blog must be fully dedicated to the specific category provided and should not drift into general AI trends unless they relate directly to the category.
-
-The blog post must follow this structured layout:
-
-1. A catchy title with an emoji that aligns with the topic.
-2. A 2–3 line introductory paragraph that sets the context for the topic in 2025.
-3. A highlighted expert quote, formatted as a short, thought-provoking statement from a fictional or real credible person (include their name, designation, and company).
-4. Three to four main sections each with:
-   - A bold section heading
-   - A concise, informative paragraph (2–4 sentences)
-   - A short bullet list with 3 specific tools, companies, or examples relevant to that section
-5. A dedicated section titled "Real-World Applications of ${category}", featuring how this AI category is being applied across industries such as Healthcare, Retail, Manufacturing, and Finance — with specific company or use-case examples.
-6. A final, bold closing statement or motto like "Stay Curious, Stay Ahead 🚀" centered for visual impact.
-7. A "Learn More" section with 2–3 suggested resources (real from the blogs), each with a name and source.
-
-Write the entire content so it is human-readable. Each section must be modular, well-structured, and styled for full-width website layout rendering — no narrow columns or reduced UI elements. All text should be conversational, insightful, and factually grounded while remaining easy to digest.
-
-Now, generate the blog post for the category: ${category}
-
-## Output Format:
-•⁠  ⁠Return the output in *clean, semantic HTML*.
-•⁠  ⁠Include the following structure:
-  - A clear and catchy title wrapped in an <h1>
-  - An engaging intro paragraph in a styled <div>
-  - Body sections using <section> with <h2> subheadings
-  - Use <ul> or <div> with class names for bullets, highlights, or callouts
-  - A closing section with a strong takeaway or CTA
-
-## Styling Instructions (CSS Embedded or Inline Preferred):
-•⁠  ⁠Use *modern, easy-to-read fonts* like Inter, Open Sans, or Lato
-•⁠  ⁠Line height: 1.6–1.8 for readability
-•⁠  ⁠Max width for content: 650px
-•⁠  ⁠Add generous padding (24px+) and margins between sections
-•⁠  ⁠Use *pastel backgrounds* or soft light-gray containers to separate sections
-•⁠  ⁠Headers: Large, bold, and optionally emoji-enhanced
-•⁠  ⁠Links should be styled with clear color and hover effects
-•⁠  ⁠Highlight important stats or quotes using <blockquote> or styled <div>
-•⁠  ⁠Make it visually appealing, clean, and suitable for *email clients* and web readers
-
-## Important:
-•⁠  ⁠DO NOT include markdown or explanation.
-•⁠  ⁠ONLY return the final HTML string.
-`.trim();
-}
-
-/**
- * Generates a formatted newsletter prompt based on content parameters
- */
-function generateNewsletterPrompt(params: {
-  title?: string;
-  description?: string;
-  contentStyle?: string;
-  contentType?: string;
-  contentTone?: string;
-  contentFormat?: string;
-  includeRealLifeReferences?: boolean;
-  readability?: string;
-  technicalDepth?: string;
-  approach?: string;
-}): string {
-  const {
-    title = "",
-    description = "",
-    contentStyle = "engaging",
-    contentType = "general_interest",
-    contentTone = "conversational",
-    contentFormat = "modern",
-    includeRealLifeReferences = true,
-    readability = "moderate",
-    technicalDepth = "moderate",
-    approach = "practical"
-  } = params;
-
-  return `
-Write a ${contentStyle} and ${contentTone} newsletter article titled "${title || description || "Latest AI Developments"}".
-
-## Objective:
-The content should reflect a ${contentType.replace("_", " ")} focus and aim to keep the reader ${contentStyle === "engaging" ? "curious and emotionally invested" : contentStyle === "informative" ? "well-informed with clarity" : "persuaded with strong reasoning"}.
-
-## Style & Formatting:
-Use a ${contentFormat === "emoji-rich" ? "Modern" : "Superhuman"} layout.
-${contentFormat === "emoji-rich"
-    ? "- Use short paragraphs, bullet points, and emojis in headers (🚀, 📊, 💡)."
-    : "- Use bold highlights, one-sentence paragraphs, and strategic underlines."}
-
-## Requirements:
-•⁠  ⁠Write in a ${readability} readability style.
-•⁠  ⁠Use ${technicalDepth} technical depth.
-•⁠  ⁠Maintain a ${contentTone} tone throughout.
-•⁠  ⁠The approach should be ${approach}.
-${includeRealLifeReferences ? "- Include references to real companies, tools, or events where relevant." : ""}
-•⁠  ⁠Ensure SEO relevance with natural inclusion of keywords like "AI", "technology", "innovation", "development".
-
-## Output Format:
-•⁠  ⁠Return the output in *clean, semantic HTML*.
-•⁠  ⁠Include the following structure:
-  - A clear and catchy title wrapped in an <h1>
-  - An engaging intro paragraph in a styled <div>
-  - Body sections using <section> with <h2> subheadings
-  - Use <ul> or <div> with class names for bullets, highlights, or callouts
-  - A closing section with a strong takeaway or CTA
-
-## Styling Instructions (CSS Embedded or Inline Preferred):
-•⁠  ⁠Use *modern, easy-to-read fonts* like Inter, Open Sans, or Lato
-•⁠  ⁠Line height: 1.6–1.8 for readability
-•⁠  ⁠Max width for content: 650px
-•⁠  ⁠Add generous padding (24px+) and margins between sections
-•⁠  ⁠Use *pastel backgrounds* or soft light-gray containers to separate sections
-•⁠  ⁠Headers: Large, bold, and optionally emoji-enhanced
-•⁠  ⁠Links should be styled with clear color and hover effects
-•⁠  ⁠Highlight important stats or quotes using <blockquote> or styled <div>
-•⁠  ⁠Make it visually appealing, clean, and suitable for *email clients* and web readers
-
-## Important:
-•⁠  ⁠DO NOT include markdown or explanation.
-•⁠  ⁠ONLY return the final HTML string.
-`.trim();
 }
 
 export async function generateBlogContent(category?: string): Promise<BlogGenerationResponse> {
@@ -136,26 +13,30 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     throw new Error("Perplexity API key not found. Please add your API key in settings.");
   }
   
-  // Generate content based on category
-  const title = category 
-    ? `Latest Developments in ${category}`
-    : "Latest AI Developments";
+  const categoryPrompt = category 
+    ? `Create a blog post specifically about ${category}.`
+    : `Choose a specific category for the blog from: AI Trends, Deep Learning, AI Ethics, Machine Learning, AI Applications`;
+  
+  const prompt = `
+    Generate a high-quality, informative blog post about a trending topic in artificial intelligence or technology.
+    ${categoryPrompt}
     
-  // Create an optimized prompt using the structured blog generator when a category is specified
-  // Otherwise fall back to the newsletter format
-  const prompt = category 
-    ? generateStructuredBlogPrompt(category)
-    : generateNewsletterPrompt({
-        title: title,
-        contentStyle: "engaging",
-        contentType: "general_interest",
-        contentTone: "conversational",
-        contentFormat: "modern",
-        includeRealLifeReferences: true,
-        readability: "moderate",
-        technicalDepth: "moderate",
-        approach: "practical"
-      });
+    The blog post should be well-structured with:
+    - An engaging title
+    - A brief introduction that serves as an excerpt (2-3 sentences)
+    - Well-organized sections with h2 headings
+    - Proper HTML formatting (p tags, h2, blockquote, ul/ol lists where appropriate)
+    - A thoughtful conclusion
+    
+    IMPORTANT: The response must be a valid JSON object with these fields:
+    - title: string (the blog post title)
+    - excerpt: string (2-3 sentence summary, no HTML tags)
+    - content: string (fully formatted HTML content)
+    - category: string (one of the categories mentioned above)
+    
+    DO NOT include code blocks, markdown, or any formatting outside of the JSON structure.
+    ONLY return the JSON object, nothing else.
+  `;
   
   try {
     console.log("Calling Perplexity API...");
@@ -170,7 +51,7 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
         messages: [
           {
             role: 'system',
-            content: 'You are an expert AI and technology writer specializing in clear, well-structured content. Create articles with a logical hierarchy, short paragraphs, proper section spacing, and NO repetition of ideas or phrases. Format in HTML with proper semantic tags. Include section headings: Introduction, topical sections, and Conclusion.'
+            content: 'You are an expert AI and technology writer. Create content in well-formatted HTML. You MUST ONLY respond with a valid JSON object containing title, excerpt, content, and category fields. No other text or formatting.'
           },
           {
             role: 'user',
@@ -201,28 +82,139 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     const data = await response.json();
     console.log("API response received");
     
-    // Process the HTML content from Perplexity
-    if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
-      const htmlContent = data.choices[0].message.content;
+    // Enhanced JSON parsing logic
+    try {
+      // First check if the entire response is valid JSON already
+      if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
+        const rawContent = data.choices[0].message.content;
+        console.log("Raw content length:", rawContent.length);
+        
+        let contentJson;
+        
+        // Try direct parsing first
+        try {
+          contentJson = JSON.parse(rawContent);
+          console.log("Successfully parsed JSON directly");
+        } catch (initialParseError) {
+          console.log("Direct JSON parse failed, trying to clean the content");
+          
+          // Clean the content - remove any markdown code blocks or extra formatting
+          let cleanedContent = rawContent
+            .replace(/```json\s*/g, '')
+            .replace(/```\s*$/g, '')
+            .replace(/```/g, '')
+            .trim();
+            
+          // Extract JSON if embedded in other text
+          const jsonStartIndex = cleanedContent.indexOf('{');
+          const jsonEndIndex = cleanedContent.lastIndexOf('}');
+          
+          if (jsonStartIndex !== -1 && jsonEndIndex !== -1 && jsonEndIndex > jsonStartIndex) {
+            cleanedContent = cleanedContent.substring(jsonStartIndex, jsonEndIndex + 1);
+            console.log("Extracted JSON from text");
+          }
+          
+          // Final attempt to parse JSON
+          try {
+            contentJson = JSON.parse(cleanedContent);
+            console.log("Successfully parsed JSON after cleaning");
+          } catch (finalParseError) {
+            console.error("All JSON parsing attempts failed");
+            throw new Error("Could not parse the API response as valid JSON");
+          }
+        }
+        
+        // Validate the content has the required fields
+        if (contentJson && typeof contentJson === 'object') {
+          // Ensure all required fields exist
+          if (!contentJson.title) {
+            contentJson.title = "Latest AI Developments";
+          }
+          
+          if (!contentJson.excerpt) {
+            contentJson.excerpt = "An exploration of recent advancements in artificial intelligence and their implications.";
+          }
+          
+          // Make sure the content is proper HTML, not markdown or plain text
+          if (contentJson.content) {
+            // Check if content seems to be markdown or plain text rather than HTML
+            if (!contentJson.content.includes('<h2>') && !contentJson.content.includes('<p>')) {
+              // Simple conversion of plain text or markdown to HTML
+              contentJson.content = contentJson.content
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>');
+                
+              contentJson.content = `<p>${contentJson.content}</p>`;
+            }
+          } else {
+            throw new Error("Blog content missing in API response");
+          }
+          
+          if (!contentJson.category) {
+            contentJson.category = category || "AI Trends";
+          } else {
+            // Normalize category to one of the allowed values
+            const validCategories = ["AI Trends", "Deep Learning", "AI Ethics", "Machine Learning", "AI Applications"];
+            if (!validCategories.includes(contentJson.category)) {
+              // Find closest match or default to provided category
+              const lowerCategory = contentJson.category.toLowerCase();
+              if (lowerCategory.includes("trend")) contentJson.category = "AI Trends";
+              else if (lowerCategory.includes("deep") || lowerCategory.includes("learn")) contentJson.category = "Deep Learning";
+              else if (lowerCategory.includes("ethic")) contentJson.category = "AI Ethics";
+              else if (lowerCategory.includes("machine")) contentJson.category = "Machine Learning";
+              else if (lowerCategory.includes("app")) contentJson.category = "AI Applications";
+              else contentJson.category = category || "AI Trends";
+            }
+          }
+          
+          return {
+            title: contentJson.title,
+            content: contentJson.content,
+            excerpt: contentJson.excerpt,
+            category: contentJson.category
+          };
+        } else {
+          throw new Error("Invalid response format from API");
+        }
+      } else {
+        throw new Error("Unexpected API response structure");
+      }
+    } catch (parseError) {
+      console.error("Error parsing JSON from Perplexity:", parseError);
       
-      // Extract title from h1 tag
-      const titleMatch = htmlContent.match(/<h1[^>]*>(.*?)<\/h1>/i);
-      const extractedTitle = titleMatch ? titleMatch[1].replace(/<[^>]*>/g, '') : title;
+      // Last resort: Create a fallback post if we can extract any usable content
+      if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
+        const content = data.choices[0].message.content;
+        
+        // If it's just a plain text response without JSON, we can try to structure it
+        if (content.length > 100) {
+          console.log("Creating fallback post from text content");
+          
+          // Extract a title (first sentence or first 50 chars)
+          let title = content.split('.')[0];
+          if (title.length > 60) {
+            title = title.substring(0, 60) + "...";
+          }
+          
+          // First 2-3 sentences as excerpt
+          const sentences = content.split('.');
+          const excerpt = sentences.slice(0, 2).join('.') + '.';
+          
+          // Format the rest as HTML content
+          const htmlContent = `<p>${content.replace(/\n\n/g, '</p><p>')}</p>`;
+          
+          return {
+            title: title,
+            content: htmlContent,
+            excerpt: excerpt,
+            category: category || "AI Trends"
+          };
+        }
+      }
       
-      // Extract excerpt from first paragraph or div
-      const excerptMatch = htmlContent.match(/<p[^>]*>(.*?)<\/p>/i) || htmlContent.match(/<div[^>]*>(.*?)<\/div>/i);
-      const excerpt = excerptMatch 
-        ? excerptMatch[1].replace(/<[^>]*>/g, '').substring(0, 160) + '...'
-        : "Explore the latest developments in artificial intelligence and technology.";
-      
-      return {
-        title: extractedTitle,
-        content: htmlContent,
-        excerpt: excerpt,
-        category: category || "AI Trends"
-      };
-    } else {
-      throw new Error("Failed to extract content from the API response");
+      throw new Error("Failed to parse blog content from API. Try again with a different prompt.");
     }
   } catch (error) {
     console.error("Error calling Perplexity API:", error);
@@ -233,31 +225,3 @@ export async function generateBlogContent(category?: string): Promise<BlogGenera
     }
   }
 }
-
-/**
- * Generate blog posts for multiple categories at once
- */
-export async function generateBlogsForCategories(categories: string[]): Promise<BlogGenerationResponse[]> {
-  // Generate blog posts one by one for each category
-  const results: BlogGenerationResponse[] = [];
-  
-  for (const category of categories) {
-    try {
-      console.log(`Generating blog for category: ${category}`);
-      const blogData = await generateBlogContent(category);
-      results.push(blogData);
-      
-      // Add a small delay between API calls to avoid rate limiting
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    } catch (error) {
-      console.error(`Failed to generate blog for category ${category}:`, error);
-      // Continue with the next category even if one fails
-    }
-  }
-  
-  return results;
-}
-
-// Note: previous helper functions removed as they're no longer needed
-// with the new newsletter prompt approach that delivers properly
-// formatted HTML directly

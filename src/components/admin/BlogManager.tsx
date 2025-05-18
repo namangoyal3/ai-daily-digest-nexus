@@ -1,50 +1,23 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Edit, Trash, Plus, RefreshCcw, Calendar, FileText } from "lucide-react";
+import { generateDailyBlog, generateBlogForAllCategories } from "@/lib/blogService";
 import { toast } from "sonner";
 import { useNavigate, Link } from "react-router-dom";
 import BlogScheduleModal from "./BlogScheduleModal";
-import { getScheduleConfig, initializeScheduling, isTimeToRun, updateLastExecutedTime } from "@/lib/schedulingService";
-import { generateBlogPost, generateBlogPostsForCategories } from "@/lib/blogGenerationService";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getScheduleConfig, initializeScheduling } from "@/lib/schedulingService";
 
 export default function BlogManager() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
   const [scheduleConfig, setScheduleConfig] = useState(getScheduleConfig());
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const navigate = useNavigate();
-  
-  const categories = [
-    "AI Trends", 
-    "Deep Learning", 
-    "AI Ethics", 
-    "Machine Learning", 
-    "AI Applications"
-  ];
 
   // Initialize scheduling when component mounts
   useEffect(() => {
-    // Check if we should run the schedule immediately
-    const config = getScheduleConfig();
-    if (config.isActive && isTimeToRun(config)) {
-      console.log("Running scheduled blog generation on component mount...");
-      handleGenerateForAllCategories()
-        .then(() => {
-          updateLastExecutedTime(config);
-          setScheduleConfig(getScheduleConfig()); // Refresh the config
-          toast.success("Scheduled blog post generation completed");
-        })
-        .catch(error => {
-          console.error("Scheduled blog generation failed:", error);
-          toast.error("Scheduled blog generation failed", {
-            description: "Check API key settings and try again",
-          });
-        });
-    }
-    
     // Generate blog posts according to schedule
     const cleanup = initializeScheduling(async () => {
       try {
@@ -76,34 +49,20 @@ export default function BlogManager() {
     };
   }, []);
 
-  const handleGenerateSingle = async () => {
-    if (!selectedCategory) {
-      toast.error("Please select a category", {
-        description: "You need to select a category to generate a blog post"
-      });
-      return;
-    }
-    
+  const handleGenerateDaily = async () => {
     setIsGenerating(true);
-    try {
-      console.log(`Generating blog post for category: ${selectedCategory}`);
-      toast.info("Generating blog post", {
-        description: `Creating content for ${selectedCategory}`
+    try {      
+      const newBlog = await generateDailyBlog();
+      
+      toast.success("New blog post generated successfully", {
+        description: `"${newBlog.title}" has been added to your blog.`,
+        action: {
+          label: "View",
+          onClick: () => navigate(`/ai-blogs/${newBlog.id}`),
+        },
       });
       
-      const result = await generateBlogPost({ category: selectedCategory });
-      
-      if (result.success) {
-        toast.success("New blog post generated successfully", {
-          description: `A new post has been added to the ${selectedCategory} category.`,
-          action: {
-            label: "View",
-            onClick: () => navigate(`/ai-blogs/${result.blogId}`),
-          },
-        });
-      }
-      
-      return result;
+      return newBlog;
     } catch (error) {
       console.error("Blog generation error:", error);
       toast.error("Failed to generate blog post", {
@@ -122,23 +81,17 @@ export default function BlogManager() {
   const handleGenerateForAllCategories = async () => {
     setIsGenerating(true);
     try {      
-      const categoriesToUse = scheduleConfig.categories.length > 0 
-        ? scheduleConfig.categories
-        : ["AI Trends", "Deep Learning", "AI Ethics", "Machine Learning", "AI Applications"];
+      const newBlogs = await generateBlogForAllCategories();
       
-      const result = await generateBlogPostsForCategories(categoriesToUse);
+      toast.success(`${newBlogs.length} blog posts generated successfully`, {
+        description: `New posts have been added to your blog.`,
+        action: {
+          label: "View All",
+          onClick: () => navigate(`/ai-blogs`),
+        },
+      });
       
-      if (result.success) {
-        toast.success(`${result.generatedCount} blog post generated successfully`, {
-          description: `New content has been added to your blog.`,
-          action: {
-            label: "View All",
-            onClick: () => navigate(`/ai-blogs`),
-          },
-        });
-      }
-      
-      return result;
+      return newBlogs;
     } catch (error) {
       console.error("Blog generation error:", error);
       toast.error("Failed to generate blog posts", {
@@ -156,87 +109,6 @@ export default function BlogManager() {
 
   const openScheduleModal = () => {
     setScheduleModalOpen(true);
-  };
-
-  // Format next scheduled time
-  const getFormattedNextTime = () => {
-    if (!scheduleConfig.isActive) return "Not scheduled";
-    
-    const nextRunDate = scheduleConfig.lastExecuted 
-      ? getNextRunDateAfterExecution() 
-      : new Date();
-      
-    return nextRunDate.toLocaleString();
-  };
-  
-  // Calculate the next run date based on last execution
-  const getNextRunDateAfterExecution = () => {
-    if (!scheduleConfig.lastExecuted) return new Date();
-    
-    const lastRun = new Date(scheduleConfig.lastExecuted);
-    const nextRun = new Date(lastRun);
-    
-    // Set time from config
-    const [hours, minutes] = scheduleConfig.time.split(':').map(Number);
-    nextRun.setHours(hours, minutes, 0, 0);
-    
-    // Adjust date based on frequency
-    if (scheduleConfig.frequency === 'daily') {
-      // If last run was today before scheduled time, run today at scheduled time
-      // Otherwise, run tomorrow at scheduled time
-      if (
-        lastRun.getHours() < hours || 
-        (lastRun.getHours() === hours && lastRun.getMinutes() < minutes)
-      ) {
-        // Keep the current date
-      } else {
-        nextRun.setDate(nextRun.getDate() + 1);
-      }
-    } else if (scheduleConfig.frequency === 'weekly' && scheduleConfig.daysOfWeek?.length) {
-      // Find next day of week in the schedule
-      const currentDay = nextRun.getDay();
-      let daysToAdd = 0;
-      
-      // Sort days of week to ensure we find the next one
-      const sortedDays = [...scheduleConfig.daysOfWeek].sort();
-      
-      // Find the next day in the schedule
-      for (let i = 0; i < 7; i++) {
-        const checkDay = (currentDay + i) % 7;
-        if (sortedDays.includes(checkDay)) {
-          // If it's today, check if the time has already passed
-          if (i === 0) {
-            if (
-              lastRun.getHours() < hours || 
-              (lastRun.getHours() === hours && lastRun.getMinutes() < minutes)
-            ) {
-              daysToAdd = 0;
-              break;
-            }
-          } else {
-            daysToAdd = i;
-            break;
-          }
-        }
-      }
-      
-      nextRun.setDate(nextRun.getDate() + daysToAdd);
-    } else if (scheduleConfig.frequency === 'monthly' && scheduleConfig.dayOfMonth) {
-      // Set to the specified day of the month
-      nextRun.setDate(scheduleConfig.dayOfMonth);
-      
-      // If that day this month has passed, move to next month
-      if (
-        nextRun < lastRun || 
-        (nextRun.getDate() === lastRun.getDate() && 
-         lastRun.getHours() >= hours && 
-         lastRun.getMinutes() >= minutes)
-      ) {
-        nextRun.setMonth(nextRun.getMonth() + 1);
-      }
-    }
-    
-    return nextRun;
   };
 
   return (
@@ -262,54 +134,14 @@ export default function BlogManager() {
             <Plus className="mr-2 h-4 w-4" />
             New Post
           </Button>
+          <Button onClick={handleGenerateForAllCategories} disabled={isGenerating}>
+            <RefreshCcw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
+            {isGenerating ? "Generating..." : "Generate Posts"}
+          </Button>
         </div>
       </div>
       
       <Separator />
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Generate Content</CardTitle>
-          <CardDescription>
-            Create new AI-generated blog post from selected category
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="col-span-2">
-                <label htmlFor="category" className="block text-sm font-medium mb-1">Category</label>
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select a category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Categories</SelectLabel>
-                      {categories.map((category) => (
-                        <SelectItem key={category} value={category}>{category}</SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex items-end">
-                <Button 
-                  className="w-full" 
-                  onClick={handleGenerateSingle} 
-                  disabled={isGenerating || !selectedCategory}
-                >
-                  <RefreshCcw className={`mr-2 h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
-                  {isGenerating ? "Generating..." : "Generate Post"}
-                </Button>
-              </div>
-            </div>
-            <div className="text-sm text-muted-foreground">
-              Select a category to generate a single blog post. The content will be automatically optimized for this topic.
-            </div>
-          </div>
-        </CardContent>
-      </Card>
       
       <Card>
         <CardHeader>
@@ -347,7 +179,7 @@ export default function BlogManager() {
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                   <h3 className="font-medium mb-1">Content Categories</h3>
                   <p className="text-sm text-muted-foreground">
-                    {scheduleConfig.categories.join(", ") || "None selected"}
+                    {scheduleConfig.categories.join(", ")}
                   </p>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
@@ -360,18 +192,6 @@ export default function BlogManager() {
                   </div>
                 </div>
               </div>
-              
-              {scheduleConfig.isActive && (
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                  <h3 className="font-medium mb-1">Next Generation</h3>
-                  <p className="text-sm text-blue-700">{getFormattedNextTime()}</p>
-                  {scheduleConfig.lastExecuted && (
-                    <p className="text-xs text-blue-600 mt-1">
-                      Last generated: {new Date(scheduleConfig.lastExecuted).toLocaleString()}
-                    </p>
-                  )}
-                </div>
-              )}
             </div>
           </div>
         </CardContent>
