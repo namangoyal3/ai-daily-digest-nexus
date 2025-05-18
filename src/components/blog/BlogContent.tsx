@@ -65,7 +65,7 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
   return (
     <div 
       ref={contentRef}
-      className="prose prose-gray max-w-none mx-auto blog-content"
+      className="prose prose-gray max-w-3xl mx-auto blog-content"
       dangerouslySetInnerHTML={{ __html: isFormattedHtml ? enhanceContent(content) : processLegacyContent(content) }}
     />
   );
@@ -108,7 +108,7 @@ function enhanceContent(content: string): string {
   enhancedContent = enhancedContent.replace(/<p([^>]*)>/g, '<p$1 class="my-4 leading-relaxed">');
   
   // Add container wrapper to ensure consistent width
-  enhancedContent = `<div class="w-full max-w-3xl mx-auto px-4">${enhancedContent}</div>`;
+  enhancedContent = `<div class="max-w-3xl mx-auto px-4">${enhancedContent}</div>`;
 
   return enhancedContent;
 }
@@ -150,15 +150,11 @@ function processLegacyContent(content: string): string {
   
   // Handle case where content doesn't have h2 headings
   if (sections.length <= 1) {
-    formattedHtml += `
-      <section class="rounded-xl p-6 md:p-8 my-8 md:my-10 shadow-sm">
-        <div class="prose prose-gray">${processedContent}</div>
-      </section>
-    `;
+    formattedHtml += `<section class="rounded-xl p-6 md:p-8 my-8 md:my-10 shadow-sm">${processedContent}</section>`;
   }
   
   // Add container wrapper to ensure consistent width
-  formattedHtml = `<div class="w-full max-w-3xl mx-auto px-4">${formattedHtml}</div>`;
+  formattedHtml = `<div class="max-w-3xl mx-auto px-4">${formattedHtml}</div>`;
   
   return formattedHtml;
 }
