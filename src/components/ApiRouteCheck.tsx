@@ -1,116 +1,78 @@
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight } from "lucide-react";
+import { CheckCircle2, XCircle, RotateCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { testDatabaseConnection } from "@/lib/supabase-client";
 
-/**
- * Simple component to test if API routes are accessible
- */
 export default function ApiRouteCheck() {
-  const [testing, setTesting] = useState(false);
-  const [results, setResults] = useState<{route: string, status: string, message: string}[]>([]);
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [result, setResult] = useState<any>(null);
 
-  // Function to test if a route exists
-  const testRoute = async (route: string) => {
+  const checkApiRoute = async () => {
+    setStatus("loading");
+    setResult(null);
+    
     try {
-      const url = route.startsWith('http') ? route : `${window.location.origin}${route}`;
-      console.log(`Testing route: ${url}`);
+      console.log("Checking Supabase connection...");
+      const connectionResult = await testDatabaseConnection();
+      console.log("Connection test result:", connectionResult);
       
-      const response = await fetch(url, {
-        method: 'OPTIONS',
-        headers: { 'Accept': 'application/json' }
-      });
-      
-      return {
-        route,
-        status: response.ok ? 'success' : 'error',
-        message: `Status: ${response.status} ${response.statusText}`
-      };
+      setResult(connectionResult);
+      setStatus(connectionResult.success ? "success" : "error");
     } catch (error) {
-      console.error(`Error testing route ${route}:`, error);
-      return {
-        route,
-        status: 'error',
-        message: `Error: ${error instanceof Error ? error.message : String(error)}`
-      };
+      console.error("Error testing Supabase connection:", error);
+      setStatus("error");
+      setResult({ success: false, error: { message: String(error) } });
     }
-  };
-
-  const runTests = async () => {
-    setTesting(true);
-    setResults([]);
-    
-    // Routes to test
-    const routes = [
-      '/api/health-check',
-      '/api/subscribe',
-      '/health-check',
-      '/subscribe'
-    ];
-    
-    const testResults = [];
-    
-    for (const route of routes) {
-      const result = await testRoute(route);
-      testResults.push(result);
-      // Update state after each test to show progress
-      setResults([...testResults]);
-    }
-    
-    setTesting(false);
   };
 
   return (
-    <Card className="mt-6">
+    <Card>
       <CardHeader>
-        <CardTitle>API Route Accessibility Test</CardTitle>
+        <CardTitle className="flex items-center justify-between">
+          <span>Supabase Connection Check</span>
+          <div className="flex items-center space-x-2">
+            {status === "success" && (
+              <CheckCircle2 className="h-5 w-5 text-green-500" />
+            )}
+            {status === "error" && (
+              <XCircle className="h-5 w-5 text-red-500" />
+            )}
+          </div>
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <Button 
-            onClick={runTests} 
-            disabled={testing}
-            className="w-full"
-          >
-            {testing ? "Testing Routes..." : "Test API Routes"}
-          </Button>
+          <div className="flex justify-between items-center">
+            <div>
+              {status === "idle" && <p>Click the button to check Supabase connection</p>}
+              {status === "loading" && <p>Testing connection...</p>}
+              {status === "success" && <p className="text-green-600">Connection successful</p>}
+              {status === "error" && <p className="text-red-600">Connection failed</p>}
+            </div>
+            <Button 
+              onClick={checkApiRoute}
+              disabled={status === "loading"}
+              variant={status === "error" ? "destructive" : "default"}
+              size="sm"
+            >
+              {status === "loading" ? (
+                <RotateCw className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <RotateCw className="h-4 w-4 mr-2" />
+              )}
+              Test Connection
+            </Button>
+          </div>
           
-          {results.length > 0 && (
-            <div className="mt-4 space-y-2">
-              <h3 className="text-lg font-semibold">Results:</h3>
-              <div className="space-y-2">
-                {results.map((result, index) => (
-                  <div 
-                    key={index}
-                    className={`p-3 rounded-md ${
-                      result.status === 'success' ? 'bg-green-50' : 'bg-red-50'
-                    }`}
-                  >
-                    <div className="flex items-center">
-                      <span className="font-mono text-sm">{result.route}</span>
-                      <ArrowRight className="mx-2 h-3 w-3" />
-                      <span className={`text-sm ${
-                        result.status === 'success' ? 'text-green-600' : 'text-red-600'
-                      }`}>
-                        {result.message}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
+          {result && (
+            <div className="mt-4 p-3 bg-gray-50 rounded-md overflow-x-auto text-sm">
+              <pre className="whitespace-pre-wrap">
+                {JSON.stringify(result, null, 2)}
+              </pre>
             </div>
           )}
-          
-          <div className="mt-4 p-4 bg-gray-50 rounded-md text-sm">
-            <h3 className="font-semibold mb-2">Environment Information:</h3>
-            <div className="space-y-1">
-              <p><strong>Hostname:</strong> {window.location.hostname}</p>
-              <p><strong>Origin:</strong> {window.location.origin}</p>
-              <p><strong>Protocol:</strong> {window.location.protocol}</p>
-              <p><strong>API Base:</strong> {window.location.hostname.includes('lovableproject.com') ? '/api' : `${window.location.origin}/api`}</p>
-            </div>
-          </div>
         </div>
       </CardContent>
     </Card>

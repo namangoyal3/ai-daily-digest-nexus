@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { testDatabaseConnection, addSubscriber } from "@/lib/postgres";
+import { testDatabaseConnection, addSubscriber } from "@/lib/supabase-client";
 import { Check, X, Database } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -17,7 +18,6 @@ export default function DatabaseConnectionTest() {
   const environmentInfo = {
     baseUrl: window.location.origin,
     hostname: window.location.hostname,
-    apiPath: window.location.hostname.includes('lovableproject.com') ? '/api' : `${window.location.origin}/api`,
   };
 
   // Function to test database connection
