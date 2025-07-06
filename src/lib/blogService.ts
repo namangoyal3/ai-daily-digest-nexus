@@ -1,6 +1,6 @@
 
 import { Blog } from "@/types/blog";
-import { generateBlogContent } from "./perplexityService";
+import { generateBlogContent } from "./contentGeneratorService";
 import { fetchRandomImage } from "./pollinationsService";
 import { formatDate } from "./dateUtils";
 import { getScheduleConfig } from "./schedulingService";

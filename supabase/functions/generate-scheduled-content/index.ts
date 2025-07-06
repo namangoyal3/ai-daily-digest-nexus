@@ -10,6 +10,7 @@ const corsHeaders = {
 const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const perplexityApiKey = Deno.env.get('PERPLEXITY_API_KEY');
+const huggingfaceApiKey = Deno.env.get('HUGGINGFACE_API_KEY');
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
@@ -21,10 +22,10 @@ serve(async (req) => {
   try {
     console.log('Starting scheduled content generation...');
 
-    // Check if Perplexity API key is available
-    if (!perplexityApiKey) {
-      console.error('Perplexity API key not found');
-      return new Response(JSON.stringify({ error: 'API key not configured' }), {
+    // Check if at least one API key is available
+    if (!perplexityApiKey && !huggingfaceApiKey) {
+      console.error('No API keys found');
+      return new Response(JSON.stringify({ error: 'No content generation API keys configured' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -121,6 +122,17 @@ serve(async (req) => {
 
 async function generateBlogForCategory(category: string) {
   console.log(`Generating blog for category: ${category}`);
+  
+  // Determine which provider to use
+  const usePerplexity = perplexityApiKey && Math.random() > 0.5; // 50/50 split when both available
+  const provider = usePerplexity ? 'perplexity' : 'huggingface';
+  const apiKey = usePerplexity ? perplexityApiKey : huggingfaceApiKey;
+  
+  if (!apiKey) {
+    throw new Error(`No API key available for ${provider}`);
+  }
+  
+  console.log(`Using ${provider} for content generation`);
 
   const topics = {
     'AI Trends': 'latest AI trends and developments in artificial intelligence',
@@ -166,44 +178,74 @@ Summarize key takeaways and provide a clear call-to-action.
 Focus on current, trending topics in ${category}. Make it practical and valuable for readers interested in AI and technology. Use a professional but approachable tone.`;
 
   try {
-    const response = await fetch('https://api.perplexity.ai/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${perplexityApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'llama-3.1-sonar-large-128k-online',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an expert AI content writer. Create high-quality, SEO-optimized blog posts about artificial intelligence and technology. Always stay current with the latest developments and trends.'
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        temperature: 0.7,
-        top_p: 0.9,
-        max_tokens: 4000,
-        return_images: false,
-        return_related_questions: false,
-        search_recency_filter: 'week',
-        frequency_penalty: 1,
-        presence_penalty: 0
-      }),
-    });
+    let response, data, content;
+    
+    if (provider === 'perplexity') {
+      response = await fetch('https://api.perplexity.ai/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'llama-3.1-sonar-large-128k-online',
+          messages: [
+            {
+              role: 'system',
+              content: 'You are an expert AI content writer. Create high-quality, SEO-optimized blog posts about artificial intelligence and technology. Always stay current with the latest developments and trends.'
+            },
+            {
+              role: 'user',
+              content: prompt
+            }
+          ],
+          temperature: 0.7,
+          top_p: 0.9,
+          max_tokens: 4000,
+          return_images: false,
+          return_related_questions: false,
+          search_recency_filter: 'week',
+          frequency_penalty: 1,
+          presence_penalty: 0
+        }),
+      });
 
-    if (!response.ok) {
-      throw new Error(`Perplexity API error: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`Perplexity API error: ${response.status}`);
+      }
+
+      data = await response.json();
+      content = data.choices[0]?.message?.content;
+    } else {
+      // Hugging Face
+      response = await fetch('https://api-inference.huggingface.co/models/microsoft/DialoGPT-large', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          inputs: prompt,
+          parameters: {
+            max_new_tokens: 2000,
+            temperature: 0.7,
+            top_p: 0.9,
+            do_sample: true,
+            return_full_text: false
+          }
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Hugging Face API error: ${response.status}`);
+      }
+
+      data = await response.json();
+      content = Array.isArray(data) && data[0]?.generated_text ? data[0].generated_text : data.generated_text;
     }
 
-    const data = await response.json();
-    const content = data.choices[0]?.message?.content;
-
     if (!content) {
-      throw new Error('No content generated from Perplexity API');
+      throw new Error(`No content generated from ${provider} API`);
     }
 
     // Parse the generated content
