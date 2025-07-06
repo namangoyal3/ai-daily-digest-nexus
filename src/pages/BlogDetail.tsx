@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Helmet } from "react-helmet";
 import { ArrowLeft, Calendar, Share2, Bookmark, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
@@ -11,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import RelatedBlogs from "@/components/blog/RelatedBlogs";
 import BlogContent from "@/components/blog/BlogContent";
 import BlogSkeleton from "@/components/skeletons/BlogSkeleton";
+import SEOHead from "@/components/SEOHead";
 import { getBlogById } from "@/lib/blogService";
 import { Blog } from "@/types/blog";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -66,18 +66,17 @@ export default function BlogDetail() {
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gradient-to-br from-white via-blue-50/30 to-purple-50/30">
-        {/* Only add Helmet if blog exists to avoid the Symbol error */}
+        {/* Enhanced SEO Head */}
         {blog && (
-          <Helmet>
-            <title>{blog.title} | NeuralNextGen</title>
-            <meta name="description" content={blog.excerpt} />
-            <meta property="og:title" content={blog.title} />
-            <meta property="og:description" content={blog.excerpt} />
-            <meta property="og:image" content={blog.image_url} />
-            <meta property="og:type" content="article" />
-            <meta property="article:published_time" content={blog.date} />
-            <meta property="article:section" content={blog.category} />
-          </Helmet>
+          <SEOHead
+            title={`${blog.title} | NeuralNextGen`}
+            description={blog.meta_description || blog.excerpt}
+            keywords={blog.keywords || []}
+            canonicalUrl={blog.canonical_url || `https://neuralnextgen.com/ai-blogs/${blog.slug || blog.id}`}
+            ogImage={blog.image_url}
+            ogType="article"
+            blog={blog}
+          />
         )}
         
         <Header />

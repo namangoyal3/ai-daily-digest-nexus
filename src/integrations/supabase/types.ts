@@ -11,6 +11,9 @@ export type Database = {
     Tables: {
       blogs: {
         Row: {
+          author_bio: string | null
+          author_name: string | null
+          canonical_url: string | null
           category: string
           content: string
           created_at: string
@@ -19,11 +22,19 @@ export type Database = {
           featured: boolean | null
           id: string
           image_url: string | null
+          keywords: string[] | null
+          meta_description: string | null
+          published_at: string | null
           read_time: string | null
+          slug: string | null
+          tags: string[] | null
           title: string
           updated_at: string
         }
         Insert: {
+          author_bio?: string | null
+          author_name?: string | null
+          canonical_url?: string | null
           category: string
           content: string
           created_at?: string
@@ -32,11 +43,19 @@ export type Database = {
           featured?: boolean | null
           id?: string
           image_url?: string | null
+          keywords?: string[] | null
+          meta_description?: string | null
+          published_at?: string | null
           read_time?: string | null
+          slug?: string | null
+          tags?: string[] | null
           title: string
           updated_at?: string
         }
         Update: {
+          author_bio?: string | null
+          author_name?: string | null
+          canonical_url?: string | null
           category?: string
           content?: string
           created_at?: string
@@ -45,8 +64,90 @@ export type Database = {
           featured?: boolean | null
           id?: string
           image_url?: string | null
+          keywords?: string[] | null
+          meta_description?: string | null
+          published_at?: string | null
           read_time?: string | null
+          slug?: string | null
+          tags?: string[] | null
           title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      content_generation_logs: {
+        Row: {
+          blog_id: string | null
+          categories: string[] | null
+          created_at: string
+          error_message: string | null
+          generation_type: string
+          id: string
+          status: string
+        }
+        Insert: {
+          blog_id?: string | null
+          categories?: string[] | null
+          created_at?: string
+          error_message?: string | null
+          generation_type?: string
+          id?: string
+          status: string
+        }
+        Update: {
+          blog_id?: string | null
+          categories?: string[] | null
+          created_at?: string
+          error_message?: string | null
+          generation_type?: string
+          id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_generation_logs_blog_id_fkey"
+            columns: ["blog_id"]
+            isOneToOne: false
+            referencedRelation: "blogs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_schedules: {
+        Row: {
+          categories: string[]
+          created_at: string
+          day_of_month: number | null
+          days_of_week: number[] | null
+          frequency: string
+          id: string
+          is_active: boolean
+          name: string
+          schedule_time: string
+          updated_at: string
+        }
+        Insert: {
+          categories?: string[]
+          created_at?: string
+          day_of_month?: number | null
+          days_of_week?: number[] | null
+          frequency?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          schedule_time?: string
+          updated_at?: string
+        }
+        Update: {
+          categories?: string[]
+          created_at?: string
+          day_of_month?: number | null
+          days_of_week?: number[] | null
+          frequency?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          schedule_time?: string
           updated_at?: string
         }
         Relationships: []
